@@ -59,7 +59,10 @@ $arCounters = CMax::updateBasketCounters(array('READY' => array('COUNT' => $norm
 
 		<script>
 			InitScrollBar();
-
+			
+			if (typeof updateBottomIconsPanel === 'function') {
+				updateBottomIconsPanel(<?=CUtil::PhpToJSObject($arCounters)?>);
+			}
 
 			<?if ($arParams["AJAX_MODE_CUSTOM"]=="Y"):?>
 				var animateRow = function(row)

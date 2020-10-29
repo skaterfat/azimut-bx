@@ -24,12 +24,16 @@ if($arResult['ITEMS']):?>
 		$col = 3;
 
 	$bSmallBlocks = $arParams['LINE_ELEMENT_COUNT'] >= 6;
+
+	$sTemplateMobile = (isset($arResult['MOBILE_TEMPLATE']) ? $arResult['MOBILE_TEMPLATE'] : '');
+	$bSlider = ($sTemplateMobile === 'slider');
+	//var_dump($bSlider);
 	?>
 	<div class="content_wrapper_block <?=$templateName;?> <?=$bSmallBlocks ? 'small' : ''?>">
 		<div class="maxwidth-theme<?=($bWide ? ' wide' : '');?>">
 			<div class="instagram_wrapper">
 				<?$obParser = new CTextParser;?>
-				<div class="item-views front blocks">
+				<div class="item-views front blocks ">
 					<?if(!$bWide):?>
 						<?if($arResult['DOP_TEXT'] && !$bWideFirstBlock):?>
 							<div class="with-text-block-wrapper">
@@ -52,7 +56,7 @@ if($arResult['ITEMS']):?>
 										<?endif;?>
 										<a href="https://www.instagram.com/<?=$arResult['USER']['username']?>/" class="btn btn-transparent-border-color btn-sm"><?=($arResult['ALL_TITLE'] ? $arResult['ALL_TITLE'] : \Bitrix\Main\Localization\Loc::getMessage('INSTAGRAM_ALL_ITEMS'));?></a>
 									</div>
-									<div class="col-md-9">
+									<div class="col-md-9 instagram_body">
 						<?else:?>
 							<div class="top_block">
 								<h3><?=($arResult['TITLE'] ? $arResult['TITLE'] : \Bitrix\Main\Localization\Loc::getMessage('TITLE'));?></h3>
@@ -62,7 +66,7 @@ if($arResult['ITEMS']):?>
 					<?endif;?>
 					<div class="instagram clearfix">
 						<?$index = 0;?>
-						<div class="items row flexbox<?=($bNoMargin ? ' margin0 rounded3' : '');?>">
+						<div class="items row flexbox<?=($bNoMargin ? ' margin0 rounded3' : '');?> <?=$sTemplateMobile;?><?=($bSlider ? ' mobile-slider' : '');?> <?=($bSlider && !$bWideFirstBlock ? ' swipeignore mobile-overflow mobile-margin-16 ' : '');?>">
 							<?if($bWideFirstBlock):?>
 								<?$arItem = array_shift($arResult['ITEMS']);
 								$arItem['LINK'] = $arItem['thumbnail_url'] ? $arItem['thumbnail_url'] : $arItem['media_url'];
@@ -80,8 +84,8 @@ if($arResult['ITEMS']):?>
 										</a>
 									</div>
 								</div>
-								<div class="custom">
-									<div class="item col-lg-<?=$col;?> col-sm-4 col-xs-6 col-xxs-12 _adaptive">
+								<div class="custom <?=($bSlider && $bWideFirstBlock ? ' swipeignore mobile-overflow mobile-margin-16 ' : '');?>">
+									<div class="item col-lg-<?=$col;?> col-sm-4 col-xs-6 col-xxs-6 _adaptive <?=($bSlider ? ' item-width-261' : '');?>">
 										<div class="item-wrapper">
 											<div class="image shine<?=(!$bNoMargin ? ' rounded3' : '');?>" style="background:url(<?=$arItem['LINK'];?>) center center/cover no-repeat;"><a href="<?=$arItem['permalink']?>" target="_blank"></a></div>
 											<a class="wrap scrollbar" href="<?=$arItem['permalink']?>" target="_blank" rel="nofollow">
@@ -97,7 +101,7 @@ if($arResult['ITEMS']):?>
 							<?endif;?>
 							<?foreach($arResult['ITEMS'] as $arItem):?>
 								<?$arItem['LINK'] = $arItem['thumbnail_url'] ? $arItem['thumbnail_url'] : $arItem['media_url'];?>
-								<div class="item col-lg-<?=$col;?> col-sm-4 col-xs-6 col-xxs-12">
+								<div class="item col-lg-<?=$col;?> col-sm-4 col-xs-6 col-xxs-6 <?=($bSlider ? ' item-width-261' : '');?>">
 									<div class="item-wrapper">
 										<div class="image shine<?=(!$bNoMargin ? ' rounded3' : '');?>" style="background:url(<?=$arItem['LINK'];?>) center center/cover no-repeat;"><a href="<?=$arItem['permalink']?>" target="_blank"></a></div>
 										<a class="wrap scrollbar" href="<?=$arItem['permalink']?>" target="_blank" rel="nofollow">

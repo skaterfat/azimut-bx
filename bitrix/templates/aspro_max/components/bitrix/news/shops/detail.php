@@ -24,8 +24,8 @@ $APPLICATION->SetPageProperty("TITLE_CLASS", " hidden ");
 		'og:image' => (($arElement['PREVIEW_PICTURE'] || $arElement['DETAIL_PICTURE']) ? CFile::GetPath(($arElement['PREVIEW_PICTURE'] ? $arElement['PREVIEW_PICTURE'] : $arElement['DETAIL_PICTURE'])) : false),
 	)
 );?>
-<div class="wrapper_inner_half row flexbox shop-detail1 clearfix 111">
-<?//$APPLICATION->ShowViewContent('map_content');?>
+<div class="wrapper_inner_half row flexbox shop-detail1 clearfix ">
+
 <?$APPLICATION->IncludeComponent(
 	"bitrix:news.detail",
 	"shops",
@@ -46,11 +46,11 @@ $APPLICATION->SetPageProperty("TITLE_CLASS", " hidden ");
 		"META_DESCRIPTION" => $arParams["META_DESCRIPTION"],
 		"BROWSER_TITLE" => $arParams["BROWSER_TITLE"],
 		"DISPLAY_PANEL" => $arParams["DISPLAY_PANEL"],
-		"SET_TITLE" => 'N',
+		"SET_TITLE" => $arParams["SET_TITLE"], //'N',
 		"SET_STATUS_404" => $arParams["SET_STATUS_404"],
 		"INCLUDE_IBLOCK_INTO_CHAIN" => $arParams["INCLUDE_IBLOCK_INTO_CHAIN"],
-		"ADD_SECTIONS_CHAIN" => $arParams["ADD_SECTIONS_CHAIN"],
-		"ADD_ELEMENT_CHAIN" => 'N',
+		"ADD_SECTIONS_CHAIN" =>$arParams["ADD_SECTIONS_CHAIN"],
+		"ADD_ELEMENT_CHAIN" => $arParams['ADD_ELEMENT_CHAIN'], //'N',
 		"ACTIVE_DATE_FORMAT" => $arParams["DETAIL_ACTIVE_DATE_FORMAT"],
 		"CACHE_TYPE" => 'A', // for map!
 		"CACHE_TIME" => $arParams["CACHE_TIME"],
@@ -99,11 +99,11 @@ $APPLICATION->SetPageProperty("TITLE_CLASS", " hidden ");
 	<?//endif;?>
 </div>
 <?
-if ($arParams['SET_TITLE'] == 'Y') {
+/*if ($arParams['SET_TITLE'] == 'Y') {
 	$APPLICATION->SetTitle($_SESSION['SHOP_TITLE']);
 	$APPLICATION->SetPageProperty("title", $_SESSION['SHOP_TITLE']);
 }
 if ($arParams['ADD_ELEMENT_CHAIN'] == 'Y') {
 	$APPLICATION->AddChainItem($_SESSION['SHOP_TITLE'], "");
-}
+}*/
 ?>

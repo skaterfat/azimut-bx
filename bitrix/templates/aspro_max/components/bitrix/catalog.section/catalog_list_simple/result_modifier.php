@@ -19,7 +19,7 @@ if(isset($arParams['STORES'])) {
 		}
 	}
 }
-			
+
 
 if ('TYPE_2' != $arParams['TYPE_SKU'] )
 	$arParams['TYPE_SKU'] = 'N';
@@ -134,7 +134,7 @@ if (!empty($arResult['ITEMS'])){
 				$arSKUPropKeys = array_fill_keys($arSKUPropIDs, false);
 		}
 	}
-	
+
 	$arNewItemsList = array();
 	foreach ($arResult['ITEMS'] as $key => $arItem)
 	{
@@ -149,7 +149,7 @@ if (!empty($arResult['ITEMS'])){
 				$arResult['ITEMS'][$key]['DISPLAY_PROPERTIES']['CML2_ARTICLE']['VALUE'] = $arItem['DISPLAY_PROPERTIES']['CML2_ARTICLE']['VALUE'];
 			}
 		}
-		
+
 		$arItem['CHECK_QUANTITY'] = false;
 		if (!isset($arItem['CATALOG_MEASURE_RATIO']))
 			$arItem['CATALOG_MEASURE_RATIO'] = 1;
@@ -222,7 +222,7 @@ if (!empty($arResult['ITEMS'])){
 				$arTmpProps["EXTENDED_REVIEWS_COUNT"]=$arItem["PROPERTIES"]["EXTENDED_REVIEWS_COUNT"];
 			if(isset($arItem["PROPERTIES"]["EXTENDED_REVIEWS_RAITING"]))
 				$arTmpProps["EXTENDED_REVIEWS_RAITING"]=$arItem["PROPERTIES"]["EXTENDED_REVIEWS_RAITING"];
-			
+
 			unset($arItem["PROPERTIES"]);
 			$arItem["PROPERTIES"]=$arTmpProps;
 			unset($arTmpProps);
@@ -562,7 +562,7 @@ if (!empty($arResult['ITEMS'])){
 			foreach ($arItem['DISPLAY_PROPERTIES'] as $propKey => $arDispProp)
 			{
 				if ('F' == $arDispProp['PROPERTY_TYPE'])
-					unset($arItem['DISPLAY_PROPERTIES'][$propKey]);				
+					unset($arItem['DISPLAY_PROPERTIES'][$propKey]);
 
 			}
 		}
@@ -582,11 +582,16 @@ if (!empty($arResult['ITEMS'])){
 					unset($arItem['DISPLAY_PROPERTIES'][$propKey]);
 			}
 		}
-		
+
 		$arItem['LAST_ELEMENT'] = 'N';
+
+		if($arParams['IBINHERIT_TEMPLATES']){
+			\Aspro\Max\Property\IBInherited::modifyItemTemplates($arParams, $arItem);
+		}
+
 		$arNewItemsList[$key] = $arItem;
 	}
-	
+
 	$arNewItemsList[$key]['LAST_ELEMENT'] = 'Y';
 	$arResult['ITEMS'] = $arNewItemsList;
 	$arResult['SKU_PROPS'] = $arSKUPropList;

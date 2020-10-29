@@ -17,7 +17,11 @@ use \Bitrix\Main\Config\Option;
 	<?
 	// default fields, that you can change
 	$arShowFields = array("LOGIN", "LAST_NAME", "NAME", "SECOND_NAME", "EMAIL", "PERSONAL_PHONE");
-	$arRequiredFields = array("NAME", "PERSONAL_PHONE");
+	$arRequiredFields = array("NAME");
+
+	if( Option::get('main', 'new_user_phone_required', 'N', SITE_ID) == 'Y' ) {
+		$arRequiredFields[] = "PERSONAL_PHONE";
+	}
 
 	if( Option::get('main', 'new_user_email_required', 'N', SITE_ID) == 'Y' ) {
 		$arRequiredFields[] = "EMAIL";

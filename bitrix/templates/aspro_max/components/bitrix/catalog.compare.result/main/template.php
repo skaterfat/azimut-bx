@@ -33,7 +33,7 @@ $isAjax = ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["ajax_action"]) 
 			}
 		}
 		$arStr=implode("&ID[]=", $arCompareIDs)?>
-		<span class="catalog-compare__clear colored_theme_hover_text font_upper muted" onclick="CatalogCompareObj.MakeAjaxAction('<?=SITE_DIR?>catalog/compare.php?action=DELETE_FROM_COMPARE_RESULT&ID[]=<?=$arStr?>', 'Y');">
+		<span class="catalog-compare__clear colored_theme_hover_text font_upper muted" onclick="CatalogCompareObj.MakeAjaxAction('<?=$GLOBALS['arTheme']['COMPARE_PAGE_URL']['VALUE']?>?action=DELETE_FROM_COMPARE_RESULT&ID[]=<?=$arStr?>', 'Y');">
 			<?=CMax::showIconSvg("remove_item", SITE_TEMPLATE_PATH.'/images/svg/catalog/cancelfilter.svg', '', '', true, false);?>
 			<?=GetMessage("CLEAR_ALL_COMPARE")?>
 		</span>

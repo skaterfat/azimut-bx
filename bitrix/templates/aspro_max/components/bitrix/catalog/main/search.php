@@ -6,6 +6,7 @@ if(CMax::GetFrontParametrValue('CATALOG_COMPARE') == 'N')
 	$arParams["USE_COMPARE"] = 'N';
 /**/
 
+$arParams['DISPLAY_WISH_BUTTONS'] = CMax::GetFrontParametrValue('CATALOG_DELAY');
 global $arTheme;
 ?>
 
@@ -119,6 +120,7 @@ global $arTheme;
 			"SHOW_LANDINGS" => $arParams["SHOW_LANDINGS_SEARCH"],
 			"LANDING_TITLE" => $arParams["LANDING_SEARCH_TITLE"],
 			"LANDING_SECTION_COUNT" => $arParams["LANDING_SEARCH_COUNT"],
+			"LANDING_SECTION_COUNT_MOBILE" => $arParams["LANDING_SEARCH_COUNT_MOBILE"],
 			"LANDING_TYPE" => ($arParams["LANDING_TYPE_VIEW"] == "FROM_MODULE" ? $arTheme["CATALOG_PAGE_LANDINGS"]["VALUE"] : $arParams["LANDING_TYPE_VIEW"]),
 			"SHOW_ONE_CLICK_BUY" => $arParams["SHOW_ONE_CLICK_BUY"],
 			"MAX_GALLERY_ITEMS" => $arParams["MAX_GALLERY_ITEMS"],
@@ -128,6 +130,7 @@ global $arTheme;
 			"DETAIL_ADD_DETAIL_TO_SLIDER" => $arParams["DETAIL_ADD_DETAIL_TO_SLIDER"],
 			"LIST_DISPLAY_POPUP_IMAGE" => $arParams["LIST_DISPLAY_POPUP_IMAGE"],
 			"SHOW_SORT_IN_FILTER" => $arParams["SHOW_SORT_IN_FILTER"],
+			'OFFER_SHOW_PREVIEW_PICTURE_PROPS' => $arParams['OFFER_SHOW_PREVIEW_PICTURE_PROPS'],
 
 	),
 	$component

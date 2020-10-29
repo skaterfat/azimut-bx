@@ -21,4 +21,5 @@ $MESS["T_SECTION_CODE"] = "Символьный код раздела";
 $MESS["T_TYPE_BLOCK"] = "Тип блока";
 $MESS["T_USE_TYPE_BLOCK"] = "Использовать тип блоков";
 $MESS["T_SHOW_LONG_FIRST_ROW"] = "Отображать высокую первую строку с элементами";
+$MESS["T_MOBILE_TEMPLATE"] = "Мобильный шаблон";
 ?>

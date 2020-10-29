@@ -51,7 +51,7 @@
 			} else {
 				$arItem["strMainID"] = $this->GetEditAreaId($arItem['ID']);
 			}
-			
+
 			$arItemIDs=CMax::GetItemsIDs($arItem);
 
 			if($arParams["SHOW_MEASURE"] == "Y" && $arItem["CATALOG_MEASURE"]){
@@ -87,8 +87,12 @@
 					if($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["PREVIEW_PICTURE"])
 						$arItem["DETAIL_PICTURE"] = $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["DETAIL_PICTURE"];
 
+					if($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']){
+						$arItem['SELECTED_SKU_IPROPERTY_VALUES'] = $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES'];
+					}
+
 					if($arParams["SET_SKU_TITLE"] == "Y")
-						$arItem["NAME"] = $elementName = $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["NAME"];
+						$arItem["NAME"] = $elementName = ((isset($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE']) && $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE']) ? $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE'] : $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['NAME']);
 					$item_id = $currentSKUID;
 
 					// ARTICLE
@@ -226,17 +230,22 @@
 		<div class="wrap_nav bottom_nav_wrapper">
 	<?endif;?>
 
-	<div class="bottom_nav animate-load-state block-type" data-parent=".tabs_slider" data-append=".items" <?=($arParams["AJAX_REQUEST"]=="Y" ? "style='display: none; '" : "");?>>
-		<?if( $arParams["DISPLAY_BOTTOM_PAGER"] == "Y" ){?><?=$arResult["NAV_STRING"]?><?}?>
-	</div>
-
+	<?$showAllCount = false;?>
 	<?if($arParams['IS_CATALOG_PAGE'] == 'Y' && $arParams['SECTION_COUNT_ELEMENTS'] == 'Y'):?>
 		<?if((int)$arResult['NAV_RESULT']->NavRecordCount > 0):?>
 			<?$this->SetViewTarget("more_text_title");?>
 				<span class="element-count-wrapper"><span class="element-count muted font_xs rounded3"><?=$arResult['NAV_RESULT']->NavRecordCount;?></span></span>
 			<?$this->EndViewTarget();?>
+			<?
+			$showAllCount = true;
+			$allCount = $arResult['NAV_RESULT']->NavRecordCount;
+			?>
 		<?endif;?>
 	<?endif;?>
+
+	<div class="bottom_nav animate-load-state block-type" <?=($showAllCount ? 'data-all_count="'.$allCount.'"' : '')?> data-parent=".tabs_slider" data-append=".items" <?=($arParams["AJAX_REQUEST"]=="Y" ? "style='display: none; '" : "");?>>
+		<?if( $arParams["DISPLAY_BOTTOM_PAGER"] == "Y" ){?><?=$arResult["NAV_STRING"]?><?}?>
+	</div>
 
 	<?if($arParams["AJAX_REQUEST"]=="Y"):?>
 		</div>

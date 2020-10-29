@@ -18,6 +18,8 @@ if(!funcDefined("sliceItemBlock")){
 					blockNull: {
 						width: 1,
 					},
+					autoslicecount: false, 
+					slice: 999,
 				}
 			},
 		});

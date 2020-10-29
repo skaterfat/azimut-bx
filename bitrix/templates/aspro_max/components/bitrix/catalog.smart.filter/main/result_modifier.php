@@ -16,7 +16,9 @@ foreach($arResult["ITEMS"] as $key => $arItem)
 	/**/
 	
 	if($arItem["CODE"]=="IN_STOCK"){
-		sort($arResult["ITEMS"][$key]["VALUES"]);
+		if(is_array($arResult["ITEMS"][$key]["VALUES"]))
+			sort($arResult["ITEMS"][$key]["VALUES"]);
+		
 		if($arResult["ITEMS"][$key]["VALUES"])
 			$arResult["ITEMS"][$key]["VALUES"][0]["VALUE"]=$arItem["NAME"];
 	}

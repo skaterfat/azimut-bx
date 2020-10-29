@@ -10,6 +10,10 @@ if(isset($arParams["TYPE_LEFT_BLOCK_DETAIL"]) && $arParams["TYPE_LEFT_BLOCK_DETA
 if(isset($arParams["SIDE_LEFT_BLOCK_DETAIL"]) && $arParams["SIDE_LEFT_BLOCK_DETAIL"]!='FROM_MODULE'){
 	$arTheme['SIDE_MENU']['VALUE'] = $arParams["SIDE_LEFT_BLOCK_DETAIL"];
 }
+
+if($arTheme['HIDE_SUBSCRIBE']['VALUE'] == 'Y'){
+	$arParams["USE_SUBSCRIBE_IN_TOP"] = "N";
+}
 ?>
 
 <?
@@ -161,65 +165,6 @@ if($arParams["SHOW_MAX_ELEMENT"] == "Y")
 	    <?if(in_array('LINK_GOODS', $arParams['DETAIL_PROPERTY_CODE'])):?>
 		    <?$catalogID = \Bitrix\Main\Config\Option::get('aspro.max', 'CATALOG_IBLOCK_ID', CMaxCache::$arIBlocks[SITE_ID]["aspro_max_catalog"]["aspro_max_catalog"][0]);?>
 		    <?
-		    /*$dbProperty = CIBlockProperty::GetList(array(), array("IBLOCK_ID" => $catalogID, "CODE" => "LINK_SALE"));
-		    if($dbProperty->SelectedRowsCount() && $arElement['ID'])
-		    {
-			    $arTmpElement = CMaxCache::CIblockElement_GetList(array('CACHE' => array('TAG' => CMaxCache::GetIBlockCacheTag($catalogID), 'MULTI' => 'Y')), array('IBLOCK_ID' => $catalogID, 'PROPERTY_LINK_SALE' => $arElement['ID']), false, false, array('ID'));
-			    if($arTmpElement)
-			    {
-				    foreach($arTmpElement as $key => $arItem)
-					    $arFilterElements[] = $arItem['ID'];
-
-				    if($arElement['PROPERTY_LINK_GOODS_VALUE'])
-					    $arElement['PROPERTY_LINK_GOODS_VALUE'] = array_merge((array)$arElement['PROPERTY_LINK_GOODS_VALUE'], $arFilterElements);
-				    else
-					    $arElement['PROPERTY_LINK_GOODS_VALUE'] = $arFilterElements;
-			    }
-		    }
-		    /*if($arElement['PROPERTY_LINK_GOODS_FILTER_VALUE']){
-			    $cond = new CMaxCondition();
-			    try{
-				//$arTmpExp = \Bitrix\Main\Web\Json::decode($arElement['PROPERTY_EXPANDABLES_FILTER_VALUE']);
-				$arTmpGoods = json_decode($arElement["~PROPERTY_LINK_GOODS_FILTER_VALUE"], true);
-				$arExGoodsFilter = $cond->parseCondition($arTmpGoods, $arParams);
-			    }
-			    catch(\Exception $e){
-				$arExGoodsFilter = array();
-			    }
-			    unset($cond);//var_dump($arExGoodsFilter);
-		    }//
-
-		    $arTmpGoods = json_decode($arElement["~PROPERTY_LINK_GOODS_FILTER_VALUE"], true);
-		    ?>
-		    <?if($arElement['PROPERTY_LINK_GOODS_VALUE'] || ($arElement['PROPERTY_LINK_GOODS_FILTER_VALUE'] && $arTmpGoods['CHILDREN'])):?>
-				    <?if(!isset($arParams["PRICE_CODE"]))
-					    $arParams["PRICE_CODE"] = array(0 => "BASE", 1 => "OPT");
-				    if(!isset($arParams["STORES"]))
-					    $arParams["STORES"] = array(0 => "1", 1 => "2");
-				    ?>
-				    <?
-				    if(!($arElement['PROPERTY_LINK_GOODS_FILTER_VALUE'] && $arTmpGoods['CHILDREN']))
-					    $GLOBALS['arrProductsFilter'] = array('ID' => $arElement['PROPERTY_LINK_GOODS_VALUE']);//var_dump($arTmpGoods['CHILDREN']);?>
-					    <?//$filterLinkedGoods = array('ID' => $arElement['PROPERTY_LINK_GOODS_VALUE']);?>
-				    <?if($arExGoodsFilter)
-					    $GLOBALS['arrProductsFilter'][] = $arExGoodsFilter;?>
-				    <?//var_dump($GLOBALS['arrProductsFilter']);
-				    global $arRegion;
-				    if($arRegion && $arParams["HIDE_NOT_AVAILABLE"] == "Y")
-				    {
-					    if(reset($arRegion['LIST_STORES']) != 'component')
-						    $arParams['STORES'] = $arRegion['LIST_STORES'];
-
-					    $arTmpFilter["LOGIC"] = "OR";
-					    foreach($arParams['STORES'] as $storeID)
-					    {
-						    $arTmpFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-					    }
-					    $GLOBALS['arrProductsFilter'][] = $arTmpFilter;
-				    }
-				    ?>
-		    <?endif;*/?>
-		    <?
 			$dbProperty = CIBlockProperty::GetList(array(), array("IBLOCK_ID" => $catalogID, "CODE" => "LINK_SALE"));
 			if($dbProperty->SelectedRowsCount() && $arElement['ID'])
 			{
@@ -285,21 +230,29 @@ if($arParams["SHOW_MAX_ELEMENT"] == "Y")
 					if($arRegion["LIST_STORES"] && $arParams["HIDE_NOT_AVAILABLE"] == "Y")
 					{
 						if($arParams['STORES']){
-							if(count($arParams['STORES']) > 1){
-								$arStoresFilter = array('LOGIC' => 'OR');
-								foreach($arParams['STORES'] as $storeID)
-								{
-									$arStoresFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-								}
+							if(CMax::checkVersionModule('18.6.200', 'iblock')){
+								$arStoresFilter = array(
+									'STORE_NUMBER' => $arParams['STORES'],
+									'>STORE_AMOUNT' => 0,
+								);
 							}
 							else{
-								foreach($arParams['STORES'] as $storeID)
-								{
-									$arStoresFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+								if(count($arParams['STORES']) > 1){
+									$arStoresFilter = array('LOGIC' => 'OR');
+									foreach($arParams['STORES'] as $storeID)
+									{
+										$arStoresFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+									}
+								}
+								else{
+									foreach($arParams['STORES'] as $storeID)
+									{
+										$arStoresFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+									}
 								}
 							}
 
-							$arTmpFilter = array('!TYPE' => '2');
+							$arTmpFilter = array('!TYPE' => array('2', '3'));
 							if($arStoresFilter){
 								if(count($arStoresFilter) > 1){
 									$arTmpFilter[] = $arStoresFilter;
@@ -310,7 +263,7 @@ if($arParams["SHOW_MAX_ELEMENT"] == "Y")
 
 								$GLOBALS['arrProductsFilter'][] = array(
 									'LOGIC' => 'OR',
-									array('TYPE' => '2'),
+									array('TYPE' => array('2', '3')),
 									$arTmpFilter,
 								);
 							}
@@ -319,10 +272,9 @@ if($arParams["SHOW_MAX_ELEMENT"] == "Y")
 				}
 				?>
 		    <?endif;?>
-	    <?endif;?><?//var_dump($arTmpGoods);?>
+	    <?endif;?>
 	    <?/*end goods filter*/?>
-	    <?//print_r($arElement['~PROPERTY_LINK_GOODS_FILTER_VALUE'])?>
-	    <?//print_r($GLOBALS['arrProductsFilter'])?>
+
 		<?//element?>
 		<?$sViewElementTemplate = ($arParams["ELEMENT_TYPE_VIEW"] == "FROM_MODULE" ? $arTheme["NEWS_PAGE_DETAIL"]["VALUE"] : $arParams["ELEMENT_TYPE_VIEW"]);?>
 		<?@include_once('page_blocks/'.$sViewElementTemplate.'.php');?>

@@ -1,12 +1,20 @@
 <?if(!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();?>
 <?$this->setFrameMode(true);?>
 <?use \Bitrix\Main\Localization\Loc;?>
+<? global $arTheme;?>
 <?if($arResult['ITEMS']):?>
 	<?
 	$count = count($arResult['ITEMS']);
 	$bBordered = ($arParams['BORDERED'] == 'Y');
 	$bgSmallPlate = ($arParams['ALL_BLOCK_BG']=='Y' && $arParams['FON_BLOCK_2_COLS'] != 'Y' && $arParams['TITLE_SHOW_FON'] != 'Y' && $arParams['USE_BG_IMAGE_ALTERNATE']!="Y");
+	
+	if($arTheme['HIDE_SUBSCRIBE']['VALUE'] == 'Y'){
+		$arParams['SHOW_SUBSCRIBE'] = "N";
+	}
 	?>
+	<?$sTemplateMobile = (isset($arParams['MOBILE_TEMPLATE']) ? $arParams['MOBILE_TEMPLATE'] : '')?>
+	<?$bSlider = ($sTemplateMobile === 'normal')?>
+	<?$bHasBottomPager = $arParams["DISPLAY_BOTTOM_PAGER"] == "Y" && $arResult["NAV_STRING"];?>
 	<?if(!$arParams['IS_AJAX']):?>
 		<div class="content_wrapper_block <?=$templateName;?> content_news2 <?=$arResult['NAV_STRING'] ? '' : 'without-border'?>">
 		<div class="maxwidth-theme only-on-front">
@@ -63,9 +71,9 @@
 				</div>
 			<?endif;?>
 		<?endif;?>
-		<div class="item-views news2 <?=$arParams['TYPE_IMG'];?><?=(!$bBordered ? '' : ' with-border');?><?=($arParams['HALF_BLOCK'] == 'Y' ? ' half-block' : '');?> <?=($bgSmallPlate ? 'small-bg-plate' : '');?>">
+		<div class="item-views news2 <?=$arParams['TYPE_IMG'];?><?=(!$bBordered ? '' : ' with-border');?><?=($arParams['HALF_BLOCK'] == 'Y' ? ' half-block' : '');?> <?=($bgSmallPlate ? 'small-bg-plate' : '');?> <?=$sTemplateMobile;?>">
 			<div class="items<?=(!$arParams['INCLUDE_FILE'] ? '' : ' list');?> s_<?=$arParams['SIZE_IN_ROW'];?>">
-				<div class="row flexbox">
+				<div class="row flexbox <?=$sTemplateMobile;?><?=($bSlider ? ' swipeignore mobile-overflow mobile-margin-16 mobile-compact' : '');?><?=$bHasBottomPager ? ' has-bottom-nav' : ''?>">
 	<?endif;?>
 			<?
 			$indexItem = 0;
@@ -200,7 +208,7 @@
 				?>
 
 				<?if($arParams['HALF_BLOCK'] != 'Y' || ($arParams['HALF_BLOCK'] == 'Y' && $arParams['IS_AJAX'] != 'Y' && $indexItem < 2)):?>
-					<div class="item-wrapper col-md-<?=$col;?> col-sm-6 col-xs-6 col-xxs-12 clearfix <?=$arItem['PROPERTIES']['TYPE_BLOCK']['VALUE_XML_ID'];?> <?=$dop_class;?>" data-ref="mixitup-target">
+					<div class="item-wrapper col-md-<?=$col;?> col-sm-6 col-xs-6 col-xxs-12 clearfix <?=$arItem['PROPERTIES']['TYPE_BLOCK']['VALUE_XML_ID'];?> <?=$dop_class;?><?=($bSlider ? ' item-width-261' : '');?>" data-ref="mixitup-target">
 				<?endif;?>
 
 					<?if($arParams['HALF_BLOCK'] == 'Y' && $arParams['IS_AJAX'] != 'Y' && $indexItem == 1):?>
@@ -210,6 +218,9 @@
 
 					<?if($bBgImage):?>
 					<div class="item with-fon <?=($arParams['TITLE_SHOW_FON'] == 'Y' ? ' with-title-fon' : ' darken-bg-animate ');?> box-shadow rounded3  <?=($useImageAlternate ? ' bg-img-alternate ' : '');?> <?=($shortBigBlock && $bBigBlock ? ' short-big-block ' : '');?> <?=($bBigBlock ? 'big-block': ($arParams['TALL_BG_BLOCKS']=='Y'? 'tall-block':''));?> lazy<?=$position;?>" <?=($bImage ? 'data-src="'.$imageSrc.'"' : 'data-src="'.$noImageSrc.'"');?>   style="background-image:url('<?=\Aspro\Functions\CAsproMax::showBlankImg($imageSrc);?>')" id="<?=$this->GetEditAreaId($arItem['ID']);?>">
+						<?if (!$bSlider):?>
+							<div class="hidden compact-img lazy" <?=($bImage ? 'data-src="'.$imageSrc.'"' : 'data-src="'.$noImageSrc.'"');?>   style="background-image:url('<?=\Aspro\Functions\CAsproMax::showBlankImg($imageSrc);?>')"></div>
+						<?endif;?>
 						<?if($bDetailLink):?><a href="<?=$arItem['DETAIL_PAGE_URL']?>" class="full_bg_link"></a><?endif;?>
 					<?else:?>
 					<div class="item <?=$bHalfWrapper ? '' : 'bg-white'?> <?=($bBordered ? ' bordered box-shadow rounded3' : '');?><?=(!$bImage ? ' no-img' : '');?><?=(($arResult['HAS_TITLE_FON'] == 'Y' || $useImageAlternate) ? ' long' : '');?> clearfix" id="<?=$this->GetEditAreaId($arItem['ID']);?>">
@@ -228,6 +239,9 @@
 						<div class="inner-text<?=($bShowSection ? ' with-section' : '');?><?=($bActiveDate ? ' with-date' : '');?><?=($arParams['TITLE_SHOW_FON'] == 'Y' ? ' with-fon' : '');?>">
 							<?if($arParams['TITLE_SHOW_FON'] == 'Y' && $bBgImage):?>
 								<div class="inner-text-wr bordered">
+							<?endif;?>
+							<?if($bBgImage):?>
+								<div class="inner-block-text">
 							<?endif;?>
 							<?if($bShowSection):?>
 								<div class="section muted font_upper"><?=$arResult['SECTIONS'][$arItem['IBLOCK_SECTION_ID']]['NAME'];?></div>
@@ -258,6 +272,10 @@
 								<div class="preview-text muted777 font_xs"><?=$arItem['PREVIEW_TEXT'];?></div>
 							<?endif;?>
 
+							<?if($bBgImage):?>
+								</div>
+							<?endif;?>
+
 							<?if($arParams['TITLE_SHOW_FON'] == 'Y' && $bBgImage):?>
 								</div>
 							<?endif;?>
@@ -273,6 +291,23 @@
 				?>
 			<?endforeach;?>
 
+			<?if ($bSlider && $bHasBottomPager):?>
+				<?if($arParams['IS_AJAX']):?>
+					<div class="wrap_nav bottom_nav_wrapper">
+				<?endif;?>
+					<?$bHasNav = (strpos($arResult["NAV_STRING"], 'more_text_ajax') !== false);?>
+						<div class="bottom_nav mobile_slider animate-load-state block-type<?=($bHasNav ? '' : ' hidden-nav');?>" data-parent=".item-views" data-scroll-class=".swipeignore.mobile-overflow" data-append="<?=($arParams['HALF_BLOCK'] != 'Y' ? '.items > .row' : '.items > .row > .item-wrapper.line_img .half-wrapper');?>" <?=($arParams["IS_AJAX"] ? "style='display: none; '" : "");?>>
+						<?if ($bHasNav):?>
+							<?=CMax::showIconSvg('bottom_nav-icon colored_theme_svg', SITE_TEMPLATE_PATH.'/images/svg/mobileBottomNavLoader.svg');?>
+							<?=$arResult["NAV_STRING"]?>
+						<?endif;?>
+						</div>
+
+				<?if($arParams['IS_AJAX']):?>
+					</div>
+				<?endif;?>
+			<?endif;?>
+
 			<?if($arParams['HALF_BLOCK'] == 'Y' && $arParams['IS_AJAX'] != 'Y'):?>
 					</div>
 				</div>
@@ -284,8 +319,8 @@
 	<?endif;?>
 		
 		<?// bottom pagination?>
-		<div class="bottom_nav_wrapper">
-			<div class="bottom_nav animate-load-state<?=($arResult['NAV_STRING'] ? ' has-nav' : '');?>" <?=($arParams['IS_AJAX'] ? "style='display: none; '" : "");?> data-parent=".item-views" data-append="<?=($arParams['HALF_BLOCK'] != 'Y' ? '.items > .row' : '.items > .row > .item-wrapper.line_img .half-wrapper .mCSB_container');?>">
+		<div class="bottom_nav_wrapper<?=($bSlider ? ' hidden-slider-nav' : '');?>">
+			<div class="bottom_nav animate-load-state<?=($arResult['NAV_STRING'] ? ' has-nav' : '');?>" <?=($arParams['IS_AJAX'] ? "style='display: none; '" : "");?> data-parent=".item-views" data-scroll-class=".swipeignore.mobile-overflow" data-append="<?=($arParams['HALF_BLOCK'] != 'Y' ? '.items > .row' : '.items > .row > .item-wrapper.line_img .half-wrapper .mCSB_container');?>">
 				<?if($arParams['DISPLAY_BOTTOM_PAGER']):?>
 					<?=$arResult['NAV_STRING']?>
 				<?endif;?>

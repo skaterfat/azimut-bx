@@ -33,6 +33,7 @@ $APPLICATION->IncludeComponent(
 		"CACHE_FILTER" => "Y",
 		"SECTION_ID" => $arResult["VARIABLES"]["SECTION_ID"],
 		"SECTION_CODE" => $arResult["VARIABLES"]["SECTION_CODE"],
+		"COUNT_ELEMENTS_FILTER" => ($arParams["HIDE_NOT_AVAILABLE"] == "Y" ? "CNT_AVAILABLE" : "CNT_ACTIVE"),
 	),
 	$component
 );?>

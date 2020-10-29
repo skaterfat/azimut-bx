@@ -205,6 +205,13 @@ if(!window.JCSmartFilterBinds){
 
 			if (this.cache && this.cache[this.cacheKey])
 			{
+				this.values2post(values);
+				BX.ajax.loadJSON(
+					this.ajaxURL,
+					this.values2post(values),
+					BX.delegate(function(){}, this)
+				);
+
 				this.curFilterinput = input;
 				this.postHandler(this.cache[this.cacheKey], true);
 			}
@@ -353,6 +360,9 @@ if(!window.JCSmartFilterBinds){
 				$('.bx_filter.compact .bx_filter_button_box .bx_filter_container_modef').html(BX.message('SELECTED')+result.ELEMENT_COUNT);
 				$('.bx_filter.compact .bx_filter_button_box').show();
 				modef_num_mobile.innerHTML = result.ELEMENT_COUNT;
+				if(typeof mobileFilterNum === 'function'){
+	                mobileFilterNum(result.ELEMENT_COUNT);
+	            }
 				hrefFILTER = BX.findChildren(modef, {tag: 'A'}, true);
 				hrefFILTER_mobile = BX.findChildren(modef_mobile, {tag: 'A'}, true);
 

@@ -38,10 +38,13 @@ if (isset($arResult['REQUEST_ITEMS']) || isset($arParams['REQUEST_ITEMS']))
 
 			BX.ready(function(){
 				BX.addCustomEvent('onHasNewPrediction', function(html, injectId){
-					//console.log('onHasNewPrediction', injectId, html);
 					
-					$('#simple-prediction').remove();
-					predictionWindow = false;
+					// $('#simple-prediction').remove();
+					// predictionWindow = false;
+
+					if (predictionWindow) {
+						predictionWindow.destroy();
+					}
 					if(predictionHideTimeout){
 						clearTimeout(predictionHideTimeout);
 						predictionHideTimeout = false;
@@ -66,8 +69,9 @@ if (isset($arResult['REQUEST_ITEMS']) || isset($arParams['REQUEST_ITEMS']))
 				});
 
 				$(document).on('mouseleave', '#simple-prediction', function(){
-					$(this).remove();
-					predictionWindow = false;
+					if (predictionWindow) {
+						predictionWindow.destroy();
+					}
 					if(predictionHideTimeout){
 						clearTimeout(predictionHideTimeout);
 						predictionHideTimeout = false;
@@ -131,7 +135,7 @@ if (isset($arResult['REQUEST_ITEMS']) || isset($arParams['REQUEST_ITEMS']))
 				if($inject.length && _this.arData[i].html.length){
 					var $element = $inject.closest('.catalog_detail');
 					if($element.length){
-						//console.log('show prediction', i);
+						// console.log('show prediction', i);
 
 						var bFastView = $element.closest('#fast_view_item').length > 0;
 						if(!bFastView){
@@ -162,47 +166,153 @@ if (isset($arResult['REQUEST_ITEMS']) || isset($arParams['REQUEST_ITEMS']))
 
 						function _show($buttons){
 							if($buttons.length){
+								$buttons.each(function(index, button) {
+									button = $(button);
+									if( !button.children('.svg-inline-prediction').length && !button.hasClass('in-cart') ) {
+										var  _thisIcon = this;
+										var isShadow = button.closest('.shadowed-block').length;
+										var isSquare = (isMobile && arAsproOptions.THEME.FIXED_BUY_MOBILE == 'Y') || isShadow;
+										var predictionIconHTML = '';
+										if(isSquare) {
+											predictionIconHTML = $(<?=CUtil::PhpToJSObject(CMax::showIconSvg("prediction", SITE_TEMPLATE_PATH."/images/svg/prediction_square.svg"));?>);
+											predictionIconHTML.css({
+												right: '-2px',
+												top:   '-1px',
+												padding: '0 0 8px 8px',
+											});
+										} else {
+											predictionIconHTML = $(<?=CUtil::PhpToJSObject(CMax::showIconSvg("prediction", SITE_TEMPLATE_PATH."/images/svg/prediction.svg"));?>);
+											predictionIconHTML.css({
+												right: '-15px',
+												top: '-15px',
+												padding: '5px',
+											});
+										}
+										button.append(predictionIconHTML);
+			
+										button.on('click', '.svg-inline-prediction', function(e) {
+											if( isMobile ) {
+												if (predictionWindow) {
+													predictionWindow.destroy();
+												}
+
+												if(predictionHideTimeout){
+													clearTimeout(predictionHideTimeout);
+													predictionHideTimeout = false;
+												}
+												predictionWindow = new BX.PopupWindow('simple-prediction', _thisIcon, {
+													offsetTop: (isSquare ? -5 : -15),
+													bindOptions: {
+														position: 'top',
+													},
+													content:
+													'<div class="catalog-element-popup-inner">' +
+													_this.arData[i].html +
+													'</div>',
+													closeIcon: true,
+													closeByEsc: false,
+													angleMinRight: 0,
+													angleMaxRight: 0,
+													angle: {
+														position: 'bottom',
+													},
+													events: {
+														onAfterPopupShow: function() {
+															var popup = $(predictionWindow.popupContainer);
+															if(arAsproOptions.THEME.FIXED_BUY_MOBILE == 'Y') {
+																popup.css({
+																	left: '16px',
+																	right: '16px',
+																});
+																$(predictionWindow.angle.element).css({
+																	left: 'auto',
+																	right: '10px',
+																});
+															} else {
+																var parent = button.closest('.buy_block');
+																if( !parent.length ){
+																	parent = button.closest('.counter_wrapp'); // sku 2
+																}
+																var parentOffset = parent[0].getBoundingClientRect();
+																popup.css({
+																	left: parentOffset.left + (isShadow ? -14 : 0),
+																	right: 'calc(100% - ' + (parentOffset.left + parentOffset.width + (isShadow ? 14 : 0)) + 'px)',
+																});
+																$(predictionWindow.angle.element).css({
+																	left: 'auto',
+																	right: '10px',
+																});
+															}
+
+															var angleOffset = predictionWindow.angle.element.getBoundingClientRect();
+															var anglePosition = angleOffset.top + angleOffset.height - 11;
+															var iconOffset = _thisIcon.getBoundingClientRect();
+															var needChange = iconOffset.top - (isSquare ? 6 : 6) - anglePosition;
+															
+															var popupTop = popup.css('top').replace('px', '');
+															if(needChange != 0) {
+																popup.css({
+																	top: +popupTop + needChange + 'px',
+																});
+															}
+														},
+													}
+												});											
+
+												predictionWindow.show();
+												e.stopPropagation();
+												e.preventDefault();
+											}
+										});
+									}
+								});
+								
 								$buttons.addClass('has_prediction');
 
 								$buttons.unbind('mouseenter');
 								$buttons.unbind('mouseleave');
 								$buttons.mouseenter(function(){
-									$('#simple-prediction').remove();
-									predictionWindow = false;
-									if(predictionHideTimeout){
-										clearTimeout(predictionHideTimeout);
-										predictionHideTimeout = false;
-									}
-
-									predictionWindow = new BX.PopupWindow('simple-prediction', this, {
-										offsetLeft: 40,
-										offsetTop: -5,
-										bindOptions: {
-											position: 'top',
-										},
-										content:
-										'<div class="catalog-element-popup-inner">' +
-										_this.arData[i].html +
-										'</div>',
-										closeIcon: false,
-										closeByEsc: false,
-										angle: {
-											position: 'bottom'
+									if( !isMobile ) {
+										if (predictionWindow) {
+											predictionWindow.destroy();
 										}
-									});
 
-									predictionWindow.show();
-								}).mouseleave(function(){
-									if(predictionWindow){
 										if(predictionHideTimeout){
 											clearTimeout(predictionHideTimeout);
 											predictionHideTimeout = false;
 										}
 
-										predictionHideTimeout = setTimeout(function(){
-											$('#simple-prediction').remove();
-											predictionWindow = false;
-										}, 500);
+										predictionWindow = new BX.PopupWindow('simple-prediction', this, {
+											offsetLeft: 40,
+											offsetTop: -5,
+											bindOptions: {
+												position: 'top',
+											},
+											content:
+											'<div class="catalog-element-popup-inner">' +
+											_this.arData[i].html +
+											'</div>',
+											closeIcon: false,
+											closeByEsc: false,
+											angle: {
+												position: 'bottom'
+											}
+										});
+
+										predictionWindow.show();
+									}
+								}).mouseleave(function(){
+									if( !isMobile ) {
+										if(predictionWindow){
+											if(predictionHideTimeout){
+												clearTimeout(predictionHideTimeout);
+												predictionHideTimeout = false;
+											}
+
+											predictionHideTimeout = setTimeout(function(){
+												predictionWindow.destroy();
+											}, 500);
+										}
 									}
 								});
 							}
@@ -320,12 +430,14 @@ else
 	if(preg_match_all('/\&((\d+\.\d+)|(\d+))(8381);/', $arResult['PREDICTION_TEXT'], $arMatches)){
 		foreach($arMatches[0] as $i => $match){
 			$arResult['PREDICTION_TEXT'] = str_replace(
-				'&'.$arMatches[3][$i].'8381;',
+				// '&'.$arMatches[3][$i].'8381;',
+				$match,
 				'&#8381;',
 				$arResult['PREDICTION_TEXT']
 			);
 		}
 	}
+	
 	?>
 	<script>
 	BX.ready(function () {

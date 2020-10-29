@@ -1165,41 +1165,41 @@ $APPLICATION->ShowViewContent('PERIOD_LINE');?>
 	<?elseif($code == 'goods'):?>
 		<?if((in_array('LINK_GOODS', $arParams['PROPERTY_CODE']) || ($arParams['SHOW_LINKED_PRODUCTS'] == 'Y' && strlen($arParams['LINKED_PRODUCTS_PROPERTY'])))
 			&& (isset($GLOBALS['arrProductsFilter']) || (isset($arParams['CONTENT_LINKED_FILTER_BY_FILTER']) && $arParams['CONTENT_LINKED_FILTER_BY_FILTER']))):?>
+			<?
+			$filter_by_filter = (isset($arParams['CONTENT_LINKED_FILTER_BY_FILTER']) && $arParams['CONTENT_LINKED_FILTER_BY_FILTER']);
+			if($filter_by_filter){
+				$cond = new CMaxCondition();
+				try{
+					$arTmpGoods = \Bitrix\Main\Web\Json::decode($arParams["~CONTENT_LINKED_FILTER_BY_FILTER"]);
+					$arExGoodsFilter = $cond->parseCondition($arTmpGoods, $arParams);
+				}
+				catch(\Exception $e){
+					$arExGoodsFilter = array();
+				}
+				unset($arTmpGoods);
 
-			<div class="ordered-block <?=$code?> cur with-title">
+				$GLOBALS['arrProductsFilter'] = array($arExGoodsFilter);
+				unset($arParams['CONTENT_LINKED_FILTER_BY_FILTER']);
+			}
+
+			global $arTheme;
+			$catalogIBlockID = ($arParams["IBLOCK_CATALOG_ID"] ? $arParams["IBLOCK_CATALOG_ID"] : $arTheme["CATALOG_IBLOCK_ID"]["VALUE"]);
+			$arItemsFilter = array("IBLOCK_ID" => $catalogIBlockID, "ACTIVE" => "Y", 'SECTION_GLOBAL_ACTIVE' => 'Y');
+			$arItemsFilter = array_merge($arItemsFilter, $GLOBALS['arrProductsFilter']);
+			if(is_array($GLOBALS['arRegionLink'])){
+				$arItemsFilter = array_merge($arItemsFilter, $GLOBALS['arRegionLink']);
+			}
+			CMax::makeElementFilterInRegion($arItemsFilter);
+			$arItems = CMaxCache::CIBLockElement_GetList(array('CACHE' => array("MULTI" =>"Y", "TAG" => CMaxCache::GetIBlockCacheTag($arTheme["CATALOG_IBLOCK_ID"]["VALUE"]))), $arItemsFilter, false, false, array("ID", "IBLOCK_ID", "IBLOCK_SECTION_ID"));
+			?>
+			<?if($arItems):?>
+				<div class="ordered-block <?=$code?> cur with-title">
 				<?if($arParams["T_GOODS"]):?>
 					<div class="ordered-block__title option-font-bold font_lg">
 						<?=$arParams["T_GOODS"];?>
 					</div>
 				<?endif;?>
-
-				<?
-				$filter_by_filter = (isset($arParams['CONTENT_LINKED_FILTER_BY_FILTER']) && $arParams['CONTENT_LINKED_FILTER_BY_FILTER']);
-				if($filter_by_filter){
-					$cond = new CMaxCondition();
-					try{
-						$arTmpGoods = \Bitrix\Main\Web\Json::decode($arParams["~CONTENT_LINKED_FILTER_BY_FILTER"]);
-						$arExGoodsFilter = $cond->parseCondition($arTmpGoods, $arParams);
-				 	}
-					catch(\Exception $e){
-						$arExGoodsFilter = array();
-					}
-					unset($arTmpGoods);
-
-					$GLOBALS['arrProductsFilter'] = array($arExGoodsFilter);
-					unset($arParams['CONTENT_LINKED_FILTER_BY_FILTER']);
-				}
-
-				global $arTheme;
-				$catalogIBlockID = ($arParams["IBLOCK_CATALOG_ID"] ? $arParams["IBLOCK_CATALOG_ID"] : $arTheme["CATALOG_IBLOCK_ID"]["VALUE"]);
-				$arItemsFilter = array("IBLOCK_ID" => $catalogIBlockID, "ACTIVE" => "Y", 'SECTION_GLOBAL_ACTIVE' => 'Y');
-				$arItemsFilter = array_merge($arItemsFilter, $GLOBALS['arrProductsFilter']);
-				if(is_array($GLOBALS['arRegionLink'])){
-					$arItemsFilter = array_merge($arItemsFilter, $GLOBALS['arRegionLink']);
-				}
-				CMax::makeElementFilterInRegion($arItemsFilter);
-				$arItems = CMaxCache::CIBLockElement_GetList(array('CACHE' => array("MULTI" =>"Y", "TAG" => CMaxCache::GetIBlockCacheTag($arTheme["CATALOG_IBLOCK_ID"]["VALUE"]))), $arItemsFilter, false, false, array("ID", "IBLOCK_ID", "IBLOCK_SECTION_ID"));
-				?>
+			<?endif;?>
 
 				<?if($arParams['SHOW_SECTIONS_FILTER']!="N"):?>
 					<div class="sections_wrap_detail">
@@ -1263,8 +1263,8 @@ $APPLICATION->ShowViewContent('PERIOD_LINE');?>
 						$arFilterSectionsIDs = json_decode($_REQUEST['ajax_section_id']);
 						if($arParams['SHOW_SECTIONS_FILTER']!="N" && isset($arFilterSectionsIDs) && is_array($arFilterSectionsIDs) && count($arFilterSectionsIDs)>0){
 							$GLOBALS["arrProductsFilter"]['SECTION_ID'] = $arFilterSectionsIDs;
-        					$GLOBALS["arrProductsFilter"]['INCLUDE_SUBSECTIONS'] = 'Y';
-        					$GLOBALS["arrProductsFilter"]['SECTION_GLOBAL_ACTIVE'] = 'Y';
+							$GLOBALS["arrProductsFilter"]['INCLUDE_SUBSECTIONS'] = 'Y';
+							$GLOBALS["arrProductsFilter"]['SECTION_GLOBAL_ACTIVE'] = 'Y';
 						}
 					}else{
 						CMax::checkRestartBuffer(true, 'assoc');
@@ -1279,8 +1279,10 @@ $APPLICATION->ShowViewContent('PERIOD_LINE');?>
 						CMax::checkRestartBuffer(true, 'assoc');
 					}?>
 				</div>
-			</div>
-			<div class="line-after"></div>
+			<?if($arItems):?>
+				</div>
+				<div class="line-after"></div>
+			<?endif;?>
 		<?endif;?>
 	<?//goods sectios?>
 	<?elseif($code == 'goods_sections'):?>

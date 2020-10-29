@@ -1,7 +1,7 @@
 <?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();?>
 <?
 global $arTheme;
-$bPrintButton = ($arTheme['PRINT_BUTTON']['VALUE'] == 'Y' ? true : false);
+$bPrintButton = isset($arTheme['PRINT_BUTTON']) ? ($arTheme['PRINT_BUTTON']['VALUE'] == 'Y' ? true : false) : false;
 ?>
 <div class="footer-v2">
 	<div class="footer-inner light">
@@ -87,7 +87,7 @@ $bPrintButton = ($arTheme['PRINT_BUTTON']['VALUE'] == 'Y' ? true : false);
 					<div class="col-md-3 col-sm-12 contact-block">
 						<div class="info">
 							<div class="row">
-								<?if(\Bitrix\Main\Loader::includeModule('subscribe')):?>
+								<?if(\Bitrix\Main\Loader::includeModule('subscribe') && $arTheme['HIDE_SUBSCRIBE']['VALUE'] != 'Y'):?>
 									<div class="col-md-12 col-sm-12">
 										<div class="subscribe_button">
 											<span class="btn" data-event="jqm" data-param-id="subscribe" data-param-type="subscribe" data-name="subscribe"><?=GetMessage('SUBSCRIBE_TITLE')?><?=CMax::showIconSvg('subscribe', SITE_TEMPLATE_PATH.'/images/svg/subscribe_small_footer.svg')?></span>

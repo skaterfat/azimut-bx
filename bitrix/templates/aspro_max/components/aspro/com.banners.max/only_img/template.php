@@ -39,7 +39,7 @@
 										</div>
 										<?if($bBannerWithText):?>
 											<div class="inner-text">
-												<div class="title font_upper muted">
+												<div class="title option-font-ignore font_upper muted">
 													<?if($sUrl):?>
 														<a href="<?=$sUrl;?>" title="<?=($arItem['PREVIEW_PICTURE']['TITLE']?$arItem['PREVIEW_PICTURE']['TITLE']:$arItem['NAME']);?>">
 													<?endif;?>
@@ -49,7 +49,7 @@
 													<?endif;?>
 												</div>
 												<?if($arItem['PREVIEW_TEXT']):?>
-													<div class="previewtext font_sm">
+													<div class="previewtext option-font-bold font_sm">
 														<?=$arItem['PREVIEW_TEXT'];?>
 													</div>
 												<?endif;?>

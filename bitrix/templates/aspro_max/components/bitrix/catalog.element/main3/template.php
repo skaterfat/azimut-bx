@@ -102,7 +102,8 @@ if($arResult["PROPERTIES"]["YM_ELEMENT_ID"] && $arResult["PROPERTIES"]["YM_ELEME
 
 $arSkuTemplate = array();
 if(!empty($arResult['SKU_PROPS']))
-	$arSkuTemplate=CMax::GetSKUPropsArray($arResult['SKU_PROPS'], $arResult["SKU_IBLOCK_ID"], "list", $arParams["OFFER_HIDE_NAME_PROPS"]);
+	$arSkuTemplate=CMax::GetSKUPropsArray($arResult['SKU_PROPS'], $arResult["SKU_IBLOCK_ID"], "list", $arParams["OFFER_HIDE_NAME_PROPS"], "N", array(), $arParams['OFFER_SHOW_PREVIEW_PICTURE_PROPS']);
+	//$arSkuTemplate=CMax::GetSKUPropsArray($arResult['SKU_PROPS'], $arResult["SKU_IBLOCK_ID"], "list", $arParams["OFFER_HIDE_NAME_PROPS"]);
 
 $strMainID = $this->GetEditAreaId($arResult['ID']);
 $strObName = 'ob'.preg_replace("/[^a-zA-Z0-9_]/", "x", $strMainID);
@@ -127,6 +128,8 @@ $arAddToBasketData = array();
 
 $templateData['STR_ID'] = $strObName;
 $item_id = $arResult["ID"];
+
+$currentSKUID = $currentSKUIBlock = '';
 
 $bUseSkuProps = ($arResult["OFFERS"] && !empty($arResult['OFFERS_PROP']));
 
@@ -498,11 +501,15 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']);?>
 
 					<?\Aspro\Functions\CAsproMaxItem::showStickers($arParams, $arResult, true, "product-info-headnote__stickers1");?>
 
+					<?if($arResult["OFFERS"] && $arResult["FIRST_SKU_PICTURE"]):?>
+						<link class="first_sku_picture" href="<?=$arResult["FIRST_SKU_PICTURE"]["src"];?>"/>
+					<?endif;?>
+
+					<link href="<?=($arFirstPhoto["BIG"]["src"] ? $arFirstPhoto["BIG"]["src"] : $arFirstPhoto["SRC"]);?>" itemprop="image"/>
 					<div class="product-detail-gallery__slider<?if(!$bMagnifier):?> owl-carousel owl-theme big owl-bg-nav short-nav<?else:?> hidden-xs<?endif;?> <?=$arParams['PICTURE_RATIO'];?>" data-plugin-options='{"items": "1", "dots": true, "nav": true, "relatedTo": ".product-detail-gallery__slider.thmb", "loop": false}'>
 						<?if($showCustomOffer && !empty($arResult['OFFERS_PROP'])){?>
 							<?$alt=$arFirstPhoto["ALT"];
 							$title=$arFirstPhoto["TITLE"];?>
-							<link href="<?=($arFirstPhoto["BIG"]["src"] ? $arFirstPhoto["BIG"]["src"] : $arFirstPhoto["SRC"]);?>" itemprop="image"/>
 							<div id="photo-sku" class="product-detail-gallery__item product-detail-gallery__item--middle text-center">
 								<?if($arFirstPhoto["BIG"]["src"]):?>
 									<a href="<?=($viewImgType=="POPUP" ? $arFirstPhoto["BIG"]["src"] : "javascript:void(0)");?>" <?=($bIsOneImage ? '' : 'data-fancybox="gallery"')?> class="product-detail-gallery__link <?=($viewImgType=="POPUP" ? "popup_link fancy" : "line_link");?>" title="<?=$title;?>">
@@ -524,9 +531,6 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']);?>
 									$title=$arImage["TITLE"];
 									?>
 									<div id="photo-<?=$i?>" class="product-detail-gallery__item product-detail-gallery__item--middle text-center">
-										<?if(!$i):?>
-											<link href="<?=($isEmpty ? $arImage["BIG"]["src"] : $arImage["SRC"]);?>" itemprop="image"/>
-										<?endif;?>
 										<?if(!$isEmpty){?>
 											<a href="<?=($viewImgType=="POPUP" ? $arImage["BIG"]["src"] : "javascript:void(0)");?>" <?=($bIsOneImage ? '' : 'data-fancybox="gallery"')?> class="product-detail-gallery__link <?=($viewImgType=="POPUP" ? "popup_link fancy" : "line_link");?> " title="<?=$title;?>">
 												<img class="lazy product-detail-gallery__picture <?=($viewImgType=="MAGNIFIER" ? "zoom_picture" : "");?>" data-src="<?=$arImage["SMALL"]["src"]?>" src="<?=\Aspro\Functions\CAsproMax::showBlankImg($arImage["SMALL"]["src"])?>" <?=($viewImgType=="MAGNIFIER" ? 'data-xoriginal="'.$arImage["BIG"]["src"].'" data-xpreview="'.$arImage["THUMB"]["src"].'"' : "");?> alt="<?=$alt;?>" title="<?=$title;?>"<?//=(!$i ? ' itemprop="image"' : '')?>/>
@@ -759,7 +763,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']);?>
 														</div>
 														<div class="properties__hr muted properties__item--inline">&mdash;</div>
 														<div class="properties__value darken properties__item--inline">
-															<?if(count($arProp["DISPLAY_VALUE"]) > 1):?>
+															<?if(is_array($arProp["DISPLAY_VALUE"]) && count($arProp["DISPLAY_VALUE"]) > 1):?>
 																<?=implode(', ', $arProp["DISPLAY_VALUE"]);?>
 															<?else:?>
 																<?=$arProp["DISPLAY_VALUE"];?>
@@ -801,7 +805,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']);?>
 											<?$arUserGroups = $USER->GetUserGroupArray();?>
 											<?$arDiscount = []?>
 											<?if($arParams['SHOW_DISCOUNT_TIME_EACH_SKU'] != 'Y' || ($arParams['SHOW_DISCOUNT_TIME_EACH_SKU'] == 'Y' && (!$arResult['OFFERS'] || ($arResult['OFFERS'] && $arParams['TYPE_SKU'] != 'TYPE_1')))):?>
-												<?\Aspro\Functions\CAsproMax::showDiscountCounter($totalCount, $arDiscount, $arQuantityData, $arItem, $strMeasure, 'compact red', $item_id);?>
+												<?\Aspro\Functions\CAsproMax::showDiscountCounter($totalCount, $arDiscount, $arQuantityData, $arResult, $strMeasure, 'compact red', $item_id);?>
 											<?else:?>
 												<?if($arResult['JS_OFFERS'])
 												{
@@ -823,7 +827,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']);?>
 														$arResult['JS_OFFERS'][$keyOffer]['DISCOUNT_ACTIVE'] = $active_to;
 													}
 												}?>
-												<?\Aspro\Functions\CAsproMax::showDiscountCounter($totalCount, $arDiscount, $arQuantityData, $arItem, $strMeasure, 'compact red', $item_id);?>
+												<?\Aspro\Functions\CAsproMax::showDiscountCounter($totalCount, $arDiscount, $arQuantityData, $arResult, $strMeasure, 'compact red', $item_id);?>
 											<?endif;?>
 										<?}?>
 										<div class="prices_block">
@@ -966,6 +970,20 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']);?>
 								)
 							):?>
 								<?=\Aspro\Functions\CAsproMax::showCalculateDeliveryBlock($arResult['ID'], $arParams);?>
+							<?endif;?>
+
+							<?if($arParams['SHOW_SEND_GIFT'] != 'N'):?>
+								<?$sCurrentPage = (CMain::IsHTTPS()) ? "https://" : "http://";
+								$sCurrentPage .= $_SERVER["HTTP_HOST"];
+								$sCurrentPage .= $APPLICATION->GetCurPage();?>
+								<div class="text-form muted ncolor">
+									<div class="price_txt muted777 font_sxs ">
+										<?=CMax::showIconSvg("info_big pull-left", SITE_TEMPLATE_PATH.'/images/svg/catalog/iwantgift.svg', '', '', true, false);?>
+										<div class="text-form-info">
+											<span><span class="animate-load dotted" data-event="jqm" data-param-form_id="SEND_GIFT" data-name="send_gift" data-autoload-product_name="<?=CMax::formatJsName($arResult["NAME"]);?>" data-autoload-product_link="<?=$sCurrentPage;?>" data-autoload-product_id="<?=$arResult["ID"];?>"><?=($arParams["SEND_GIFT_FORM_NAME"] ? $arParams["SEND_GIFT_FORM_NAME"] : GetMessage("SEND_GIFT_FORM"));?></span></span>
+										</div>
+									</div>
+								</div>
 							<?endif;?>
 
 							<?//help text?>
@@ -1261,7 +1279,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']);?>
 								</td>
 								<td class="char_value">
 									<span itemprop="value">
-										<?if(count($arProp["DISPLAY_VALUE"]) > 1):?>
+										<?if(is_array($arProp["DISPLAY_VALUE"]) && count($arProp["DISPLAY_VALUE"]) > 1):?>
 											<?=implode(', ', $arProp["DISPLAY_VALUE"]);?>
 										<?else:?>
 											<?=$arProp["DISPLAY_VALUE"];?>
@@ -1316,7 +1334,11 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']);?>
 
 <?//files?>
 <?$instr_prop = ($arParams["DETAIL_DOCS_PROP"] ? $arParams["DETAIL_DOCS_PROP"] : "INSTRUCTIONS");?>
-<?if((count($arResult["PROPERTIES"][$instr_prop]["VALUE"]) && is_array($arResult["PROPERTIES"][$instr_prop]["VALUE"])) || count($arResult["SECTION_FULL"]["UF_FILES"])):?>
+<?
+$bItemFiles = isset($arResult["PROPERTIES"][$instr_prop]) && (is_array($arResult["PROPERTIES"][$instr_prop]["VALUE"]) && count($arResult["PROPERTIES"][$instr_prop]["VALUE"]));
+$bSectionFiles = isset($arResult["SECTION_FULL"]["UF_FILES"]) && count($arResult["SECTION_FULL"]["UF_FILES"]);
+?>
+<?if($bItemFiles || $bSectionFiles):?>
 	<?
 	$arFiles = array();
 	if($arResult["PROPERTIES"][$instr_prop]["VALUE"])
@@ -1343,7 +1365,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']);?>
 			<div class="char_block rounded3 bordered files_block">
 				<div class="row flexbox">
 					<?foreach($arFiles as $arItem):?>
-						<div class="col-md-4 col-sm-6">
+						<div class="col-md-4 col-sm-6 col-xs-12">
 							<?$arFile=CMax::GetFileInfo($arItem);?>
 							<div class="file_type clearfix <?=$arFile["TYPE"];?>">
 								<i class="icon"></i>

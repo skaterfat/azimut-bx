@@ -221,6 +221,7 @@ if('Y' !== $arParams['ADD_DETAIL_TO_SLIDER'] && $arResult['DETAIL_PICTURE']){
 }
 $arResult['ALT_TITLE_GET'] = $arParams['ALT_TITLE_GET'];
 $productSlider = CMax::getSliderForItemExt($arResult, $arParams['ADD_PICT_PROP'], 'Y' == $arParams['ADD_DETAIL_TO_SLIDER']);
+$bEmptyPictureProduct = false;
 
 if (empty($productSlider))
 {
@@ -233,6 +234,7 @@ if (empty($productSlider))
 		$productSlider = array(
 			0 => $arEmptyPreview
 		);
+		$bEmptyPictureProduct = true;
 	}
 }
 
@@ -1048,6 +1050,24 @@ if ($arResult['MODULES']['catalog'] && $arResult['CATALOG'])
 			$arResult['OFFERS'],
 			$boolConvert ? $arResult['CONVERT_CURRENCY']['CURRENCY_ID'] : $strBaseCurrency
 		);
+		
+		$arFirstSkuPicture = array();
+		$bNeedFindPicture = (CMax::GetFrontParametrValue("SHOW_FIRST_SKU_PICTURE") == "Y") && $bEmptyPictureProduct;
+		if( $bNeedFindPicture ){
+			$bFindPicture = false;
+						
+			foreach ($arResult['OFFERS'] as $keyOffer => $arOffer) {
+				if (($arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE']) || (!$arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE'])) {
+					$arOffer['DETAIL_PICTURE'] = $arOffer['PREVIEW_PICTURE'];
+				}
+
+				if ($arOffer['DETAIL_PICTURE'] && !$bFindPicture) {
+					$arResult["FIRST_SKU_PICTURE"] = CFile::ResizeImageGet($arOffer["DETAIL_PICTURE"], array("width"=>350, "height"=>350), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+					$bFindPicture = true;
+					break;
+				}
+			}
+		}
 	}
 
 	//format prices when USE_PRICE_COUNT
@@ -1358,7 +1378,7 @@ if($arResult["SECTION"])
 if(in_array('HELP_TEXT', $arParams['PROPERTY_CODE']))
 {
 	$arResult['HELP_TEXT_FILE'] = false;
-	if($arResult['DISPLAY_PROPERTIES']['HELP_TEXT']['~VALUE']):
+	if(isset($arResult['DISPLAY_PROPERTIES']['HELP_TEXT']) && $arResult['DISPLAY_PROPERTIES']['HELP_TEXT']['~VALUE']):
 		$arResult['HELP_TEXT'] = $arResult['DISPLAY_PROPERTIES']['HELP_TEXT']['~VALUE'];
 	elseif($arParams['HELP_TEXT']):
 		$arResult['HELP_TEXT'] = $arParams['HELP_TEXT'];
@@ -1373,22 +1393,37 @@ if(in_array('HELP_TEXT', $arParams['PROPERTY_CODE']))
 					"EDIT_TEMPLATE" => ""
 				)
 			);?>
-		<?$arResult['HELP_TEXT'] = ob_get_contents();
+		<?$help_text = ob_get_contents();		
 		ob_end_clean();
-		$arResult['HELP_TEXT_FILE'] = true;?>
+		$bshowHelpTextFromFile = true;
+		if( strlen( trim($help_text) ) < 1){
+			$bshowHelpTextFromFile = false;
+		} else{
+			$bIsBitrixDiv = ( strpos($help_text, 'bx_incl_area') !== false );
+			$textWithoutTags = strip_tags($help_text);
+			if( $bIsBitrixDiv && (strlen( trim($textWithoutTags) ) < 1) ){
+				$bshowHelpTextFromFile = false;
+			}
+		}
+		
+		if( $bshowHelpTextFromFile ){
+			$arResult['HELP_TEXT'] = $help_text;
+			$arResult['HELP_TEXT_FILE'] = true;
+		}
+		?>
 	<?endif;?>
 <?}
 
 if(!empty($arResult['DISPLAY_PROPERTIES']))
 {
-	$arResult['LINK_STAFF'] = $arResult['DISPLAY_PROPERTIES']['LINK_STAFF']['VALUE'];
-	$arResult['LINK_VACANCY'] = $arResult['DISPLAY_PROPERTIES']['LINK_VACANCY']['VALUE'];
+	$arResult['LINK_STAFF'] = isset($arResult['DISPLAY_PROPERTIES']['LINK_STAFF']) ? $arResult['DISPLAY_PROPERTIES']['LINK_STAFF']['VALUE'] : '';
+	$arResult['LINK_VACANCY'] = isset($arResult['DISPLAY_PROPERTIES']['LINK_VACANCY']) ? $arResult['DISPLAY_PROPERTIES']['LINK_VACANCY']['VALUE'] : '';
 
 	$arVideo = array();
-	if(strlen($arResult["DISPLAY_PROPERTIES"]["VIDEO"]["VALUE"]))
+	if(isset($arResult['DISPLAY_PROPERTIES']['VIDEO']) && strlen($arResult["DISPLAY_PROPERTIES"]["VIDEO"]["VALUE"]))
 		$arVideo[] = $arResult["DISPLAY_PROPERTIES"]["VIDEO"]["~VALUE"];
 
-	if(isset($arResult["DISPLAY_PROPERTIES"]["VIDEO_YOUTUBE"]["VALUE"]))
+	if(isset($arResult['DISPLAY_PROPERTIES']['VIDEO_YOUTUBE']) && isset($arResult["DISPLAY_PROPERTIES"]["VIDEO_YOUTUBE"]["VALUE"]))
 	{
 		if(is_array($arResult["DISPLAY_PROPERTIES"]["VIDEO_YOUTUBE"]["VALUE"]))
 			$arVideo = $arVideo + $arResult["DISPLAY_PROPERTIES"]["VIDEO_YOUTUBE"]["~VALUE"];
@@ -1396,9 +1431,9 @@ if(!empty($arResult['DISPLAY_PROPERTIES']))
 			$arVideo[] = $arResult["DISPLAY_PROPERTIES"]["VIDEO_YOUTUBE"]["~VALUE"];
 	}
 
-	if(strlen($arResult["SECTION_FULL"]["UF_VIDEO"]))
+	if(isset($arResult['SECTION_FULL']['UF_VIDEO']) && strlen($arResult["SECTION_FULL"]["UF_VIDEO"]))
 		$arVideo[] = $arResult["SECTION_FULL"]["~UF_VIDEO"];
-	if(strlen($arResult["SECTION_FULL"]["UF_VIDEO_YOUTUBE"]))
+	if(isset($arResult['SECTION_FULL']['UF_VIDEO_YOUTUBE']) && strlen($arResult["SECTION_FULL"]["UF_VIDEO_YOUTUBE"]))
 		$arVideo[] = $arResult["SECTION_FULL"]["~UF_VIDEO_YOUTUBE"];
 	$arResult["VIDEO"] = $arVideo;
 
@@ -1413,10 +1448,5 @@ if(!empty($arResult['DISPLAY_PROPERTIES']))
 		}
 	}
 	$arResult["GROUPS_PROPS"] = $arGroupsProp;
-}
-
-if($arResult['PROPERTIES']['KONSTRUKTOR_KOLODCEV']['VALUE']) {
-	$this->__component->arResult["PROPERTY_KONSTRUKTOR_KOLODCEV"] = $arResult['PROPERTIES']['KONSTRUKTOR_KOLODCEV'];
-	$this->__component->SetResultCacheKeys(array("PROPERTY_KONSTRUKTOR_KOLODCEV"));
 }
 ?>

@@ -87,7 +87,7 @@ if (!empty($arResult['ITEMS'])){
 			}
 		}
 	}
-	
+
 	$arEmptyPreview = false;
 	$strEmptyPreview = $this->GetFolder().'/images/no_photo.png';
 	if (file_exists($_SERVER['DOCUMENT_ROOT'].$strEmptyPreview))
@@ -113,7 +113,7 @@ if (!empty($arResult['ITEMS'])){
 	$boolConvert = isset($arResult['CONVERT_CURRENCY']['CURRENCY_ID']);
 	if (!$boolConvert)
 		$strBaseCurrency = CCurrency::GetBaseCurrency();
-	
+
 
 	$arNewItemsList = array();
 
@@ -246,14 +246,19 @@ if (!empty($arResult['ITEMS'])){
 		{
 			$arItem["FIX_PRICE_MATRIX"] = CMax::checkPriceRangeExt($arItem);
 		}
-		
+
 		//format prices when USE_PRICE_COUNT
 		$arItem = array_merge($arItem, CMax::formatPriceMatrix($arItem));
 
 		if(($arItem['DETAIL_PICTURE'] && $arItem['PREVIEW_PICTURE']) || (!$arItem['DETAIL_PICTURE'] && $arItem['PREVIEW_PICTURE']))
 			$arItem['DETAIL_PICTURE'] = $arItem['PREVIEW_PICTURE'];
-		
+
 		$arItem['LAST_ELEMENT'] = 'N';
+
+		if($arParams['IBINHERIT_TEMPLATES']){
+			\Aspro\Max\Property\IBInherited::modifyItemTemplates($arParams, $arItem);
+		}
+
 		$arNewItemsList[$key] = $arItem;
 	}
 	$arNewItemsList[$key]['LAST_ELEMENT'] = 'Y';

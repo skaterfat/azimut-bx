@@ -104,16 +104,16 @@
 				<?endif;?>
 				<a href="<?=$arResult["sUrlPath"]?>?<?=$strNavQueryString?>PAGEN_<?=$arResult["NavNum"]?>=<?=$arResult["NavPageCount"]?>" class="dark_link"><?=$arResult["NavPageCount"]?></a>
 			<?endif;?>
-			<?if ($arResult["bShowAll"]):?>
-			<noindex>
+			<?if ($arResult["bShowAll"]):?>			
 				<div class="all_block_nav">
-					<?if ($arResult["NavShowAll"]):?>
-						<a href="<?=$arResult["sUrlPath"]?>?<?=$strNavQueryString?>SHOWALL_<?=$arResult["NavNum"]?>=0" class="link" rel="nofollow"><?=GetMessage("nav_paged")?></a>
-					<?else:?>
-						<a href="<?=$arResult["sUrlPath"]?>?<?=$strNavQueryString?>SHOWALL_<?=$arResult["NavNum"]?>=1" class="link" rel="nofollow"><?=GetMessage("nav_all")?></a>
-					<?endif?>
-				</div>
-			</noindex>
+					<!--noindex-->
+						<?if ($arResult["NavShowAll"]):?>
+							<a href="<?=$arResult["sUrlPath"]?>?<?=$strNavQueryString?>SHOWALL_<?=$arResult["NavNum"]?>=0" class="link" rel="nofollow"><?=GetMessage("nav_paged")?></a>
+						<?else:?>
+							<a href="<?=$arResult["sUrlPath"]?>?<?=$strNavQueryString?>SHOWALL_<?=$arResult["NavNum"]?>=1" class="link" rel="nofollow"><?=GetMessage("nav_all")?></a>
+						<?endif?>
+					<!--/noindex-->
+				</div>			
 			<?endif?>
 		</div>
 	</div>

@@ -110,7 +110,7 @@ else
 			foreach ($availablePages as $blockElement)
 			{
 				?>
-				<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+				<div class="col-lg-4 col-md-6 col-sm-12 col-xs-6">
 					<div class="sale-personal-section-index-block bx-theme-<?=$theme?>">
 						<a class="sale-personal-section-index-block-link" href="<?=htmlspecialcharsbx($blockElement['path'])?>">
 						<span class="sale-personal-section-index-block-ico">

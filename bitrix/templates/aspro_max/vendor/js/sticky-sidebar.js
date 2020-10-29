@@ -347,7 +347,6 @@ var stickySidebar = createCommonjsModule(function (module, exports) {
           var affixType = this.affixedType;
 
 
-
           if (colliderTop <= dims.containerTop || dims.containerHeight < dims.sidebarHeight) {
             dims.translateY = 0;
             affixType = 'STATIC';
@@ -366,11 +365,20 @@ var stickySidebar = createCommonjsModule(function (module, exports) {
       }, {
         key: '_getAffixTypeScrollingDown',
         value: function _getAffixTypeScrollingDown() {
+
+          //recalculate when height was changed
+          if(this.dimensions.containerHeight != this.container.clientHeight){
+            this.calcDimensions();
+            //console.log('upd');
+          }
+          
           var dims = this.dimensions;
           var sidebarBottom = dims.sidebarHeight + dims.containerTop;
           var colliderTop = dims.viewportTop + dims.topSpacing;
           var colliderBottom = dims.viewportBottom - dims.bottomSpacing;
           var affixType = this.affixedType;
+
+
 
           if (this.isSidebarFitsViewport()) {
             if (dims.sidebarHeight + colliderTop >= dims.containerBottom) {
@@ -380,7 +388,7 @@ var stickySidebar = createCommonjsModule(function (module, exports) {
               dims.translateY = colliderTop - dims.containerTop;
               affixType = 'VIEWPORT-TOP';
             }
-          } else {
+          } else {            
             if (dims.containerBottom <= colliderBottom) {
               dims.translateY = dims.containerBottom - sidebarBottom;
               affixType = 'CONTAINER-BOTTOM';
@@ -391,7 +399,7 @@ var stickySidebar = createCommonjsModule(function (module, exports) {
               affixType = 'VIEWPORT-UNBOTTOM';
             }
           }
-
+          
           return affixType;
         }
       }, {
@@ -467,6 +475,13 @@ var stickySidebar = createCommonjsModule(function (module, exports) {
 
           var offsetTop = this.options.topSpacing;
           var offsetBottom = this.options.bottomSpacing;
+
+
+          //for actual sidebar height, cause height can change after document load
+          if(this.sidebarInner.offsetHeight > this.dimensions.sidebarHeight){            
+            this.dimensions.sidebarHeight = this.sidebarInner.offsetHeight;
+          }
+
 
           var affixType = this.getAffixType();
           var style = this._getStyle(affixType);

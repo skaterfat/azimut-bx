@@ -179,6 +179,7 @@ $(document).ready(function(){
 	$APPLICATION->IncludeComponent('bitrix:map.yandex.system', 'map', $arTransParams, false, array('HIDE_ICONS' => 'Y'));
 ?>
 	</div>
+	<div class="yandex-map__mobile-opener"></div>
 </div>
 <?
 endif;

@@ -124,6 +124,9 @@ if (!empty($arResult['ITEMS'])){
 		$arSKU = CCatalogSKU::GetInfoByProductIBlock($arParams['IBLOCK_ID']);
 
 		$boolSKU = !empty($arSKU) && is_array($arSKU);
+		if ( $boolSKU && $featureProps = \Bitrix\Iblock\Model\PropertyFeature::getListPageShowPropertyCodes( $arSKU["IBLOCK_ID"], array('CODE' => 'Y') ) ) {
+			$arParams['OFFER_TREE_PROPS'] = $featureProps;
+		}
 		if ($boolSKU && !empty($arParams['OFFER_TREE_PROPS']))
 		{
 			$arSKUPropList = CIBlockPriceTools::getTreeProperties(
@@ -139,6 +142,9 @@ if (!empty($arResult['ITEMS'])){
 			$arNeedValues = array();
 			CIBlockPriceTools::getTreePropertyValues($arSKUPropList, $arNeedValues);
 			$arSKUPropIDs = array_keys($arSKUPropList);
+			if($featureProps) {
+				$arParams['OFFER_TREE_PROPS'] = $arSKUPropIDs;
+			}
 
 			if (empty($arSKUPropIDs))
 				$arParams['TYPE_SKU'] = 'N';
@@ -146,7 +152,7 @@ if (!empty($arResult['ITEMS'])){
 				$arSKUPropKeys = array_fill_keys($arSKUPropIDs, false);
 		}
 	}
-	
+
 	$arNewItemsList = array();
 	foreach ($arResult['ITEMS'] as $key => $arItem)
 	{
@@ -164,7 +170,7 @@ if (!empty($arResult['ITEMS'])){
 		if ($arItem['PROPERTIES']['BIG_BLOCK']['VALUE'] == 'Y' && $arParams['SHOW_BIG_BLOCK'] != 'N') {
 			$bBigBlock = true;
 		}
-		
+
 		$arItem['CHECK_QUANTITY'] = false;
 		if (!isset($arItem['CATALOG_MEASURE_RATIO']))
 			$arItem['CATALOG_MEASURE_RATIO'] = 1;
@@ -234,9 +240,10 @@ if (!empty($arResult['ITEMS'])){
 		$arItem['GALLERY'] = CMax::getSliderForItemExt($arItem, $arParams['ADD_PICT_PROP'], 'Y' == $arParams['ADD_DETAIL_TO_SLIDER']);
 		array_splice($arItem['GALLERY'], $arParams['MAX_GALLERY_ITEMS']);
 
+
+
 		if ($arItem['CATALOG'] && isset($arItem['OFFERS']) && !empty($arItem['OFFERS']))
 		{
-
 			$arMatrixFields = $arSKUPropKeys;
 			$arMatrix = array();
 
@@ -381,6 +388,8 @@ if (!empty($arResult['ITEMS'])){
 
 			if(!$arItem['OFFERS_PROP'])
 			{
+				
+
 				//set min price when USE_PRICE_COUNT
 				if($arParams['USE_PRICE_COUNT'] == 'Y')
 				{
@@ -407,9 +416,27 @@ if (!empty($arResult['ITEMS'])){
 								$arOffer['PRICE_MATRIX'] = '';
 							}
 						}
-						$arItem['OFFERS'][$keyOffer] = array_merge($arOffer, CMax::formatPriceMatrix($arOffer));
+						$arItem['OFFERS'][$keyOffer] = array_merge($arOffer, CMax::formatPriceMatrix($arOffer));					
+
 					}
 				}
+
+				$arFirstSkuPicture = array();
+				$bNeedFindPicture = ($arParams['SHOW_GALLERY'] == 'Y') && (CMax::GetFrontParametrValue("SHOW_FIRST_SKU_PICTURE") == "Y") && empty($arItem['GALLERY']);
+				if( $bNeedFindPicture ){
+					foreach ($arItem['OFFERS'] as $keyOffer => $arOffer)
+					{
+						if(($arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE']) || (!$arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE']))
+							$arOffer['DETAIL_PICTURE'] = $arOffer['PREVIEW_PICTURE'];
+
+						$arFirstSkuPicture = CMax::getSliderForItemExt($arOffer, '', true);
+						if(!empty( $arFirstSkuPicture )){
+							$arItem['GALLERY'] = $arFirstSkuPicture;
+							break;
+						}
+					}
+				}
+
 				$arItem['MIN_PRICE'] = CMax::getMinPriceFromOffersExt(
 					$arItem['OFFERS'],
 					$boolConvert ? $arResult['CONVERT_CURRENCY']['CURRENCY_ID'] : $strBaseCurrency
@@ -541,16 +568,16 @@ if (!empty($arResult['ITEMS'])){
 					if(($arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE']) || (!$arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE']))
 						$arOffer['DETAIL_PICTURE'] = $arOffer['PREVIEW_PICTURE'];
 
-					if($arParams['SHOW_GALLERY'] == 'Y')
-					{
+					if ($arParams['SHOW_GALLERY'] == 'Y') {
 						$arItem['OFFERS'][$keyOffer]['GALLERY'] = CMax::getSliderForItemExt($arOffer, $arParams['OFFER_ADD_PICT_PROP'], true);
 
-						if($arItem['GALLERY'])
-						{
+						if ($arItem['GALLERY']) {
 							$arItem['OFFERS'][$keyOffer]['GALLERY'] = array_merge($arItem['OFFERS'][$keyOffer]['GALLERY'], $arItem['GALLERY']);
 						}
-						if($arItem['OFFERS'][$keyOffer]['GALLERY'])
+						if ($arItem['OFFERS'][$keyOffer]['GALLERY']) {
+							array_splice($arItem['OFFERS'][$keyOffer]['GALLERY'], $arParams['MAX_GALLERY_ITEMS']);
 							array_splice($arItem['GALLERY'], $arParams['MAX_GALLERY_ITEMS']);
+						}
 					}
 				}
 				if (-1 == $intSelected)
@@ -590,7 +617,7 @@ if (!empty($arResult['ITEMS'])){
 			foreach ($arItem['DISPLAY_PROPERTIES'] as $propKey => $arDispProp)
 			{
 				if ('F' == $arDispProp['PROPERTY_TYPE'])
-					unset($arItem['DISPLAY_PROPERTIES'][$propKey]);				
+					unset($arItem['DISPLAY_PROPERTIES'][$propKey]);
 
 			}
 		}
@@ -614,9 +641,14 @@ if (!empty($arResult['ITEMS'])){
 		}
 
 		$arItem['LAST_ELEMENT'] = 'N';
+
+		if($arParams['IBINHERIT_TEMPLATES']){
+			\Aspro\Max\Property\IBInherited::modifyItemTemplates($arParams, $arItem);
+		}
+
 		$arNewItemsList[$key] = $arItem;
 	}
-	
+
 	$arNewItemsList[$key]['LAST_ELEMENT'] = 'Y';
 	$arResult['ITEMS'] = $arNewItemsList;
 	$arResult['SKU_PROPS'] = $arSKUPropList;

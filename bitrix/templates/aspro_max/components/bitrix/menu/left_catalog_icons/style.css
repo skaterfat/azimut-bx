@@ -83,6 +83,6 @@ body .wrapper1 .menu-wrapper .menu_top_block.catalog_block .right-side.BRANDS .b
 }
 
 @media(min-width: 992px) {
-	.sticky_menu.sm.wrapper1, .sticky_menu.sm.wrapper1 + footer, .sticky_menu #panel {padding-left:77px}
+	.sticky_menu.sm.wrapper1, .sticky_menu.sm.wrapper1 ~ footer, .sticky_menu #panel {padding-left:77px}
 	.sticky_menu #bx-panel.bx-panel-fixed {left: 77px !important;right: 0!important;width: auto !important;}
 }

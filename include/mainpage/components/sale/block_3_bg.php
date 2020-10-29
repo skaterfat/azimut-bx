@@ -64,6 +64,8 @@
 		"ALL_URL" => "sale/",
 		"PAGER_BASE_LINK_ENABLE" => "N",
 		"SHOW_404" => "N",
+		"MOBILE_TEMPLATE" => $GLOBALS['arTheme']['MOBILE_SALE']['VALUE'],
+		"CHECK_REQUEST_BLOCK" => CMax::checkRequestBlock('sale'),
 		"TYPE_IMG" => "bg",
 		"SIZE_IN_ROW" => "3",
 		"INCLUDE_FILE" => "sales_desc.php",

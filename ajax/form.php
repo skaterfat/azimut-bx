@@ -33,6 +33,8 @@ $url_sizes = (htmlspecialchars($_REQUEST['url']) ? htmlspecialchars($_REQUEST['u
 	</div>
 <?elseif($form_id == 'delivery'):?>
 	<?include('delivery.php');?>
+<?elseif($form_id == 'share_basket'):?>
+	<?include('share_basket.php');?>
 <?elseif(isset($_REQUEST['type']) && $_REQUEST['type'] == 'auth'):?>
 	<?include_once('auth.php');?>
 <?elseif(isset($_REQUEST['type']) && $_REQUEST['type'] == 'subscribe'):?>
@@ -53,8 +55,7 @@ $url_sizes = (htmlspecialchars($_REQUEST['url']) ? htmlspecialchars($_REQUEST['u
 		$formName = $form['NAME'];
 	}
 
-	global $arTheme;
-	$formType = $arTheme[$formCode.'_FORM'];
+	$formType = CMax::GetFrontParametrValue($formCode.'_FORM');
 	if($formType == 'CRM') {
 		echo '<div id="bx24_form_inline_second"></div>';
 		$bitrix24 = @file_get_contents($_SERVER['DOCUMENT_ROOT'].SITE_DIR.'include/forms/'.$formCode.'_FORM.php');
@@ -75,7 +76,7 @@ $url_sizes = (htmlspecialchars($_REQUEST['url']) ? htmlspecialchars($_REQUEST['u
 					<h2><?=$formName?></h2>
 				</div>
 				<div class="form_body">
-					<?='Файл не найден либо пуст'?>
+					File not found or file is empty
 				</div>
 				<div class="form_footer"></div>
 			</div>
@@ -83,9 +84,8 @@ $url_sizes = (htmlspecialchars($_REQUEST['url']) ? htmlspecialchars($_REQUEST['u
 			<a href="#" class="close jqmClose" onclick="window.b24form = false;"><?=CMax::showIconSvg('', SITE_TEMPLATE_PATH.'/images/svg/Close.svg')?></a>
 			<?print_r($bitrix24);
 		endif;
-		
-	} else {
 
+	} else {
 		$APPLICATION->IncludeComponent(
 			"bitrix:form",
 			"popup",

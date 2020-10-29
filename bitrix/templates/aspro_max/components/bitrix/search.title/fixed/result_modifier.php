@@ -212,9 +212,12 @@ if (!empty($arResult["ELEMENTS"]) && CModule::IncludeModule("iblock"))
 		$arFilter["CATALOG_AVAILABLE"] = "Y";
 		if($arRegion)
 		{
-			if($arRegion["LIST_STORES"])
+			$arStores = array_diff($arRegion["LIST_STORES"], array('component'));
+			//if($arRegion["LIST_STORES"])
+			if($arStores)
 			{
 				$arTmpFilter = array();
+				/*
 				foreach($arRegion["LIST_STORES"] as $storeID)
 				{
 					if($storeID !== 'component'){
@@ -225,6 +228,35 @@ if (!empty($arResult["ELEMENTS"]) && CModule::IncludeModule("iblock"))
 					$arTmpFilter["LOGIC"] = "OR";
 					$arFilter[] = $arTmpFilter;
 				}
+				*/
+				if(CMax::checkVersionModule('18.6.200', 'iblock')){
+					$arTmpFilter["LOGIC"] = "OR";
+					$arTmpFilter[] = array('TYPE' => array('2','3'));//complects and offers
+					$arTmpFilter[] = array(
+						'STORE_NUMBER' => $arStores,
+						'>STORE_AMOUNT' => 0,
+					);						
+				}
+				else{
+					if(count($arStores) > 1){
+						$arTmpFilter = array('LOGIC' => 'OR');
+						foreach($arStores as $storeID)
+						{
+							$arTmpFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+						}
+					}
+					else{
+						foreach($arStores as $storeID)
+						{
+							$arTmpFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+						}
+					}
+				}
+
+				if($arTmpFilter){
+					$arFilter[] = $arTmpFilter;
+				}
+				
 			}
 		}
 	}
@@ -371,6 +403,21 @@ foreach($arResult["SEARCH"] as $i=>$arItem)
 						$arElement["PICTURE"] = CFile::ResizeImageGet($arElement["PREVIEW_PICTURE"], array("width"=>80, "height"=>80), BX_RESIZE_IMAGE_PROPORTIONAL, true);
 					elseif ($arElement["DETAIL_PICTURE"] > 0)
 						$arElement["PICTURE"] = CFile::ResizeImageGet($arElement["DETAIL_PICTURE"], array("width"=>80, "height"=>80), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+					elseif ($arElement['OFFERS'] && \Bitrix\Main\Config\Option::get('aspro.max', 'SHOW_FIRST_SKU_PICTURE', 'N') === 'Y') {
+						$bFindPicture = false;
+						
+						foreach ($arElement['OFFERS'] as $keyOffer => $arOffer) {
+							if (($arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE']) || (!$arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE'])) {
+								$arOffer['DETAIL_PICTURE'] = $arOffer['PREVIEW_PICTURE'];
+							}
+
+							if ($arOffer['DETAIL_PICTURE'] && !$arElement['PREVIEW_PICTURE']['ID'] && !$bFindPicture) {
+								$arElement['PICTURE'] = CFile::ResizeImageGet($arOffer["DETAIL_PICTURE"], array("width"=>80, "height"=>80), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+								$bFindPicture = true;
+								break;
+							}
+						}
+					}
 				}
 			}
 			break;

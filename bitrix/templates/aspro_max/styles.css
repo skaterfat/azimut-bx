@@ -74,6 +74,7 @@ ul.list-unstyled li:before{display:none;}
 .rounded4, .rounded4.darken-bg-animate:before, .rounded4.darken-bg-animate:after{border-radius:4px;}
 .rounded0, .rounded0.darken-bg-animate:before, .rounded0.darken-bg-animate:after{border-radius:0px;}
 .bordered{border:1px solid #ececec;}
+.bordered-bottom {border-bottom:1px solid #ececec;}
 .box-shadow, .box-shadow-sm{transition: transform ease 0.2s, box-shadow ease 0.2s;}
 .bg-fill-white{background:#fff;}
 .bg-fill-grey{transition:background ease 0.2s,transform ease 0.2s, box-shadow ease 0.2s;;background: #f5f5f5;}
@@ -234,17 +235,17 @@ a.icon-text:focus { color: #fff; }
 .btn.btn-responsive-nav{ color:#FFF; padding:5px 8px 3px;margin:0;border:medium none;}
 .btn.btn-responsive-nav .fa{font-size:21px;}
 .btn.btn-transparent-border{border:1px solid rgba(243,243,243,0.4);color:#fff;}
-.btn.btn-transparent-border:hover{color:#fff;}
 .btn.btn-transparent-border-color{background:transparent;}
-.btn.btn-transparent-border-color:hover{color:#fff;}
-.btn.btn-transparent-border-color:hover svg path{fill:#fff;}
 .btn.white.grey{color:#888888 !important;border:1px solid #eee;background:#ffffff;}
 .btn.btn-default.white.white-border:not(:hover){color:#333 !important;border:1px solid #fff;background:#ffffff;}
 .to-order, .to-subscribe, .in-cart, .in-subscribe{display:block;}
-/*.btn.btn-default.in-cart, .btn.btn-default.in-cart:hover{background: #4fad00;border-color: #4fad00;}*/
 .btn.btn-default:focus:active{color:#fff;}
 .btn.btn-default.transparent.white:not(:hover){background: transparent;}
 .btn-wide{display: block;}
+
+.btn.btn-transparent-border:hover{color:#fff;}
+.btn.btn-transparent-border-color:hover{color:#fff;}
+.btn.btn-transparent-border-color:hover svg path{fill:#fff;}
 
 .btn:hover,.btn:active,.btn:focus{outline:none;}
 .btn.btn-default:active:hover{color:#fff;}
@@ -254,7 +255,7 @@ a.icon-text:focus { color: #fff; }
 .font_mlg{font-size: 1.200em;line-height: 1.454em;} /*18px*/
 .font_mxs{font-size: 1.133em;line-height: 1.454em;} /*17px*/
 .font_md{font-size: 1.0667em;line-height: 1.5625em;} /*16px*/
-.font_sm{font-size: .933em;line-height: 1.500em;} /*14px*/
+.font_sm{font-size: .933em;line-height: 1.501em;} /*14px*/
 .font_xs{font-size: .867em;line-height: 1.692em;} /*13px*/
 .font_sxs{font-size: .800em;line-height: 1.692em;} /*12px*/
 .font_xxs{font-size: .733em;line-height: 1.273em;} /*11px*/

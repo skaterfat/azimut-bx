@@ -68,4 +68,16 @@
 	body .lookbooks .item-views.without-space .item{padding-bottom: 14px;}
 
 	.lookbooks .item-views .row > div.bordered .item .image {padding: 20px 14px 18px;}
+
+	/*new mobile*/
+	.lookbooks .item-views .swipeignore.mobile-overflow .col-md-3 .item .lazy, .lookbooks .item-views .swipeignore.mobile-overflow .col-md-3 .item .lazyloaded{padding-top: 137%;}
+	.lookbooks .item-views .swipeignore.mobile-overflow .item .inner-text{padding-top: 18px;}
+	.lookbooks .item-views .swipeignore.mobile-overflow .item .inner-text .top-text{margin-bottom: 4px;}
+
+	.lookbooks:not(.text-inside) .swipeignore.mobile-overflow{padding-bottom: 13px;margin-bottom: 15px;}
+	.lookbooks.with-border .swipeignore.mobile-overflow{padding: 0px 0px 25px;margin-bottom: 20px;}
+	.lookbooks .item-views.text_inside .swipeignore.mobile-overflow .item .inner-text{bottom: 28px;}
+	.lookbooks .item-views.text_inside .swipeignore.mobile-overflow .item .inner-text .top-text{line-height: 17px;}
+	.wrapper1.front_page .wrapper_inner.front .drag-block.container .lookbooks .item-views.text_inside.mobile-adaptive{padding-bottom: 35px;}
+	/**/
 }

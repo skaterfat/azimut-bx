@@ -60,9 +60,13 @@ asproFilterHelper.prototype.getInputsInfo = function(smartFilter) {
 					var value = _el.data('title') === undefined ? '' :  _el.data('title');
 					if(!value) {
 						var label = smartFilter.find('label[for='+_el.attr('name')+']');
+						var labelFromId = smartFilter.find('label[for='+_el.attr('id')+']');
 						if(label.length) {
 							value = label.find('[title]');
-							value = value.length ? value.attr('title') : ''; 
+							value = value.length ? value.attr('title') : '';
+						}else if(labelFromId.length){
+							value = labelFromId.find('[title]');
+							value = labelFromId.length ? value.attr('title') : '';
 						}
 					}
 
@@ -186,8 +190,12 @@ asproFilterHelper.prototype.clearValue = function(options) {
 				var elements = wrapper.find('input');
 				if(elements.length) {
 					elements.each(function(i, el) {
-						if(el.checked) {
-							$(el).trigger('click');
+						var _el = $(el);
+						var label = _el.siblings('label[for='+_el.attr('id')+']');
+						if(label.length && label.hasClass('active')) {
+							label.trigger('click');
+						} else if(el.checked) {
+							_el.trigger('click');
 						}
 					});
 				}
@@ -197,8 +205,13 @@ asproFilterHelper.prototype.clearValue = function(options) {
 		var el = $('#'+options.ID);
 		if(el.length){
 			var type = el.attr('type');
-			if(type == 'checkbox' && el[0].checked) {
-				el.trigger('click');
+			if(type == 'checkbox') {
+				var label = $('label[for='+options.ID+']');
+				if(label.length && label.hasClass('active')) {
+					label.trigger('click');
+				} else if(el[0].checked) {
+					el.trigger('click');
+				}
 			} else if(type == 'radio') {
 				var wrapperBox = el.closest('.bx_filter_parameters_box_container');
 				if(wrapperBox.length) {

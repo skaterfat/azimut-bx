@@ -95,8 +95,9 @@ $(document).ready(function(){
 				complete: function(){
 					_this.removeClass('clicked');
 
-					if(typeof window['stickySidebar'] !== 'undefined')
+					if(typeof window['stickySidebar'] !== 'undefined'){						
 						window['stickySidebar'].updateSticky();
+					}					
 				}
 			});
 		}
@@ -165,6 +166,7 @@ $(document).ready(function(){
 				_this.addClass('active');
 			}
 
+
 			if(_this.attr('title'))
 			{
 				var skuVal = _this.attr('title').split(':')[1];
@@ -190,6 +192,25 @@ $(document).ready(function(){
 				{
 					$('.counter_wrapp.list .counter_block.big').removeClass('big');
 				}
+
+				var sku_props = _this.closest('.sku_props').find('.item_wrapper .item.active');
+				$.each(sku_props,function(index,value){					
+					value = $(value);
+					if(value.attr('title'))
+					{
+						var skuVal = value.attr('title').split(':')[1];
+						value.closest('.item_wrapper').find('.show_class .val').text(skuVal);
+					}
+					else
+					{
+						var img_row = value.find(' > i');
+						if(img_row.length && img_row.attr('title')) {
+							var skuVal = img_row.attr('title').split(':')[1];
+							value.closest('.item_wrapper').find('.show_class .val').text(skuVal);
+						}
+					}
+				});
+
 			})
 		}
 		$(document).on('click', '.ajax_load .bx_catalog_item_scu li.item', SelectOfferProp)

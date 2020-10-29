@@ -1,5 +1,5 @@
 <?Bitrix\Main\Page\Frame::getInstance()->startDynamicWithID("footer-subscribe");?>
-	<?if(\Bitrix\Main\ModuleManager::isModuleInstalled("subscribe")):?>
+	<?if(\Bitrix\Main\ModuleManager::isModuleInstalled("subscribe") && $GLOBALS['arTheme']['HIDE_SUBSCRIBE']['VALUE'] != 'Y'):?>
 
 		<div class="subscribe-block-wrapper">
 			<div class="maxwidth-theme">

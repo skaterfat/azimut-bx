@@ -86,7 +86,7 @@
     .lookbook .row > div > div{width: 100%;}
     .lookbook .row > div:not([class*="col-xs"]){width: 100%;}
 }
-@media (min-width: 600px){
+@media (min-width: 601px){
     .visible-xxs{display: none;}
     .hidden-xxs{display: inline-block;}
 
@@ -97,7 +97,7 @@
     .lookbook__info-text-more{display: block !important;}
 
 }
-@media (max-width: 599px){
+@media (max-width: 600px){
     #main .lookbook__picture-wrapper{padding: 2rem;border:1px solid #ECECEC;border-bottom-width: 0px;}
     .lookbook__info{padding: 0rem 2rem 2rem;border:1px solid #ECECEC;border-top-width: 0px;}
     .lookbook--bl-1{border-left-width: 0px;}
@@ -116,6 +116,19 @@
     
     .visible-xxs{display: block;}
     .hidden-xxs{display: none;}
+
+    /*new mobile*/
+    .mobile-adaptive .flexslider{display: none;}
+    .swipeignore.mobile-overflow .lookbook{display: block !important;position: relative;}
+    .swipeignore.mobile-overflow .lookbook .item-views{padding-bottom: 14px;}
+    .swipeignore.mobile-overflow .lookbook .lookbook__info-outerlink{position: absolute;left: 0px;right: 16px;bottom: 0px;display: none;}
+    .swipeignore.mobile-overflow .lookbook .row > .lookbook--bl-1 .scrollbars{max-height: 307px;border-bottom: 1px solid #ececec;overflow: hidden;}
+    .swipeignore.mobile-overflow .lookbook__info{padding-bottom: 24px;}
+    .swipeignore.mobile-overflow .lookbook__items .block-item__wrapper{padding: 15px;}
+    .swipeignore.mobile-overflow .lookbook__items .block-item__info{padding-left: 14px;}
+    .swipeignore.mobile-overflow .lookbook__items .block-item__cost.cost{margin-top:3px;}
+    .lookbook__picture{min-height: 363px;}
+    /**/
 }
 @media (max-width: 500px) {
     .wrapper_inner .lookbook .cost.prices .price{font-size: 1em;}

@@ -18,15 +18,23 @@
 	// params for catalog elements compact view
 	$arParamsCE_CMP = $arParams;
 	$arParamsCE_CMP['TYPE_SKU'] = 'N';
+
+	$bHasBottomPager = $arParams["DISPLAY_BOTTOM_PAGER"] == "Y" && $arResult["NAV_STRING"];
 	?>
 	<?if($arParams["AJAX_REQUEST"] != "Y"):?>
 		<?$bSlide = (isset($arParams['SLIDE_ITEMS']) && $arParams['SLIDE_ITEMS']);?>
 		<?$bGiftblock = (isset($arParams['GIFT_ITEMS']) && $arParams['GIFT_ITEMS']);?>
-	<div class="top_wrapper items_wrapper <?=$templateName;?>_template">
+	<div class="top_wrapper items_wrapper <?=$templateName;?>_template <?=$arParams['IS_COMPACT_SLIDER'] ? 'compact-catalog-slider' : ''?>">
 		<div class="fast_view_params" data-params="<?=urlencode(serialize($arTransferParams));?>"></div>
-		<div class="catalog_block items row margin0 js_append ajax_load block flexbox<?=($bSlide ? ' owl-carousel owl-theme owl-bg-nav visible-nav short-nav hidden-dots swipeignore ' : '');?>"<?if($bSlide):?>data-plugin-options='{"nav": true, "autoplay" : false,  "autoplayTimeout" : "3000", "smartSpeed":1000, <?=(count($arResult["ITEMS"]) > 4 ? "\"loop\": true," : "")?> "responsiveClass": true, "responsive":{"0":{"items": 2},"600":{"items": 2},"768":{"items": 3},"1200":{"items": 4}}}'<?endif;?>>
+		<div class="catalog_block items row <?=$arParams['IS_COMPACT_SLIDER'] ? 'swipeignore mobile-overflow' : ''?> margin0 <?=$bHasBottomPager ? 'has-bottom-nav' : ''?> js_append ajax_load block flexbox<?=($bSlide ? ' owl-carousel owl-theme owl-bg-nav visible-nav short-nav hidden-dots swipeignore ' : '');?>"<?if($bSlide):?>data-plugin-options='{"nav": true, "autoplay" : false,  "autoplayTimeout" : "3000", "smartSpeed":1000, <?=(count($arResult["ITEMS"]) > 4 ? "\"loop\": true," : "")?> "responsiveClass": true, "responsive":{"0":{"items": 2},"600":{"items": 2},"768":{"items": 3},"1200":{"items": 4}}}'<?endif;?>>
 	<?endif;?>
-		<?$arOfferProps = implode(';', $arParams['OFFERS_CART_PROPERTIES']);?>
+		<?
+		if(is_array($arParams['OFFERS_CART_PROPERTIES'])){
+			$arOfferProps = implode(';', $arParams['OFFERS_CART_PROPERTIES']);
+		} else {
+			$arOfferProps = '';
+		}
+		?>
 		<?foreach($arResult["ITEMS"] as $arItem){?>
 			<?$this->AddEditAction($arItem['ID'], $arItem['EDIT_LINK'], CIBlock::GetArrayByID($arParams["IBLOCK_ID"], "ELEMENT_EDIT"));
 			$this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayByID($arParams["IBLOCK_ID"], "ELEMENT_DELETE"), array("CONFIRM" => GetMessage('CT_BCS_ELEMENT_DELETE_CONFIRM')));
@@ -46,6 +54,8 @@
 			$item_id = $arItem["ID"];
 			$strMeasure = '';
 			$arCurrentSKU = array();
+
+			$currentSKUID = $currentSKUIBlock = '';
 
 			$totalCount = CMax::GetTotalCount($arItem, $arParams);
 			$arQuantityData = CMax::GetQuantityArray($totalCount, array('ID' => $item_id), 'N', (($arItem["OFFERS"] || $arItem['CATALOG_TYPE'] == CCatalogProduct::TYPE_SET || $bSlide || !$arResult['STORES_COUNT']) ? false : true));
@@ -71,7 +81,7 @@
 			}
 			$bBigBlock = ($arItem['PROPERTIES']['BIG_BLOCK']['VALUE'] == 'Y' && $arParams['SHOW_BIG_BLOCK'] != 'N');
 
-			$bUseSkuProps = ($arItem["OFFERS"] && !empty($arItem['OFFERS_PROP']) && !$bBigBlock);
+			$bUseSkuProps = ($arItem["OFFERS"] && !empty($arItem['OFFERS_PROP']) && !$bBigBlock && $arParams['TYPE_SKU'] != 'N');			
 
 			$elementName = ((isset($arItem['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE']) && $arItem['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE']) ? $arItem['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE'] : $arItem['NAME']);
 
@@ -104,8 +114,12 @@
 					if($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["PREVIEW_PICTURE"])
 						$arItem["DETAIL_PICTURE"] = $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["DETAIL_PICTURE"];
 
+					if($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']){
+						$arItem['SELECTED_SKU_IPROPERTY_VALUES'] = $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES'];
+					}
+
 					if($arParams["SET_SKU_TITLE"] == "Y")
-						$arItem["NAME"] = $elementName = $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["NAME"];
+						$arItem["NAME"] = $elementName = ((isset($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE']) && $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE']) ? $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE'] : $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['NAME']);
 					$item_id = $currentSKUID;
 
 					// ARTICLE
@@ -160,8 +174,8 @@
 				</div>
 			<?endif;?>
 
+			<?$bFonImg = false;?>
 			<?if($bBigBlock):?>
-				<?$bFonImg = false;?>
 				<?if($arItem["PROPERTIES"]["BIG_BLOCK_PICTURE"]["VALUE"])
 				{
 					$img = \CFile::ResizeImageGet($arItem["PROPERTIES"]["BIG_BLOCK_PICTURE"]["VALUE"], array( "width" => 900, "height" => 900 ), BX_RESIZE_IMAGE_PROPORTIONAL,true );
@@ -231,14 +245,11 @@
 			<?ob_start();?>
 				<div class="sa_block" data-fields='<?=Json::encode($arParams["FIELDS"])?>' data-stores='<?=Json::encode($arParams["STORES"])?>' data-user-fields='<?=Json::encode($arParams["USER_FIELDS"])?>'>
 					<?=$arQuantityData["HTML"];?>
-					<?if($arQuantityDataCMP && $arItem['OFFERS']):?>
+					<?if(isset($arQuantityDataCMP) && $arQuantityDataCMP && $arItem['OFFERS']):?>
 						<?=$arQuantityDataCMP["HTML"];?>
 					<?endif;?>
-					<div class="article_block" <?if(isset($arItem['ARTICLE']) && $arItem['ARTICLE']['VALUE']):?>data-name="<?=Loc::getMessage('T_ARTICLE_COMPACT');?>" data-value="<?=$arItem['ARTICLE']['VALUE'];?>"<?endif;?>>
-						<?if(isset($arItem['ARTICLE']) && $arItem['ARTICLE']['VALUE']){?>
-							<div class="muted font_sxs"><?=Loc::getMessage('T_ARTICLE_COMPACT');?>: <?=$arItem['ARTICLE']['VALUE'];?></div>
-						<?}?>
-					</div>
+					<?$bHasArticle = isset($arItem['ARTICLE']) && $arItem['ARTICLE']['VALUE'];?>
+					<div class="article_block" <?if($bHasArticle):?>data-name="<?=Loc::getMessage('T_ARTICLE_COMPACT');?>" data-value="<?=$arItem['ARTICLE']['VALUE'];?>"<?endif;?>><?if($bHasArticle){?><div class="muted font_sxs"><?=Loc::getMessage('T_ARTICLE_COMPACT');?>: <?=$arItem['ARTICLE']['VALUE'];?></div><?}?></div>
 				</div>
 			<?$itemSaBlock = ob_get_clean();?>
 
@@ -316,7 +327,7 @@
 					<?if($arParams["TYPE_VIEW_BASKET_BTN"] != "TYPE_2" || $bBigBlock):?>
 						<?if($arParams["TYPE_VIEW_BASKET_BTN"] == "TYPE_3"):?>
 							<div class="basket-icons-wrapper clearfix offer_buy_block<?=(($arAddToBasketData["ACTION"] == "NOTHING") ? ' n-btn' : '');?> ce_cmp_hidden">
-								<?\Aspro\Functions\CAsproMaxItem::showDelayCompareBtn($arParams, $arItem, $arAddToBasketData, $totalCount, $bUseSkuProps, 'block static', false, true, '', $currentSKUID, $currentSKUIBlock);?>
+								<?\Aspro\Functions\CAsproMaxItem::showDelayCompareBtn($arParams, $arItem, $arAddToBasketData, $totalCount, $bUseSkuProps, 'block static', false, ($arParams['SHOW_ONE_CLICK_BUY'] == 'Y'), '', $currentSKUID, $currentSKUIBlock);?>
 								<div class="basket-icons-wrapper__btn button_block">
 									<!--noindex-->
 										<?=$arAddToBasketData["HTML"]?>
@@ -418,7 +429,7 @@
 											elseif($arItem["OFFERS"])
 											{
 												$arAddToBasketData = CMax::GetAddToBasketArray($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]], $totalCountCMP, $arParams["DEFAULT_COUNT"], $arParams["BASKET_URL"], false, $arItemIDs["ALL_ITEM_IDS"], 'btn-exlg', $arParams);
-												
+
 											}
 										}
 									?>
@@ -450,7 +461,7 @@
 			<?$itemFooterButton = ob_get_clean();?>
 
 			<?ob_start();?>
-				<?if($arParams["SHOW_DISCOUNT_TIME"]=="Y"){?>
+				<?if($arParams["SHOW_DISCOUNT_TIME"]=="Y" && $arParams['SHOW_COUNTER_LIST'] != 'N'){?>
 					<?$min_price_id=0;
 					if($arItem["OFFERS"])
 					{
@@ -552,7 +563,7 @@
 															<div class="hint"><span class="icon colored_theme_hover_bg"><i>?</i></span><div class="tooltip"><?=$arProp["HINT"]?></div></div>
 														<?endif;?>
 													</div>
-													
+
 													<div class="properties__value font_sm darken">
 														<?
 														if(is_array($arProp["DISPLAY_VALUE"])) { foreach($arProp["DISPLAY_VALUE"] as $key => $value) { if ($arProp["DISPLAY_VALUE"][$key+1]) {echo $value.", ";} else {echo $value;} }}
@@ -634,6 +645,22 @@
 				</div>
 			</div>
 		<?}?>
+
+		<?if($arParams['IS_COMPACT_SLIDER'] && $bHasBottomPager):?>
+			<?if($arParams["AJAX_REQUEST"]=="Y"):?>
+				<div class="wrap_nav bottom_nav_wrapper">
+			<?endif;?>
+
+			<div class="bottom_nav mobile_slider animate-load-state block-type round-ignore" data-parent=".tabs_slider" data-append=".items" <?=($arParams["AJAX_REQUEST"]=="Y" ? "style='display: none; '" : "");?>>
+				<?=CMax::showIconSvg('bottom_nav-icon colored_theme_svg', SITE_TEMPLATE_PATH.'/images/svg/mobileBottomNavLoader.svg');?>
+				<?=$arResult["NAV_STRING"]?>
+			</div>
+
+			<?if($arParams["AJAX_REQUEST"]=="Y"):?>
+				</div>
+			<?endif;?>
+		<?endif;?>
+
 	<?if($arParams["AJAX_REQUEST"] != "Y"):?>
 		</div>
 	</div>
@@ -643,23 +670,30 @@
 		<div class="wrap_nav bottom_nav_wrapper">
 	<?endif;?>
 
-	<div class="bottom_nav animate-load-state block-type" data-parent=".tabs_slider" data-append=".items" <?=($arParams["AJAX_REQUEST"]=="Y" ? "style='display: none; '" : "");?>>
-		<?if( $arParams["DISPLAY_BOTTOM_PAGER"] == "Y" ){?><?=$arResult["NAV_STRING"]?><?}?>
-	</div>
-
+	<?$showAllCount = false;?>
 	<?if($arParams['IS_CATALOG_PAGE'] == 'Y' && $arParams['SECTION_COUNT_ELEMENTS'] == 'Y'):?>
 		<?if((int)$arResult['NAV_RESULT']->NavRecordCount > 0):?>
 			<?$this->SetViewTarget("more_text_title");?>
 				<span class="element-count-wrapper"><span class="element-count muted font_xs rounded3"><?=$arResult['NAV_RESULT']->NavRecordCount;?></span></span>
 			<?$this->EndViewTarget();?>
+			<?
+			$showAllCount = true;
+			$allCount = $arResult['NAV_RESULT']->NavRecordCount;
+			?>
 		<?endif;?>
 	<?endif;?>
+
+	<div class="bottom_nav animate-load-state block-type" <?=($showAllCount ? 'data-all_count="'.$allCount.'"' : '')?> data-parent=".tabs_slider" data-append=".items" <?=($arParams["AJAX_REQUEST"]=="Y" ? "style='display: none; '" : "");?>>
+		<?if( $arParams["DISPLAY_BOTTOM_PAGER"] == "Y" ){?><?=$arResult["NAV_STRING"]?><?}?>
+	</div>
+	
 
 	<?if($arParams["AJAX_REQUEST"]=="Y"):?>
 		</div>
 	<?endif;?>
 
 	<script>
+		// lazyLoadPagenBlock();
 		<?if($bSlide):?>
 			sliceItemBlockSlide();
 		<?else:?>

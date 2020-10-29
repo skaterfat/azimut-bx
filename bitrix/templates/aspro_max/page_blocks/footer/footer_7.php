@@ -9,7 +9,7 @@ global $arTheme;
 			<div class="row">
 				<div class="subscribe_wrap col-md-3">
 					<div class="info">
-						<?if(\Bitrix\Main\Loader::includeModule('subscribe')):?>
+						<?if(\Bitrix\Main\Loader::includeModule('subscribe') && $arTheme['HIDE_SUBSCRIBE']['VALUE'] != 'Y'):?>
 							<div class="subscribe_button">
 								<span class="btn" data-event="jqm" data-param-id="subscribe" data-param-type="subscribe" data-name="subscribe"><?=GetMessage('SUBSCRIBE_TITLE')?>
 								<?=CMax::showIconSvg('subscribe', SITE_TEMPLATE_PATH.'/images/svg/subscribe_small_footer.svg')?></span>

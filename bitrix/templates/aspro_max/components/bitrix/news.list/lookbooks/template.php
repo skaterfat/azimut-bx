@@ -9,6 +9,8 @@
 	$bBordered = $arParams['BORDERED'] == 'Y';
 	$bFrontPage = $arParams['FRONT_PAGE'] == 'Y';
 	?>
+	<?$bSlider = (isset($arParams['MOBILE_TEMPLATE']) && $arParams['MOBILE_TEMPLATE'] === 'Y')?>
+	<?$bHasBottomPager = $arParams["DISPLAY_BOTTOM_PAGER"] == "Y" && $arResult["NAV_STRING"];?>
 	<div class="content_wrapper_block <?=$templateName;?> <?=$bTextInside ? 'text-inside' : ''?> <?=$bBordered ? 'with-border' : ''?>">
 		<?if($bFrontPage):?>
 			<div class="maxwidth-theme">
@@ -17,8 +19,8 @@
 				<a href="<?=SITE_DIR.$arParams['ALL_URL'];?>" class="pull-right font_upper muted"><?=$arParams['TITLE_BLOCK_ALL'] ;?></a>
 			</div>
 		<?endif;?>
-		<div class="item-views <?=$bTextInside ? 'text_inside' : ''?> <?=$bBordered ? 'without-space' : ''?>">
-			<div class="items row <?=$bBordered ? 'margin0' : ''?> flexbox">
+		<div class="item-views <?=$bTextInside ? 'text_inside' : ''?><?=($bSlider ? ' mobile-adaptive' : '');?> <?=$bBordered ? 'without-space' : ''?>">
+			<div class="items row <?=$bBordered ? 'margin0' : ''?> flexbox c_<?=count($arResult['ITEMS']);?> <?=($bSlider ? ' swipeignore mobile-overflow mobile-margin-16 mobile-compact' : '');?>">
 
 				<?foreach($arResult['ITEMS'] as $arItem)
 				{
@@ -26,7 +28,7 @@
 					$this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayByID($arItem['IBLOCK_ID'], 'ELEMENT_DELETE'), array('CONFIRM' => GetMessage('CT_BNL_ELEMENT_DELETE_CONFIRM')));
 					$sUrl = $arItem['DETAIL_PAGE_URL'];
 					?>
-					<div class="col-md-<?=$col;?> col-sm-6 col-xs-6 col-12--500 <?=$bBordered ? 'bordered box-shadow' : ''?>">
+					<div class="col-md-<?=$col;?> col-sm-6 col-xs-6 col-12--500 <?=$bBordered ? 'bordered box-shadow' : ''?><?=($bSlider ? ' item-width-261' : '');?>">
 						<div id="<?=$this->GetEditAreaId($arItem['ID']);?>" class="item <?=$bBordered ? '' : 'hover_zoom'?>">
 							<?if(is_array($arItem['PREVIEW_PICTURE']) ):?>
 								<div class="image rounded3 shine">

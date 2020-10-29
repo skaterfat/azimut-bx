@@ -2,8 +2,8 @@
 <?
 global $arTheme, $arRegion;
 $arRegions = CMaxRegionality::getRegions();
-$bOrderView = ($arTheme['ORDER_VIEW']['VALUE'] == 'Y' ? true : false);
-$bCabinet = ($arTheme["CABINET"]["VALUE"]=='Y' ? true : false);
+$bOrderView = isset($arTheme['ORDER_VIEW']) ? ($arTheme['ORDER_VIEW']['VALUE'] == 'Y' ? true : false) : false;
+$bCabinet = isset($arTheme['CABINET']) ? ($arTheme["CABINET"]["VALUE"]=='Y' ? true : false) : false;
 $logoClass = ($arTheme['COLORED_LOGO']['VALUE'] !== 'Y' ? '' : ' colored');
 ?>
 

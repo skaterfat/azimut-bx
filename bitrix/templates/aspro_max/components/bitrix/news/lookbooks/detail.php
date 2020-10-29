@@ -6,14 +6,6 @@ use \Bitrix\Main\Localization\Loc;
 
 global $arTheme, $isHideLeftBlock, $isWidePage;
 
-//var_dump($APPLICATION->GetProperty('HIDE_LEFT_BLOCK_DETAIL'));
-/*if($APPLICATION->GetProperty('HIDE_LEFT_BLOCK_DETAIL')=='Y')
-{
-	$APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", "Y");
-	$isHideLeftBlock = false;
-}
-var_dump($isHideLeftBlock);*/
-
 
 $arItemFilter = CMax::GetCurrentElementFilter($arResult["VARIABLES"], $arParams);
 $arElement = CMaxCache::CIblockElement_GetList(array("CACHE" => array("TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]), "MULTI" => "N")), $arItemFilter, false, false, array("ID", 'NAME', 'PREVIEW_TEXT', "IBLOCK_SECTION_ID", 'DETAIL_PICTURE', 'DETAIL_PAGE_URL', 'PROPERTY_LINK_PROJECTS', 'PROPERTY_LINK_GOODS', 'PROPERTY_LINK_REVIEWS', 'PROPERTY_DOCUMENTS', 'PROPERTY_SECTION', 'PROPERTY_FILTER_URL', 'PROPERTY_H3_GOODS', 'PROPERTY_COLLECTION_TEMPLATE', 'ElementValues'));
@@ -37,6 +29,10 @@ if(isset($arParams["TYPE_LEFT_BLOCK_DETAIL"]) && $arParams["TYPE_LEFT_BLOCK_DETA
 
 if(isset($arParams["SIDE_LEFT_BLOCK_DETAIL"]) && $arParams["SIDE_LEFT_BLOCK_DETAIL"]!='FROM_MODULE'){
 	$arTheme['SIDE_MENU']['VALUE'] = $arParams["SIDE_LEFT_BLOCK_DETAIL"];
+}
+
+if($arTheme['HIDE_SUBSCRIBE']['VALUE'] == 'Y'){
+	$arParams["USE_SUBSCRIBE_IN_TOP"] = "N";
 }
 ?>
 

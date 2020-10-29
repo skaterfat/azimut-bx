@@ -13,13 +13,18 @@
 				$this->AddDeleteAction($arItem['ID'], $arItem['DELETE_LINK'], CIBlock::GetArrayByID($arItem['IBLOCK_ID'], 'ELEMENT_DELETE'), array('CONFIRM' => GetMessage('CT_BNL_ELEMENT_DELETE_CONFIRM')));
 				// use detail link?
 				$bDetailLink = $arParams['SHOW_DETAIL_LINK'] != 'N' && (!strlen($arItem['DETAIL_TEXT']) ? ($arParams['HIDE_LINK_WHEN_NO_DETAIL'] !== 'Y' && $arParams['HIDE_LINK_WHEN_NO_DETAIL'] != 1) : true);
+				$bRedirect = isset($arItem['DISPLAY_PROPERTIES']['REDIRECT']) && strlen($arItem['DISPLAY_PROPERTIES']['REDIRECT']['VALUE']);
 				?>
 
 				<div class="list-sales-compact-item" id="<?=$this->GetEditAreaId($arItem['ID'])?>">
 					<div class="list-sales-compact-item__title font_sm">
-						<?if($bDetailLink):?><span class="dark-color dotted" data-event="jqm" data-param-form_id="fast_view_sale" data-name="fast_view_sale" data-param-iblock_id="<?=$arItem["IBLOCK_ID"];?>" data-param-id="<?=$arItem["ID"];?>"><?endif;?>
-							<?=$arItem['NAME']?>
-						<?if($bDetailLink):?></span><?endif;?>
+						<?if(!$bRedirect):?>
+							<?if($bDetailLink):?><span class="dark-color dotted" data-event="jqm" data-param-form_id="fast_view_sale" data-name="fast_view_sale" data-param-iblock_id="<?=$arItem["IBLOCK_ID"];?>" data-param-id="<?=$arItem["ID"];?>"><?endif;?>
+								<?=$arItem['NAME']?>
+							<?if($bDetailLink):?></span><?endif;?>
+						<?else:?>
+							<a class="dark-color dotted" href="<?=$arItem['DISPLAY_PROPERTIES']['REDIRECT']['VALUE']?>"><?=$arItem['NAME']?></a>
+						<?endif;?>
 					</div>
 				</div>
 			<?endforeach;?>

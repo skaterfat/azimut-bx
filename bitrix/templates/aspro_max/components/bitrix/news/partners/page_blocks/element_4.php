@@ -21,6 +21,9 @@ $APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", "Y");?>
 	$isAjaxFilter="Y";
 }?>
 <?global $arTheme, $arRegion;?>
+
+<?$arParams['DISPLAY_WISH_BUTTONS'] = CMax::GetFrontParametrValue('CATALOG_DELAY');?>
+
 <?if(!$bHideLeftBlock):?>
 <div class="right_block wide_N">
 	<div class="middle">
@@ -362,21 +365,29 @@ $APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", "Y");?>
 								if($arRegion["LIST_STORES"] && $arParams["HIDE_NOT_AVAILABLE"] == "Y")
 								{
 									if($arParams['STORES']){
-										if(count($arParams['STORES']) > 1){
-											$arStoresFilter = array('LOGIC' => 'OR');
-											foreach($arParams['STORES'] as $storeID)
-											{
-												$arStoresFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-											}
+										if(CMax::checkVersionModule('18.6.200', 'iblock')){
+											$arStoresFilter = array(
+												'STORE_NUMBER' => $arParams['STORES'],
+												'>STORE_AMOUNT' => 0,
+											);
 										}
 										else{
-											foreach($arParams['STORES'] as $storeID)
-											{
-												$arStoresFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+											if(count($arParams['STORES']) > 1){
+												$arStoresFilter = array('LOGIC' => 'OR');
+												foreach($arParams['STORES'] as $storeID)
+												{
+													$arStoresFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+												}
+											}
+											else{
+												foreach($arParams['STORES'] as $storeID)
+												{
+													$arStoresFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+												}
 											}
 										}
 
-										$arTmpFilter = array('!TYPE' => '2');
+										$arTmpFilter = array('!TYPE' => array('2', '3'));
 										if($arStoresFilter){
 											if(count($arStoresFilter) > 1){
 												$arTmpFilter[] = $arStoresFilter;
@@ -387,7 +398,7 @@ $APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", "Y");?>
 
 											$GLOBALS[$arParams["FILTER_NAME"]][] = array(
 												'LOGIC' => 'OR',
-												array('TYPE' => '2'),
+												array('TYPE' => array('2', '3')),
 												$arTmpFilter,
 											);
 										}
@@ -426,6 +437,8 @@ $APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", "Y");?>
 									<div id="filter-helper" class="top"></div>
 								</div>
 							<?endif;?>
+
+							
 
 							<div class="inner_wrapper">
 								<div class="ajax_load cur <?=$display?>" data-code="<?=$display?>">
@@ -652,17 +665,22 @@ $APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", "Y");?>
 			<?$APPLICATION->ShowViewContent('under_sidebar_content');?>
 
 			<?CMax::get_banners_position('SIDE', 'Y');?>
-			<?$APPLICATION->IncludeComponent("bitrix:main.include", ".default",
-				array(
-					"COMPONENT_TEMPLATE" => ".default",
-					"PATH" => SITE_DIR."include/left_block/comp_subscribe.php",
-					"AREA_FILE_SHOW" => "file",
-					"AREA_FILE_SUFFIX" => "",
-					"AREA_FILE_RECURSIVE" => "Y",
-					"EDIT_TEMPLATE" => "include_area.php"
-				),
-				false
-			);?>
+
+			<?if(\Bitrix\Main\ModuleManager::isModuleInstalled("subscribe") && $arTheme['HIDE_SUBSCRIBE']['VALUE'] != 'Y'):?>
+				<?$APPLICATION->IncludeComponent("bitrix:main.include", ".default",
+					array(
+						"COMPONENT_TEMPLATE" => ".default",
+						"PATH" => SITE_DIR."include/left_block/comp_subscribe.php",
+						"AREA_FILE_SHOW" => "file",
+						"AREA_FILE_SUFFIX" => "",
+						"AREA_FILE_RECURSIVE" => "Y",
+						"EDIT_TEMPLATE" => "include_area.php"
+					),
+					false
+				);?>
+			<?endif;?>
+
+
 		</div>	
 	</div>
 <?elseif($arItems && $bHideLeftBlock):?>

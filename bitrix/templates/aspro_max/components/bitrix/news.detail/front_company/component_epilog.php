@@ -1,5 +1,5 @@
 <?if(!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();?>
-<?if($templateData['BENEFITS']):?>
+<?if(isset($templateData['BENEFITS']) && $templateData['BENEFITS']):?>
 	<?$GLOBALS['LINK_BENEFIT_COMPANY']['ID'] = $templateData['BENEFITS']?>
 	<div class="js-tizers-tmp">
 	    <?$APPLICATION->IncludeComponent(
@@ -69,6 +69,7 @@
 				"SIZE_IN_ROW" => $arParams['BENEFIT_COL'],
 				"PAGER_BASE_LINK_ENABLE" => "N",
 				"SHOW_404" => "N",
+				"MOBILE_TEMPLATE" => $GLOBALS['arTheme']['MOBILE_TIZERS']['VALUE'],
 				"MESSAGE_404" => ""
 			),
 			false, array("HIDE_ICONS" => "Y")

@@ -65,6 +65,21 @@ $(document).ready(function (){
 			}
 		}
 
+		if(_this.attr('href') === '#stores' && $('.stores_tab').length)
+		{
+			if(typeof map !== 'undefined')
+			{
+				map.container.fitToViewport();
+				if(typeof clusterer !== 'undefined' && !$('.stores_tab').find('.detail_items').is(':visible'))
+				{
+					map.setBounds(clusterer.getBounds(), {
+						zoomMargin: 40,
+						// checkZoomRange: true
+					});
+				}
+			}
+		}
+
 		$('.nav.nav-tabs li').each(function(){
 			var _this = $(this);
 			if(!_this.find(' > a.linked').length)
@@ -2891,7 +2906,9 @@ window.JCCatalogElement.prototype.ChangeInfo = function()
 			}
 		}
 
-		setLocationSKU(this.offers[index].ID, this.config.SKU_DETAIL_ID);
+		if(this.config.SKU_DETAIL_ID) {
+			setLocationSKU(this.offers[index].ID, this.config.SKU_DETAIL_ID);
+		}
 
 		$(this.obBasketActions).closest('.counter_wrapp').addClass('hidden_block');
 

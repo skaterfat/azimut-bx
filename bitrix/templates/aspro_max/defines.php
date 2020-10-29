@@ -24,8 +24,8 @@ $bHideLeftBlockByHeader = ($arTheme['HEADER_TYPE']['VALUE'] == 28 || $arTheme['H
 
 $isBasketPage = CSite::InDir($arTheme["BASKET_PAGE_URL"]['VALUE']);
 
-global $bBigBannersIndexClass, $bTizersIndexClass, $bCatalogSectionsIndexClass, $bCatalogTabIndexClass, $bMiddleAdvIndexClass, $bTopAdvIndexClass, $bFloatBannerIndexClass, $bSaleIndexClass, $bBlogIndexClass, $bBottomBannersIndexClass, $bCompanyTextIndexClass, $bBrandsIndexClass, $bNewsIndexClass, $bMapsIndexClass, $bReviewIndexClass, $bCollectionIndexClass, $bLookbookIndexClass, $bInstagrammIndexClass, $bFloatBannersIndexClass, $bFavoritItemIndexClass;
-global $bShowBigBanners, $bShowTizers, $bShowCatalogSections, $bShowCatalogTab, $bShowMiddleAdvBottomBanner, $bShowTopAdvBanner, $bShowFloatBanner, $bShowSale, $bShowReview, $bShowCollection, $bShowLookbook, $bShowBlog, $bShowBottomBanner, $bShowCompany, $bShowBrands, $bShowNews, $bShowMaps, $bShowInstagramm, $bShowFloatBanners, $bShowFavoritItem;
+global $bBigBannersIndexClass, $bTizersIndexClass, $bCatalogSectionsIndexClass, $bCatalogTabIndexClass, $bMiddleAdvIndexClass, $bTopAdvIndexClass, $bFloatBannerIndexClass, $bSaleIndexClass, $bBlogIndexClass, $bBottomBannersIndexClass, $bCompanyTextIndexClass, $bBrandsIndexClass, $bNewsIndexClass, $bMapsIndexClass, $bReviewIndexClass, $bCollectionIndexClass, $bLookbookIndexClass, $bStoriesIndexClass, $bInstagrammIndexClass, $bFloatBannersIndexClass, $bFavoritItemIndexClass;
+global $bShowBigBanners, $bShowTizers, $bShowCatalogSections, $bShowCatalogTab, $bShowMiddleAdvBottomBanner, $bShowTopAdvBanner, $bShowFloatBanner, $bShowSale, $bShowReview, $bShowCollection, $bShowLookbook, $bShowStories, $bShowBlog, $bShowBottomBanner, $bShowCompany, $bShowBrands, $bShowNews, $bShowMaps, $bShowInstagramm, $bShowFloatBanners, $bShowFavoritItem, $bShowSimple;
 
 $bActiveTheme = ($arTheme["THEME_SWITCHER"]["VALUE"] == 'Y');
 
@@ -53,14 +53,6 @@ $bShowFloatBanners = ($bActiveTheme || ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$in
 $bFloatBannersIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["FLOAT_BANNERS"]["VALUE"] == 'Y' ? '' : 'hidden');
 $bFloatBannersIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."FLOAT_BANNERS"] == 'Y' ? ' grey_block' : '');
 
-$bShowTopAdvBanner = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["TOP_ADV_BOTTOM_BANNER"]["VALUE"] != "N");
-$bTopAdvIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["TOP_ADV_BOTTOM_BANNER"]["VALUE"] == 'Y' ? '' : 'hidden');
-$bTopAdvIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."TOP_ADV_BOTTOM_BANNER"] == 'Y' ? ' grey_block' : '');
-
-$bShowFloatBanner = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["FLOAT_BANNER"]["VALUE"] != "N");
-$bFloatBannerIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["FLOAT_BANNER"]["VALUE"] == 'Y' ? '' : 'hidden');
-$bFloatBannerIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."FLOAT_BANNER"] == 'Y' ? ' grey_block' : '');
-
 $bShowSale = ($bActiveTheme || ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["SALE"]["VALUE"] != "N"));
 $bSaleIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["SALE"]["VALUE"] == 'Y' ? '' : 'hidden');
 $bSaleIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."SALE"] == 'Y' ? ' grey_block' : '');
@@ -76,6 +68,10 @@ $bCollectionIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."COLLECTIONS"
 $bShowLookbook = ($bActiveTheme || ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["LOOKBOOKS"]["VALUE"] != "N"));
 $bLookbookIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["LOOKBOOKS"]["VALUE"] == 'Y' ? '' : 'hidden');
 $bLookbookIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."LOOKBOOKS"] == 'Y' ? ' grey_block' : '');
+
+$bShowStories = ($bActiveTheme || ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["STORIES"]["VALUE"] != "N"));
+$bStoriesIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["STORIES"]["VALUE"] == 'Y' ? '' : 'hidden');
+$bStoriesIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."STORIES"] == 'Y' ? ' grey_block' : '');
 
 $bShowBlog = ($bActiveTheme || ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["BLOG"]["VALUE"] != "N"));
 $bBlogIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["BLOG"]["VALUE"] == 'Y' ? '' : 'hidden');
@@ -109,6 +105,7 @@ $bShowInstagramm = ($bActiveTheme || ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$inde
 $bInstagrammIndexClass = ($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$indexType]["INSTAGRAMM"]["VALUE"] == 'Y' ? '' : 'hidden');
 $bInstagrammIndexClass .= ($arTheme["FON_PARAMS"]["fon".$indexType."INSTAGRAMM"] == 'Y' ? ' grey_block' : '');
 
+$bShowSimple = (CMax::IsBasketPage() || CMax::IsOrderPage()) && $arTheme['SIMPLE_BASKET']['VALUE'] == 'Y';
 
 global $arRegion;
 if($isIndex)

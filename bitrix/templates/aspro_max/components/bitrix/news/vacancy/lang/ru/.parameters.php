@@ -24,5 +24,5 @@ $MESS["T_ELEMENT_TYPE_VIEW"] = "Шаблон детальной страницы
 $MESS["FROM_MODULE_PARAMS"] = "Из настроек центра управления";
 
 $MESS["SHOW_TOP_VACANCY_BLOCK"] = "Выводить верхний блок на странице списка элементов";
-
+$MESS["USE_SUBSCRIBE_IN_TOP"] = "Показывать подписку в верхней строке";
 ?>

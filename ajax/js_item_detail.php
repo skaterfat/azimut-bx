@@ -71,6 +71,9 @@ if(!$arPost['CLASS'])
 
 	/* get sku props*/
 	$arSKU = array("IBLOCK_ID" => $arPost["IBLOCK_ID"], "SKU_PROPERTY_ID" => $arPost["PROPERTY_ID"], "VERSION" => 1);
+	if ( $arPost["IBLOCK_ID"] && $featureProps = \Bitrix\Iblock\Model\PropertyFeature::getListPageShowPropertyCodes( $arPost["IBLOCK_ID"], array('CODE' => 'Y') ) ) {
+		$arPost["PARAMS"]['OFFER_TREE_PROPS'] = $featureProps;
+	}
 	$arSKUPropList = CIBlockPriceTools::getTreeProperties(
 		$arSKU,
 		$arPost["PARAMS"]["OFFER_TREE_PROPS"],
@@ -84,6 +87,9 @@ if(!$arPost['CLASS'])
 	CIBlockPriceTools::getTreePropertyValues($arSKUPropList, $arNeedValues);
 
 	$arSKUPropIDs = array_keys($arSKUPropList);
+	if($featureProps) {
+		$arPost["PARAMS"]['OFFER_TREE_PROPS'] = $arSKUPropIDs;
+	}
 
 	if ($arSKUPropIDs)
 		$arSKUPropKeys = array_fill_keys($arSKUPropIDs, false);
@@ -162,6 +168,11 @@ if(!$arPost['CLASS'])
 			}
 		}
 
+		if ( $featureProps = \Bitrix\Iblock\Model\PropertyFeature::getListPageShowPropertyCodes( $arPost["IBLOCK_ID"], array('CODE' => 'Y') ) ) {
+			$arPost["PARAMS"]["LIST_OFFERS_PROPERTY_CODE"] = $featureProps;
+		}
+		
+
 		/* get sku by link item*/
 		$rsElements = CIBLockElement::GetList(array($arPost["PARAMS"]["OFFERS_SORT_FIELD"] => $arPost["PARAMS"]["OFFERS_SORT_ORDER"], $arPost["PARAMS"]["OFFERS_SORT_FIELD2"] => $arPost["PARAMS"]["OFFERS_SORT_ORDER2"]), $arFilter, false, array("nTopCount" => $arPost["PARAMS"]["LIST_OFFERS_LIMIT"]), $arSelect);
 		while($obElement = $rsElements->GetNextElement())
@@ -217,6 +228,7 @@ if(!$arPost['CLASS'])
 			if (isset($arDouble[$arOffer['ID']]))
 				continue;
 			$arRow = array();
+			
 			foreach ($arSKUPropIDs as $propkey => $strOneCode)
 			{
 				$arCell = array(
@@ -525,7 +537,7 @@ if(!$arPost['CLASS'])
 		}
 		/**/
 	}
-
+	
 	/*format items*/
 	if($arItems)
 	{
@@ -575,7 +587,7 @@ if(!$arPost['CLASS'])
 			$arItems["ITEMS"][$key]["SHOW_ONE_CLICK_BUY"] = ($arPost["PARAMS"]["SHOW_ONE_CLICK_BUY"] ? $arPost["PARAMS"]["SHOW_ONE_CLICK_BUY"] : "N");
 
 			// for list view
-			$arPost["PARAMS"]["SHOW_ONE_CLICK_BUY"] = "Y";
+			//$arPost["PARAMS"]["SHOW_ONE_CLICK_BUY"] = "Y";//comment cause its broke html when ocb off  http://joxi.ru/LmGvoGxiJ7R8Zr
 			$arPost["PARAMS"]["IBLOCK_ID"] = $arItem["IBLOCK_ID"];
 			$arItems["ITEMS"][$key]["ONE_CLICK_BUY_HTML"] = \Aspro\Functions\CAsproMax::showItemOCB($arAddToBasketData, $arItem, $arPost["PARAMS"], true);
 
@@ -675,6 +687,7 @@ if(!$arPost['CLASS'])
 							}
 						}
 					}
+
 					if (boolOneSearch)
 					{
 						if (!BX.util.in_array(obOffers[i].TREE[index], arValues))
@@ -1632,7 +1645,7 @@ if(!$arPost['CLASS'])
 			wrapper = $('.<?=$arPost["CLASS"]?>.js_offers__<?=$arPost["LINK_ID"]?>').closest('.item'),
 			arFilter = {},
 			tmpFilter = [];
-
+			
 		if(typeof window["obSkuQuantys"] == "undefined")
 			window["obSkuQuantys"] = {};
 

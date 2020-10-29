@@ -92,8 +92,12 @@
 					if($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["PREVIEW_PICTURE"])
 						$arItem["DETAIL_PICTURE"] = $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["DETAIL_PICTURE"];
 
+					if($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']){
+						$arItem['SELECTED_SKU_IPROPERTY_VALUES'] = $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES'];
+					}
+
 					if($arParams["SET_SKU_TITLE"] == "Y")
-						$arItem["NAME"] = $elementName = $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["NAME"];
+						$arItem["NAME"] = $elementName = ((isset($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE']) && $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE']) ? $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE'] : $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['NAME']);
 					$item_id = $currentSKUID;
 
 					// ARTICLE
@@ -517,21 +521,29 @@
 	<?if($arParams["AJAX_REQUEST"]=="Y"){?>
 		<div class="wrap_nav bottom_nav_wrapper">
 	<?}?>
-	<div class="bottom_nav <?=$arParams["DISPLAY_TYPE"];?>" <?=($arParams["AJAX_REQUEST"]=="Y" ? "style='display: none; '" : "");?>>
+
+	<?$showAllCount = false;?>
+	<?if($arParams['IS_CATALOG_PAGE'] == 'Y' && $arParams['SECTION_COUNT_ELEMENTS'] == 'Y'):?>
+		<?if((int)$arResult['NAV_RESULT']->NavRecordCount > 0):?>
+			<?$this->SetViewTarget("more_text_title");?>
+				<span class="element-count-wrapper"><span class="element-count muted font_xs rounded3"><?=$arResult['NAV_RESULT']->NavRecordCount;?></span></span>
+			<?$this->EndViewTarget();?>
+			<?
+			$showAllCount = true;
+			$allCount = $arResult['NAV_RESULT']->NavRecordCount;
+			?>
+		<?endif;?>
+	<?endif;?>
+
+	<div class="bottom_nav <?=$arParams["DISPLAY_TYPE"];?>" <?=($showAllCount ? 'data-all_count="'.$allCount.'"' : '')?> <?=($arParams["AJAX_REQUEST"]=="Y" ? "style='display: none; '" : "");?>>
 		<?if( $arParams["DISPLAY_BOTTOM_PAGER"] == "Y" ){?><?=$arResult["NAV_STRING"]?><?}?>
 	</div>
 	<?if($arParams["AJAX_REQUEST"]=="Y"){?>
 		</div>
 	<?}?>
 
-	<?if($arParams['IS_CATALOG_PAGE'] == 'Y' && $arParams['SECTION_COUNT_ELEMENTS'] == 'Y'):?>
-		<?if((int)$arResult['NAV_RESULT']->NavRecordCount > 0):?>
-			<?$this->SetViewTarget("more_text_title");?>
-				<span class="element-count-wrapper"><span class="element-count muted font_xs rounded3"><?=$arResult['NAV_RESULT']->NavRecordCount;?></span></span>
-			<?$this->EndViewTarget();?>
-		<?endif;?>
-	<?endif;?>
 	
+
 <?}else{?>
 	<div class="no_goods">
 		<div class="no_products">

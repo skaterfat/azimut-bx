@@ -47,7 +47,7 @@
                 }
 			}
 		}
-		
+
 
 		// sort
 		ob_start();
@@ -189,13 +189,13 @@
 				<?endif;?>
 
 
-			
+
 			<div class="main-catalog-wrapper catalog_in_content">
 				<div class="section-content-wrapper <?=(!$bHideLeftBlock ? 'with-leftblock' : '');?> js-load-wrapper">
 
 		<?$html=ob_get_clean();?>
 		<?$APPLICATION->AddViewContent('goods_catalog_block_prolog', $html);//?>
-				
+
 				<?if($isAjax=="Y" || $isAjaxFilter):?>
 					<?$APPLICATION->RestartBuffer();?>
 				<?endif;?>
@@ -203,7 +203,7 @@
 				<?ob_start()//goods_catalog_block ?>
 
 					<?if(!empty($arElement['PROPERTY_SECTION_VALUE']) || !empty($arElement['PROPERTY_FILTER_URL_VALUE']) || $arCustomFilter):?>
-						
+
 						<div class="catalog vertical filter_exists">
 							<?
 							if($arRegion)
@@ -243,21 +243,29 @@
 								if($arRegion["LIST_STORES"] && $arParams["HIDE_NOT_AVAILABLE"] == "Y")
 								{
 									if($arParams['STORES']){
-										if(count($arParams['STORES']) > 1){
-											$arStoresFilter = array('LOGIC' => 'OR');
-											foreach($arParams['STORES'] as $storeID)
-											{
-												$arStoresFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-											}
+										if(CMax::checkVersionModule('18.6.200', 'iblock')){
+											$arStoresFilter = array(
+												'STORE_NUMBER' => $arParams['STORES'],
+												'>STORE_AMOUNT' => 0,
+											);
 										}
 										else{
-											foreach($arParams['STORES'] as $storeID)
-											{
-												$arStoresFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+											if(count($arParams['STORES']) > 1){
+												$arStoresFilter = array('LOGIC' => 'OR');
+												foreach($arParams['STORES'] as $storeID)
+												{
+													$arStoresFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+												}
+											}
+											else{
+												foreach($arParams['STORES'] as $storeID)
+												{
+													$arStoresFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+												}
 											}
 										}
 
-										$arTmpFilter = array('!TYPE' => '2');
+										$arTmpFilter = array('!TYPE' => array('2', '3'));
 										if($arStoresFilter){
 											if(count($arStoresFilter) > 1){
 												$arTmpFilter[] = $arStoresFilter;
@@ -268,7 +276,7 @@
 
 											$GLOBALS[$arParams["FILTER_NAME"]][] = array(
 												'LOGIC' => 'OR',
-												array('TYPE' => '2'),
+												array('TYPE' => array('2', '3')),
 												$arTmpFilter,
 											);
 										}
@@ -280,11 +288,11 @@
 
 							}
 
-														
+
 							if( $arElement['PROPERTY_SECTION_VALUE'] && !$arCustomFilter ) {
 								$GLOBALS[$arParams["FILTER_NAME"]]['SECTION_ID'] = $arElement['PROPERTY_SECTION_VALUE'];
 							}
-							
+
         					$GLOBALS[$arParams["FILTER_NAME"]]['INCLUDE_SUBSECTIONS'] = 'Y';
 							$GLOBALS[$arParams["FILTER_NAME"]]['SECTION_GLOBAL_ACTIVE'] = 'Y';
 							?>
@@ -346,6 +354,8 @@
 										"MAX_GALLERY_ITEMS" => $arParams["MAX_GALLERY_GOODS_ITEMS"],
 										"ADD_PICT_PROP" => $arParams["ADD_PICT_PROP"],
 										"ADD_DETAIL_TO_SLIDER" => $arParams["ADD_DETAIL_TO_SLIDER"],
+										"SET_SKU_TITLE" => "Y",
+										"IBINHERIT_TEMPLATES" => $arElement ? $arIBInheritTemplates : array(),
 									);?>
 									<?//var_dump($GLOBALS[$arParams["FILTER_NAME"]])?>
 									<div class=" <?=$display;?> js_wrapper_items" data-params='<?=str_replace('\'', '"', CUtil::PhpToJSObject($arTransferParams, false))?>'>
@@ -481,6 +491,8 @@
 												"ADD_DETAIL_TO_SLIDER" => $arParams["ADD_DETAIL_TO_SLIDER"],
 												"SHOW_BIG_BLOCK" => 'N',
 												'MAX_SCU_COUNT_VIEW' => $arTheme['MAX_SCU_COUNT_VIEW']['VALUE'],
+												"SET_SKU_TITLE" => "Y",
+												"IBINHERIT_TEMPLATES" => $arElement ? $arIBInheritTemplates : array(),
 											), $component, array("HIDE_ICONS" => $isAjax)
 										);?>
 									</div>
@@ -494,7 +506,7 @@
 							<?endif;?>
 						</div>
 					<?endif;?>
-				
+
 				<?$htmlCatalog=ob_get_clean();?>
 				<?$APPLICATION->AddViewContent('goods_catalog_block', $htmlCatalog);//?>
 

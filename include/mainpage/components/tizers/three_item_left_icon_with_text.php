@@ -67,6 +67,7 @@
 		"INCLUDE_FILE" => "tizers_desc.php",
 		"PAGER_BASE_LINK_ENABLE" => "N",
 		"SHOW_404" => "N",
+		"MOBILE_TEMPLATE" => $GLOBALS['arTheme']['MOBILE_TIZERS']['VALUE'],
 		"MESSAGE_404" => ""
 	),
 	false

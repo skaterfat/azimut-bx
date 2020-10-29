@@ -361,12 +361,24 @@
 				current = 0,
 				coordinates = [];
 
+			/* ASPRO_CUSTOM */
+			var pullToEnd = false;
+			if(this._widths[ this._widths.length - 1 ] < this._width && !this.settings.loop && this.settings.lightDrag) {
+				pullToEnd = this._width - this._widths[ this._widths.length - 1 ];
+			}
+			/* ASPRO_CUSTOM */
+
 			while (++iterator < size) {
 				previous = coordinates[iterator - 1] || 0;
 				current = this._widths[this.relative(iterator)] + this.settings.margin;
-				coordinates.push(previous + current * rtl);
+				/* ASPRO_CUSTOM */
+				if(iterator == size - 2 && pullToEnd) {
+					coordinates.push(previous + current * rtl + pullToEnd + this.settings.margin);
+				} else {
+					coordinates.push(previous + current * rtl);
+				}
+				/* ASPRO_CUSTOM */
 			}
-
 			this._coordinates = coordinates;
 		}
 	}, {
@@ -764,7 +776,15 @@
 			return;
 		}
 
-		if ($.support.transform) {
+		/* ASPRO CUSTOM */
+		if(this.settings.marginMove) {
+			stage = this.$stage.css('margin-left').replace('px', '');
+			stage = {
+				x: stage,
+				y: 0
+			};
+		/* ASPRO CUSTOM */
+		} else if ($.support.transform) {
 			stage = this.$stage.css('transform').replace(/.*\(|\)| /g, '').split(',');
 			stage = {
 				x: stage[stage.length === 16 ? 12 : 4],
@@ -868,7 +888,19 @@
 			this.speed(this.settings.dragEndSpeed || this.settings.smartSpeed);
 			this.current(this.closest(stage.x, delta.x !== 0 ? direction : this._drag.direction));
 			this.invalidate('position');
-			this.update();
+			/* ASPRO CUSTOM */
+			var bUpdate = false;
+			if(!this.settings.loop) {
+				if(this.current() === 0) {
+					bUpdate = stage.x > 0;
+				} else {
+					bUpdate = stage.x < this.coordinates()[this._items.length - 1];
+				}
+			}
+			if(!this.settings.lightDrag || bUpdate) {
+				this.update();
+			}
+			/* ASPRO CUSTOM */
 
 			this._drag.direction = direction;
 
@@ -945,7 +977,16 @@
 			this.trigger('translate');
 		}
 
-		if ($.support.transform3d && $.support.transition) {
+		/* ASPRO CUSTOM */
+		if(this.settings.marginMove) {
+			this.$stage.css({
+				'margin-left': coordinate + 'px',
+				transition: (this.speed() / 1000) + 's' + (
+					this.settings.slideTransition ? ' ' + this.settings.slideTransition : ''
+				)
+			});
+		/* ASPRO CUSTOM */
+		} else if ($.support.transform3d && $.support.transition) {
 			this.$stage.css({
 				transform: 'translate3d(' + coordinate + 'px,0px,0px)',
 				transition: (this.speed() / 1000) + 's' + (

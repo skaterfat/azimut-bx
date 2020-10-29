@@ -8,7 +8,7 @@
 
 		<?
 		$bHasSection = false;
-		if($arParams['PARENT_SECTION'] && (isset($arResult['SECTIONS']) && $arResult['SECTIONS']))
+		if($arParams['PARENT_SECTION'] && (array_key_exists('SECTIONS', $arResult) && $arResult['SECTIONS']))
 		{
 			if(isset($arResult['SECTIONS'][$arParams['PARENT_SECTION']]) && $arResult['SECTIONS'][$arParams['PARENT_SECTION']])
 				$bHasSection = true;
@@ -47,14 +47,15 @@
 				// use detail link?
 				$bDetailLink = $arParams['SHOW_DETAIL_LINK'] != 'N' && (!strlen($arItem['DETAIL_TEXT']) ? ($arParams['HIDE_LINK_WHEN_NO_DETAIL'] !== 'Y' && $arParams['HIDE_LINK_WHEN_NO_DETAIL'] != 1) : true);
 				$bImage = isset($arItem['FIELDS']['PREVIEW_PICTURE']) && strlen($arItem['PREVIEW_PICTURE']['SRC']);
+				$bImageDetail = isset($arItem['FIELDS']['DETAIL_PICTURE']) && strlen($arItem['DETAIL_PICTURE']['SRC']);
 				$imageSrc = ($bImage ? $arItem['PREVIEW_PICTURE']['SRC'] : false);
-				$imageDetailSrc = ($bImage ? $arItem['DETAIL_PICTURE']['SRC'] : false);
+				$imageDetailSrc = ($bImageDetail ? $arItem['DETAIL_PICTURE']['SRC'] : false);
 				// show active date period
-				$bActiveDate = strlen($arItem['DISPLAY_PROPERTIES']['PERIOD']['VALUE']) || ($arItem['DISPLAY_ACTIVE_FROM'] && in_array('DATE_ACTIVE_FROM', $arParams['FIELD_CODE']));
+				$bActiveDate = ( isset($arItem['DISPLAY_PROPERTIES']['PERIOD']) && strlen($arItem['DISPLAY_PROPERTIES']['PERIOD']['VALUE']) ) || ($arItem['DISPLAY_ACTIVE_FROM'] && in_array('DATE_ACTIVE_FROM', $arParams['FIELD_CODE']));
 				$bDiscountCounter = ($arItem['ACTIVE_TO'] && in_array('ACTIVE_TO', $arParams['FIELD_CODE']));
-				$bShowDopBlock = ($arItem['DISPLAY_PROPERTIES']['SALE_NUMBER']['VALUE'] || $bDiscountCounter);
+				$bShowDopBlock = (isset($arItem['DISPLAY_PROPERTIES']['SALE_NUMBER']) && $arItem['DISPLAY_PROPERTIES']['SALE_NUMBER']['VALUE'] || $bDiscountCounter);
 				$bHideSectionName = isset($arParams['HIDE_SECTION_NAME']) && ($arParams['HIDE_SECTION_NAME'] == "Y");
-				$bShowSectionName = strlen($arResult['SECTIONS'][$arItem['IBLOCK_SECTION_ID']]['NAME']) && !$bHideSectionName;
+				$bShowSectionName = isset($arResult['SECTIONS'][$arItem['IBLOCK_SECTION_ID']]) && strlen($arResult['SECTIONS'][$arItem['IBLOCK_SECTION_ID']]['NAME']) && !$bHideSectionName;
 				?>
 				
 				<?
@@ -114,7 +115,7 @@
 												<?if($arParams['SALE_MODE'] == 'Y'):?>
 													<?=CMax::showIconSvg("sale", SITE_TEMPLATE_PATH.'/images/svg/icon_discount.svg', '', '', true, false);?>
 												<?endif;?>
-												<?if(strlen($arItem['DISPLAY_PROPERTIES']['PERIOD']['VALUE'])):?>
+												<?if(array_key_exists('PERIOD', $arItem['DISPLAY_PROPERTIES']) && strlen($arItem['DISPLAY_PROPERTIES']['PERIOD']['VALUE'])):?>
 													<span class="date"><?=$arItem['DISPLAY_PROPERTIES']['PERIOD']['VALUE']?></span>
 												<?else:?>
 													<span class="date"><?=$arItem['DISPLAY_ACTIVE_FROM']?></span>
@@ -146,7 +147,7 @@
 
 								<?// element display properties?><?//echo '<pre>',var_dump($arItem['MIDDLE_PROPS']),'</pre>';?>
 								<?if($arItem['DISPLAY_PROPERTIES']):?>
-									<?if(isset($arItem['MIDDLE_PROPS']) && $arItem['MIDDLE_PROPS']):?>
+									<?if(array_key_exists('MIDDLE_PROPS', $arItem) && $arItem['MIDDLE_PROPS']):?>
 										<div class="middle_properties">
 											<?foreach($arItem['MIDDLE_PROPS'] as $PCODE => $arProperty):?>
 												<div class="middle_prop">
@@ -189,10 +190,10 @@
 											</div>
 										<?endforeach;?>
 									</div>
-									<?if(isset($arItem['DISPLAY_PROPERTIES']['PRICE']) && $arItem['DISPLAY_PROPERTIES']['PRICE']['VALUE']):?>
+									<?if(array_key_exists('PRICE', $arItem['DISPLAY_PROPERTIES']) && $arItem['DISPLAY_PROPERTIES']['PRICE']['VALUE']):?>
 										<div class="prices">
 											<div class="price font_mxs darken font-bold"><?=$arItem['DISPLAY_PROPERTIES']['PRICE']['VALUE'];?></div>
-											<?if(isset($arItem['DISPLAY_PROPERTIES']['PRICE_OLD']) && $arItem['DISPLAY_PROPERTIES']['PRICE_OLD']['VALUE']):?>
+											<?if(array_key_exists('PRICE_OLD', $arItem['DISPLAY_PROPERTIES']) && $arItem['DISPLAY_PROPERTIES']['PRICE_OLD']['VALUE']):?>
 												<div class="price_old muted font_xs"><?=$arItem['DISPLAY_PROPERTIES']['PRICE_OLD']['VALUE'];?></div>
 											<?endif;?>
 										</div>

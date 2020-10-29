@@ -33,7 +33,7 @@ if($arResult['BENEFITS'])
 		if($videoSource == 'LINK' ? strlen($videoSrc) : strlen($videoFileSrc))
 		{
 			$bVideo = true;
-			$bVideoAutoStart = $arResult['PROPERTIES']['VIDEO_AUTOSTART']['VALUE_XML_ID'] === 'YES';
+			// $bVideoAutoStart = $arResult['PROPERTIES']['VIDEO_AUTOSTART']['VALUE_XML_ID'] === 'YES';
 			if(strlen($videoSrc) && $videoSource === 'LINK')
 			{
 				// videoSrc available values
@@ -143,8 +143,6 @@ if($arResult['BENEFITS'])
 										<?endif;?>
 									<?endif;?>
 
-									<div class="js-tizers"></div>
-
 									<?ob_start();?>
 										<div class="buttons">
 											<?if(isset($arResult['DISPLAY_PROPERTIES']['URL']) && strlen($arResult['DISPLAY_PROPERTIES']['URL']['VALUE'])):?>
@@ -153,6 +151,13 @@ if($arResult['BENEFITS'])
 										</div>
 									<?$button = ob_get_contents();
 									ob_end_clean();?>
+
+									<?if($bNoImg):?>
+										<?=$button;?>
+									<?endif;?>
+
+									<div class="js-tizers"></div>
+									
 
 									<?if(!$bNoImg):?>
 										<?=$button;?>
@@ -170,7 +175,7 @@ if($arResult['BENEFITS'])
 									<?=$button;?>
 								</div>
 							<?elseif($bImage):?>
-								<div class="image lazy<?=($arParams['TYPE_BLOCK'] == 'type2' ? ' rounded' : '');?>" data-src="<?=$imageSrc;?>" style="background-image:url(<?=\Aspro\Functions\CAsproMax::showBlankImg($imageSrc);?>)" <?=($bShowVideo ? ' data-video_source="'.$videoSource.'"' : '')?><?=(strlen($videoPlayer) ? ' data-video_player="'.$videoPlayer.'"' : '')?><?=(strlen($videoPlayerSrc) ? ' data-video_src="'.$videoPlayerSrc.'"' : '')?><?=($bVideoAutoStart ? ' data-video_autoplay="1"' : '')?>>
+								<div class="image lazy<?=($arParams['TYPE_BLOCK'] == 'type2' ? ' rounded' : '');?>" data-src="<?=$imageSrc;?>" style="background-image:url(<?=\Aspro\Functions\CAsproMax::showBlankImg($imageSrc);?>)"  data-video_source="<?=$videoSource?>" <?=(strlen($videoPlayer) ? ' data-video_player="'.$videoPlayer.'"' : '')?><?=(strlen($videoPlayerSrc) ? ' data-video_src="'.$videoPlayerSrc.'"' : '')?>>
 									<?if($bVideo):?>
 										<div class="play">
 											<div class="fancy" rel="nofollow">

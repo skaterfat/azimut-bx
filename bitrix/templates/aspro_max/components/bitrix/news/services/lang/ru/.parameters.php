@@ -198,4 +198,5 @@ $MESS["SORT_PRICES_MINIMUM_PRICE"] = "Минимальная цена";
 $MESS["SORT_PRICES_MAXIMUM_PRICE"] = "Максимальная цена";
 $MESS["SORT_PRICES_REGION_PRICE"] = "Цена для сортировки в регионе";
 $MESS["SORT_REGION_PRICE"] = "Цена для сортировки в регионе по умолчанию";
+$MESS["USE_SUBSCRIBE_IN_TOP"] = "Показывать подписку в верхней строке";
 ?>

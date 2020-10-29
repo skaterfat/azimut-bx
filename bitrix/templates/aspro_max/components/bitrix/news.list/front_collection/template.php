@@ -2,6 +2,7 @@
 <?$this->setFrameMode(true);?>
 <?use \Bitrix\Main\Localization\Loc;?>
 <?if($arResult['ITEMS']):?>
+	<?$bSlider = (isset($arParams['MOBILE_TEMPLATE']) && $arParams['MOBILE_TEMPLATE'] === 'Y')?>
 	<?if(!$arParams['IS_AJAX']):?>
 	<div class="content_wrapper_block <?=$templateName;?> <?=$arResult['NAV_STRING'] ? '' : 'without-border'?>">
 	<div class="maxwidth-theme only-on-front">
@@ -38,7 +39,7 @@
 			<?endif;?>
 		<?endif;?>
 		<div class="item-views collection <?=$arParams['VIEW_TYPE']?>">
-			<div class="items flexbox row<?=($arParams['NO_MARGIN']!='Y' && $arParams['VIEW_TYPE'] == 'grey_pict' ? ' margin-10' : '');?> <?=($arParams['NO_MARGIN']=='Y') ? ' margin0 ' : '';?>">
+			<div class="items flexbox row<?=($arParams['NO_MARGIN']!='Y' && $arParams['VIEW_TYPE'] == 'grey_pict' ? ' margin-10' : '');?> <?=($arParams['NO_MARGIN']=='Y') ? ' margin0 ' : '';?> <?=($bSlider ? ' swipeignore mobile-overflow mobile-margin-16 mobile-compact' : '');?> c_<?=count($arResult['ITEMS']);?>">
 		<?endif?>
 		<?global $arTheme;
 		$col = ($arParams['SIZE_IN_ROW'] ? $arParams['SIZE_IN_ROW'] : 5);

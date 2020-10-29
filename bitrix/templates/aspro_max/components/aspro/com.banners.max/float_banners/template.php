@@ -10,7 +10,7 @@
 		<div class="maxwidth-theme">
 			<div class="item-views float_banners <?=$arParams['TYPE_BLOCK'];?><?=($arResult['MIXED_BLOCKS'] && $bType2 ? ' sm-block' : '');?>">
 				<div class="items">
-					<div class="row flexbox justify-center">
+					<div class="row flexbox justify-center swipeignore mobile-overflow mobile-margin-16 mobile-compact c_<?=count($arResult['ITEMS'])?>">
 						<?foreach($arResult['ITEMS'] as $arItem)
 						{
 							$this->AddEditAction($arItem['ID'], $arItem['EDIT_LINK'], CIBlock::GetArrayByID($arItem['IBLOCK_ID'], 'ELEMENT_EDIT'));
@@ -30,7 +30,7 @@
 								}
 							}
 							?>
-							<div class="col-md-<?=$col;?> col-sm-6 col-xs-6 col-xxs-12">
+							<div class="col-md-<?=$col;?> col-sm-6 col-xs-6 col-xxs-12 item-width-261">
 								<div id="<?=$this->GetEditAreaId($arItem['ID']);?>" class="item hover_zoom">
 									<?if(is_array($arItem['PREVIEW_PICTURE']) ):?>
 										<div class="image shine rounded3">

@@ -103,6 +103,13 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
 		'TYPE' => 'CHECKBOX',
 		'DEFAULT' => 'Y',
 	),
+	'USE_SUBSCRIBE_IN_TOP' => array(
+		'PARENT' => 'DETAIL_SETTINGS',
+		'SORT' => 600,
+		'NAME' => GetMessage('USE_SUBSCRIBE_IN_TOP'),
+		'TYPE' => 'CHECKBOX',
+		'DEFAULT' => 'N',
+	),
 	'IMAGE_POSITION' => array(
 		'PARENT' => 'LIST_SETTINGS',
 		'SORT' => 250,

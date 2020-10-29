@@ -13,7 +13,7 @@
 	?>
 	<div class="content_wrapper_block <?=$templateName;?>">
 		<div class="maxwidth-theme">
-			<div class="sections_wrapper <?=$arParams['VIEW_TYPE'];?><?=($bIcons ? ' icons' : '');?>">
+			<div class="sections_wrapper <?=$arParams['VIEW_TYPE'];?><?=($bIcons ? ' icons' : '');?> <?=$arParams['MOBILE_TEMPLATE']?>">
 				<?if($arParams["TITLE_BLOCK"] || $arParams["TITLE_BLOCK_ALL"]):?>
 					<?if($arParams['INCLUDE_FILE']):?>
 						<div class="with-text-block-wrapper">

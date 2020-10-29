@@ -69,6 +69,8 @@
 		"TITLE_SUBSCRIBE" => "Подписаться",
 		"PAGER_BASE_LINK_ENABLE" => "N",
 		"SHOW_404" => "N",
+		"MOBILE_TEMPLATE" => $GLOBALS['arTheme']['MOBILE_NEWS']['VALUE'],
+		"CHECK_REQUEST_BLOCK" => CMax::checkRequestBlock('news'),
 		"IS_AJAX" => CMax::checkAjaxRequest(),
 		"MESSAGE_404" => ""
 	),

@@ -72,8 +72,8 @@ $actualItem = $arResult["OFFERS"] ? (isset($arResult['OFFERS'][$arResult['OFFERS
 
 $arSkuTemplate = array();
 if (!empty($arResult['SKU_PROPS'])){
-	$arSkuTemplate=CMax::GetSKUPropsArray($arResult['SKU_PROPS'], $arResult["SKU_IBLOCK_ID"], "list", $arParams["OFFER_HIDE_NAME_PROPS"]);
-	// print_r($arResult['SKU_PROPS']);
+	$arSkuTemplate=CMax::GetSKUPropsArray($arResult['SKU_PROPS'], $arResult["SKU_IBLOCK_ID"], "list", $arParams["OFFER_HIDE_NAME_PROPS"], "N", array(), $arParams['OFFER_SHOW_PREVIEW_PICTURE_PROPS']);
+	//$arSkuTemplate=CMax::GetSKUPropsArray($arResult['SKU_PROPS'], $arResult["SKU_IBLOCK_ID"], "list", $arParams["OFFER_HIDE_NAME_PROPS"]);
 }
 $strMainID = $this->GetEditAreaId($arResult['ID']);
 $item_id = $arResult["ID"];
@@ -82,10 +82,11 @@ $strObName = 'ob'.preg_replace("/[^a-zA-Z0-9_]/", "x", $strMainID);
 
 $arResult["strMainID"] = $this->GetEditAreaId($arResult['ID'])."f";
 $arItemIDs=CMax::GetItemsIDs($arResult, "Y");
-$totalCount = CMax::GetTotalCount($arResult, $arParams);
+$totalCount = CMax::GetTotalCount($actualItem, $arParams);
 
 // $arQuantityData = CMax::GetQuantityArray($totalCount, $arItemIDs["ALL_ITEM_IDS"], "Y");
-$arQuantityData = CMax::GetQuantityArray($totalCount, array('ID' => $item_id), 'N', ($arResult["OFFERS"] || $arResult['CATALOG_TYPE'] == CCatalogProduct::TYPE_SET || !$arResult['STORES_COUNT'] ? false : true));
+// $arQuantityData = CMax::GetQuantityArray($totalCount, array('ID' => $item_id), 'N', ($arResult["OFFERS"] || $arResult['CATALOG_TYPE'] == CCatalogProduct::TYPE_SET || !$arResult['STORES_COUNT'] ? false : true));
+$arQuantityData = CMax::GetQuantityArray($totalCount, array('ID' => $actualItem['ID']), 'Y', ($arResult['CATALOG_TYPE'] != CCatalogProduct::TYPE_SET && $arResult['STORES_COUNT']));
 
 $arParams["BASKET_ITEMS"]=($arParams["BASKET_ITEMS"] ? $arParams["BASKET_ITEMS"] : array());
 $useStores = $arParams["USE_STORE"] == "Y" && $arResult["STORES_COUNT"] && $arQuantityData["RIGHTS"]["SHOW_QUANTITY"];
@@ -283,7 +284,7 @@ $elementName = ((isset($arResult['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE']) && $
 			</div>
 		</div>
 		<div class="fastview-product__info item_info">
-			<div class="prices_item_block scrollbar">
+			<div class="prices_item_block">
 				<div class="middle_info1 main_item_wrapper">
 					<a href="<?=$arResult["DETAIL_PAGE_URL"];?>"></a>
 					<?$frame = $this->createFrame()->begin('');?>

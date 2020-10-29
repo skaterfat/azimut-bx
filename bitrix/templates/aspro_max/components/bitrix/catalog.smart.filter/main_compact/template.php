@@ -209,7 +209,7 @@ if($arResult["ITEMS"]){?>
 									<?endif;
 								}?>
 								<div class="bx_filter_button_box active clearfix">
-									<span class="btn btn-default"><?=Loc::getMessage("CT_BCSF_SET_FILTER")?></span>
+									<span class="btn btn-default round-ignore"><?=Loc::getMessage("CT_BCSF_SET_FILTER")?></span>
 									<span data-f="<?=Loc::getMessage('CT_BCSF_SET_FILTER')?>" data-fi="<?=Loc::getMessage('CT_BCSF_SET_FILTER_TI')?>" data-fr="<?=Loc::getMessage('CT_BCSF_SET_FILTER_TR')?>" data-frm="<?=Loc::getMessage('CT_BCSF_SET_FILTER_TRM')?>" class="bx_filter_container_modef"></span>
 								</div>
 							</div>
@@ -801,7 +801,7 @@ if($arResult["ITEMS"]){?>
 								</div>
 								<?if($arItem['CODE'] != 'IN_STOCK'):?>
 									<div class="bx_filter_button_box active clearfix">
-										<span class="btn btn-default"><?=Loc::getMessage("CT_BCSF_SET_FILTER")?></span>
+										<span class="btn btn-default round-ignore"><?=Loc::getMessage("CT_BCSF_SET_FILTER")?></span>
 										<span data-f="<?=Loc::getMessage('CT_BCSF_SET_FILTER')?>" data-fi="<?=Loc::getMessage('CT_BCSF_SET_FILTER_TI')?>" data-fr="<?=Loc::getMessage('CT_BCSF_SET_FILTER_TR')?>" data-frm="<?=Loc::getMessage('CT_BCSF_SET_FILTER_TRM')?>" class="bx_filter_container_modef"></span>
 									</div>
 								<?endif;?>

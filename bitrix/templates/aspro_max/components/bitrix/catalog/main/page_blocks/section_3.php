@@ -33,6 +33,7 @@ $APPLICATION->IncludeComponent(
 		"TEMPLATE_TYPE" => 	$arTheme['CATALOG_PAGE_SECTIONS']['VALUE'],
 		"FILTER_NAME" => "arSectionFilter",
 		"CACHE_FILTER" => "Y",
+		"COUNT_ELEMENTS_FILTER" => ($arParams["HIDE_NOT_AVAILABLE"] == "Y" ? "CNT_AVAILABLE" : "CNT_ACTIVE"),
 	),
 	$component
 );?>

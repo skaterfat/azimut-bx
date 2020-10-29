@@ -50,7 +50,7 @@ body.fill_bg_y .top-block > .maxwidth-theme{border-bottom:1px solid #f6f6f6;}
 body .top-block .top-block-item i.svg.inline, body .top-block .top-block-item i.svg.inline.svg-inline-downs svg{opacity:1;}
 .top-block .top-block-item  svg{opacity:0.5;}
 .top-block .top-block-item  .top-btn:hover .svg.inline svg, .top-block .top-block-item  a:hover .svg.inline svg{opacity:1;background:transparent;}
-.top-block .top-block-item  svg path{fill:#333;}
+.top-block .top-block-item .svg:not(.iconset_icon--svg) svg path{fill:#333;}
 .top-block .top-block-item.top-ctrl{margin-top:-14px;margin-bottom:-14px;flex-shrink: 0;}
 /*.top-block .top-block-item .basket_wrap > div[id*=bx_incl]{display:inline-block;}*/
 
@@ -105,12 +105,15 @@ body .wrapper1.basket_normal .top-block .wb .wrap_icon.person .dropdown-menu{lef
 .top-block-item .phone-block{margin:0 -7px;padding-top:1px;}
 .top-block-item .phone-block>.inline-block{padding:0 7px;vertical-align:middle;}
 .top-block-item .phone-block .callback-block{display:block;}
-.top-block-item .phone-block .dropdown{top:auto;left:-23px;}
-.top-block-item .phone-block .dropdown>.wrap{margin-top:10px;}
+.top-block-item .phone-block .phone.with_dropdown>.dropdown{top:-27px;}
+.top-block-item .phone-block.icons .phone.with_dropdown>.dropdown{left:-28px;}/*7*/
+.top-block-item .phone-block.blocks .phone.with_dropdown>.dropdown{left:-28px;}/*29*/
+.top-block-item .phone-block.icons .phone.with_dropdown>.dropdown.with_icons{left:-49px;}/*r7, r29*/
+.top-block-item .phone-block .phone.with_dropdown>.dropdown>.wrap{margin-top:10px;}
 .top-block-item .phone{position:relative;display:inline-block;vertical-align:top;font-size:1em;font-weight:bold;line-height:18px;}
 .top-block-item .phone.with_dropdown:after{margin-top:-1px;}
 .top-block-item .phone a{color:#222;}
-.top-block-item .phone>a{position:relative;margin:-14px 0;padding:14px 0 0;z-index:12;}
+.top-block-item .phone>a{position:relative;margin:-14px 0;padding:14px 0 0;}
 
 
 .top-block .auth_wr_inner.with_dropdown .svg-inline-downs{display:none;}
@@ -174,11 +177,11 @@ body .wrapper1 .header-v6 .logo-row .subbottom{position:relative;}
 .wrapper1 .header-v9 .logo_and_menu-row .wrap_icon .inline-search-show{margin:0px 0px 2px 0px;}
 .wrapper1.basket_normal .header-v9 .logo_and_menu-row .wrap_icon .inline-search-show{margin-right:8px;}
 .wrapper1 .header-v9 .logo_and_menu-row .wrap_icon .inline-search-show .title{display:inline-block;}
-.wrapper1 .header-v9 .logo_and_menu-row .phone.with_dropdown>.dropdown {left: -3px;}
 
 /*header10*/
 /* .wrapper1 .header-v10 .top-block-item.phones{padding-right:149px;} */
 .wrapper1 .header-v10 .top-block-item .phone{padding-top:1px;}
+.wrapper1 .header-v10 .top-block-item .phone-block .phone.with_dropdown>.dropdown{top:-26px;}
 .wrapper1 .header-v10.top-block.top-block-v1 .svg-inline-phone{top:-1px;}
 .wrapper1 .header-v10 .wicons .region_wrapper{padding:0px 49px 1px 27px;}
 .wrapper1 .header-v10 .wicons .region_wrapper > .io_wrapper > .svg{top:4px;left:1px;}
@@ -334,6 +337,8 @@ body .smalls .header-v16.top-block .menu.topest li a .svg{margin-right:7px;}
 .big_header .header-wrapper.header-v27.fix-logo .logo_and_menu-row .wides .content-block .subcontent .region_wrapper{margin-left:1px;}
 .shorts .with_dropdown{padding-right:10px!important;}
 .wrapper1.header-v27.header-font-lower_Y .subbottom .menu .mega-menu table td .wrap > a {font-size:0.9337em;}
+.wrapper1 .header-v27 .top-block-item .phone-block.icons .phone.with_dropdown>.dropdown{top:-34px;left:-26px;}
+.wrapper1 .header-v27 .top-block-item .phone-block.icons .phone.with_dropdown>.dropdown.with_icons{left:-49px;}
 
 /*header29*/
 /* .wrapper1.sticky_menu.sm .header-v28 .content-block .subcontent .menus{width:55%;} */
@@ -426,15 +431,4 @@ body .smalls .header-v16.top-block .menu.topest li a .svg{margin-right:7px;}
     border-color: rgba(0,0,0,0.45);
     box-shadow: inset 0px 300px rgba(0,0,0,0.45);
 }
-
-
-
-
-/*.menu-hovered .dark-hover-overlay #header .logo_and_menu-row .search .search-input,
-.menu-hovered .dark-hover-overlay #header .fix-logo .menu-row.bglight .search-block .search .search-input {
-    box-shadow: inset 0px 300px rgba(0,0,0,0.45);
-    background-color: #fff;
-    border-color: rgba(0,0,0,0.45);
-}*/
-
 /*end*/

@@ -5,7 +5,7 @@ $APPLICATION->IncludeComponent("bitrix:catalog.bigdata.products", "main", array(
 	"STORES" => $arParams['STORES'],
 	"LINE_ELEMENT_COUNT" => 5,
 	"TEMPLATE_THEME" => (isset($arParams['TEMPLATE_THEME']) ? $arParams['TEMPLATE_THEME'] : ''),
-	"DETAIL_URL" => $arResult["FOLDER"].$arResult["URL_TEMPLATES"]["element"],
+	"DETAIL_URL" => (array_key_exists('FOLDER', $arResult)  ? $arResult['FOLDER'] : '').(array_key_exists('URL_TEMPLATES', $arResult) && array_key_exists('element', $arResult['URL_TEMPLATES'])  ? $arResult['URL_TEMPLATES']['element'] : ''),
 	"BASKET_URL" => $arParams["BASKET_URL"],
 	"ACTION_VARIABLE" => (!empty($arParams["ACTION_VARIABLE"]) ? $arParams["ACTION_VARIABLE"] : "action")."_cbdp",
 	"PRODUCT_ID_VARIABLE" => $arParams["PRODUCT_ID_VARIABLE"],

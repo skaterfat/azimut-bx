@@ -156,7 +156,7 @@ $APPLICATION->SetTitle("Обзоры");
 		"PRODUCT_PROPERTIES" => array(
 		),
 		"LIST_PROPERTY_CATALOG_CODE" => array(
-			0 => "",
+			0 => "NAME",
 			1 => "",
 		),
 		"SORT_BUTTONS" => array(
@@ -179,7 +179,7 @@ $APPLICATION->SetTitle("Обзоры");
 		),
 		"OFFER_HIDE_NAME_PROPS" => "N",
 		"LIST_OFFERS_FIELD_CODE" => array(
-			0 => "",
+			0 => "NAME",
 			1 => "",
 		),
 		"LIST_OFFERS_PROPERTY_CODE" => array(

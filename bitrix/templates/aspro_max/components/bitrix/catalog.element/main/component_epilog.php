@@ -116,7 +116,7 @@ if($arTheme['USE_DETAIL_TABS']['VALUE'] != 'Y')
 						3 => "DETAIL_TEXT",
 					),
 					"PROPERTY_CODE" => array(
-						0 => "",
+						0 => "REDIRECT",
 					),
 					"CHECK_DATES" => "Y",
 					"DETAIL_URL" => "",
@@ -288,7 +288,7 @@ if($arTheme['USE_DETAIL_TABS']['VALUE'] != 'Y')
 		<?//tabs?>
 		<?elseif($code == 'tabs'):?>
 			<?if($bShowDetailTextTab || $bShowPropsTab || $bShowVideoTab || $bShowHowBuyTab || $bShowPaymentTab || $bShowDeliveryTab || $bShowStoresTab || $bShowCustomTab || $bShowReviewsTab):?>
-				<div class="ordered-block js-store-scroll">
+				<div class="ordered-block js-store-scroll tabs-block">
 					<?if($i > 1):?>
 						<div class="tabs arrow_scroll">
 							<ul class="nav nav-tabs font_upper_md">
@@ -1377,71 +1377,123 @@ if($arTheme['USE_DETAIL_TABS']['VALUE'] != 'Y')
 </script>
 
 <?$des = new \Bitrix\Main\Page\FrameStatic('des');$des->startDynamicArea();?>
-	<script>
-		setElementStore = function(check, oid){
-			if(typeof check !== 'undefined' && check == "Y")
-				return;
-
-			if($('.stores_tab').length )
-			{
-				var objUrl = parseUrlQuery(),
-					oidValue = '',
-					add_url = '';
-				if('clear_cache' in objUrl)
-				{
-					if(objUrl.clear_cache == 'Y')
-						add_url = '?clear_cache=Y';
-				}
-				if('oid' in objUrl)
-				{
-					if(parseInt(objUrl.oid)>0)
-						oidValue = objUrl.oid;
-				}
-				if(typeof oid !== 'undefined' && parseInt(oid)>0)
-				{
-					oidValue = oid;
-				}
-				if(oidValue)
-				{
-					if(add_url)
-						add_url +='&oid='+oidValue;
-					else
-						add_url ='?oid='+oidValue;
-				}
-
-				$.ajax({
-					type:"POST",
-					url:arMaxOptions['SITE_DIR']+"ajax/productStoreAmount.php"+add_url,
-					data:<?=CUtil::PhpToJSObject($templateData["STORES"], false, true, true)?>,
-					success: function(data){
-						if(typeof map === 'object' && typeof map.destroy === 'function'){
-							map.destroy();
-						}
-
-						$('.stores .stores_tab').html(data);
-						if($('.stores .stores_tab').siblings('.ordered-block__title').length)
-						{
-							if($('.stores > .ordered-block__title + .stores-title').length)
-								$('.stores > .ordered-block__title + .stores-title').remove();
-							$('.stores .stores_tab .stores-title').insertAfter($('.stores .stores_tab').siblings('.ordered-block__title'));
-
-						}
-
-						$('.block_container .items, .block_container .detail_items').mCustomScrollbar({
-							mouseWheel: {
-								scrollAmount: 150,
-								preventDefault: true
-							}
-						})
-					}
-				});
-			}
+<script>
+	insertElementStoreBlock = function(html){
+		if(
+			typeof map === 'object' &&
+			map && typeof map.destroy === 'function'
+		){
+			// there is a map on the page
+			map.destroy();
 		}
-		BX.ready(
-			BX.defer(function(){
-				setElementStore('<?=$templateData["STORES"]["OFFERS"];?>');
-			})
-		);
-	</script>
+
+		html = html.replace('this.parentNode.removeChild(script);', 'try{this.parentNode.removeChild(script);} catch(e){}');
+		html = html.replace('(document.head || document.documentElement).appendChild(script);', '(typeof ymaps === \'undefined\') && (document.head || document.documentElement).appendChild(script);');
+
+		$('.stores .stores_tab').html(html);
+
+		if($('.stores .stores_tab').siblings('.ordered-block__title').length){
+			if($('.stores > .ordered-block__title + .stores-title').length){
+				$('.stores > .ordered-block__title + .stores-title').remove();
+			}
+
+			$('.stores .stores_tab .stores-title').insertAfter($('.stores .stores_tab').siblings('.ordered-block__title'));
+		}
+
+		$('.block_container .items, .block_container .detail_items').mCustomScrollbar({
+			mouseWheel: {
+				scrollAmount: 150,
+				preventDefault: true
+			}
+		});
+	}
+
+	setElementStore = function(check, oid){
+		if(typeof check !== 'undefined' && check == "Y")
+			return;
+
+		if($('.stores_tab').length )
+		{
+			var objUrl = parseUrlQuery(),
+				oidValue = '',
+				add_url = '';
+			if('clear_cache' in objUrl)
+			{
+				if(objUrl.clear_cache == 'Y')
+					add_url = '?clear_cache=Y';
+			}
+			if('oid' in objUrl)
+			{
+				if(parseInt(objUrl.oid)>0)
+					oidValue = objUrl.oid;
+			}
+			if(typeof oid !== 'undefined' && parseInt(oid)>0)
+			{
+				oidValue = oid;
+			}
+			if(oidValue)
+			{
+				if(add_url)
+					add_url +='&oid='+oidValue;
+				else
+					add_url ='?oid='+oidValue;
+			}
+
+			$.ajax({
+				type:"POST",
+				url:arMaxOptions['SITE_DIR']+"ajax/productStoreAmount.php"+add_url,
+				data:<?=CUtil::PhpToJSObject($templateData["STORES"], false, true, true)?>,
+				success: function(html){
+					if(html.indexOf('new ymaps.Map') !== -1){
+						// there is a map in response
+						if(typeof setElementStore.mapListner === 'undefined'){
+							setElementStore.wait = false;
+
+							window.addEventListener('message', setElementStore.mapListner = function(event){
+								if(typeof event.data === 'string'){
+									if(
+										event.data.indexOf('ready') !== -1 &&
+										event.origin.indexOf('maps.ya') !== -1
+									){
+										// message ready recieved from yandex maps
+										setTimeout(function(){
+											if(typeof setElementStore.lastHtml !== 'undefined'){
+												// insert the last
+												insertElementStoreBlock(setElementStore.lastHtml);
+												delete setElementStore.lastHtml;
+											}
+											else{
+												setElementStore.wait = false;
+											}
+										}, 50);
+									}
+								}
+							});
+						}
+
+						if(setElementStore.wait){
+							// save response until not ready
+							setElementStore.lastHtml = html;
+						}
+						else{
+							// insert the first
+							setElementStore.wait = true;
+							insertElementStoreBlock(html);
+						}
+					}
+					else{
+						// there is no a map on the page
+						insertElementStoreBlock(html);
+					}
+				}
+			});
+		}
+	}
+	BX.ready(
+		BX.defer(function(){
+			setElementStore('<?=$templateData["STORES"]["OFFERS"];?>');
+		})
+	);
+</script>
 <?$des->finishDynamicArea();?>
 <?if($_GET["RID"]){?><script>$(document).ready(function(){$("<div class='rid_item' data-rid='<?=htmlspecialcharsbx($_GET["RID"]);?>'></div>").appendTo($('body'));});</script><?}?>

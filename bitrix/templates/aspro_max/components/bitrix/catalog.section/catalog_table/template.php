@@ -25,18 +25,24 @@
 								<span data-value="2500" data-currency="RUB" class="opt_action btn btn-default btn-sm no-action" data-action="buy" data-iblock_id="<?=$arParams["IBLOCK_ID"]?>"><span><?=\Bitrix\Main\Config\Option::get("aspro.max", "EXPRESSION_ADDTOBASKET_BUTTON_DEFAULT", GetMessage("EXPRESSION_ADDTOBASKET_BUTTON_DEFAULT"));?></span></span>
 							</div>
 							<div class="product-info-headnote__toolbar">
-								<div class="like_icons list static icons long table-icons" data-size="2">
-									<div class="wish_item_button">
-										<span title="<?=Loc::getMessage('CATALOG_WISH');?>" class="opt_action rounded3 btn btn-xs font_upper_xs btn-transparent no-action" data-action="wish" data-iblock_id="<?=$arParams["IBLOCK_ID"]?>">
-											<?=CMax::showIconSvg("op", SITE_TEMPLATE_PATH.'/images/svg/chosen_small.svg', '', '', true, false);?>
-										</span>
+								<?if ($arParams["DISPLAY_WISH_BUTTONS"] == "Y" || $arParams["DISPLAY_COMPARE"] == "Y"):?>
+									<div class="like_icons list static icons long table-icons" data-size="2">
+										<?if ($arParams["DISPLAY_WISH_BUTTONS"] == "Y"):?>
+											<div class="wish_item_button">
+												<span title="<?=Loc::getMessage('CATALOG_WISH');?>" class="opt_action rounded3 btn btn-xs font_upper_xs btn-transparent no-action" data-action="wish" data-iblock_id="<?=$arParams["IBLOCK_ID"]?>">
+													<?=CMax::showIconSvg("op", SITE_TEMPLATE_PATH.'/images/svg/chosen_small.svg', '', '', true, false);?>
+												</span>
+											</div>
+										<?endif;?>
+										<?if ($arParams["DISPLAY_COMPARE"] == "Y"):?>
+											<div class="compare_item_button">
+												<span title="<?=Loc::getMessage('CATALOG_COMPARE');?>" class="opt_action rounded3 btn btn-xs font_upper_xs btn-transparent no-action" data-action="compare" data-iblock_id="<?=$arParams["IBLOCK_ID"]?>">
+													<?=CMax::showIconSvg("op", SITE_TEMPLATE_PATH.'/images/svg/compare_small.svg', '', '', true, false);?>
+												</span>
+											</div>
+										<?endif;?>
 									</div>
-									<div class="compare_item_button">
-										<span title="<?=Loc::getMessage('CATALOG_COMPARE');?>" class="opt_action rounded3 btn btn-xs font_upper_xs btn-transparent no-action" data-action="compare" data-iblock_id="<?=$arParams["IBLOCK_ID"]?>">
-											<?=CMax::showIconSvg("op", SITE_TEMPLATE_PATH.'/images/svg/compare_small.svg', '', '', true, false);?>
-										</span>
-									</div>
-								</div>
+								<?endif;?>
 							</div>
 						</div>
 					</div>
@@ -279,20 +285,28 @@
 	<?if($arParams["AJAX_REQUEST"]=="Y"){?>
 		<div class="wrap_nav bottom_nav_wrapper">
 	<?}?>
-	<div class="bottom_nav <?=$arParams["DISPLAY_TYPE"];?>" <?=($arParams["AJAX_REQUEST"]=="Y" ? "style='display: none; '" : "");?>>
+
+	<?$showAllCount = false;?>
+	<?if($arParams['IS_CATALOG_PAGE'] == 'Y' && $arParams['SECTION_COUNT_ELEMENTS'] == 'Y'):?>
+		<?if((int)$arResult['NAV_RESULT']->NavRecordCount > 0):?>
+			<?$this->SetViewTarget("more_text_title");?>
+				<span class="element-count-wrapper"><span class="element-count muted font_xs rounded3"><?=$arResult['NAV_RESULT']->NavRecordCount;?></span></span>
+			<?$this->EndViewTarget();?>
+			<?
+			$showAllCount = true;
+			$allCount = $arResult['NAV_RESULT']->NavRecordCount;
+			?>
+		<?endif;?>
+	<?endif;?>
+
+	<div class="bottom_nav <?=$arParams["DISPLAY_TYPE"];?>" <?=($showAllCount ? 'data-all_count="'.$allCount.'"' : '')?> <?=($arParams["AJAX_REQUEST"]=="Y" ? "style='display: none; '" : "");?>>
 		<?if( $arParams["DISPLAY_BOTTOM_PAGER"] == "Y" ){?><?=$arResult["NAV_STRING"]?><?}?>
 	</div>
 	<?if($arParams["AJAX_REQUEST"]=="Y"){?>
 		</div>
 	<?}?>
 
-	<?if($arParams['IS_CATALOG_PAGE'] == 'Y' && $arParams['SECTION_COUNT_ELEMENTS'] == 'Y'):?>
-		<?if((int)$arResult['NAV_RESULT']->NavRecordCount > 0):?>
-			<?$this->SetViewTarget("more_text_title");?>
-				<span class="element-count-wrapper"><span class="element-count muted font_xs rounded3"><?=$arResult['NAV_RESULT']->NavRecordCount;?></span></span>
-			<?$this->EndViewTarget();?>
-		<?endif;?>
-	<?endif;?>
+	
 
 <?}else{?>
 	<div class="module_products_list_b">

@@ -81,7 +81,7 @@ $bShowSortInFilter = ($arParams['SHOW_SORT_IN_FILTER'] != 'N');
 				$arAvailableSort["CATALOG_AVAILABLE"] = array("QUANTITY", "desc");
 			}
 			$sort = "SHOWS";
-			if((array_key_exists("sort", $_REQUEST) && array_key_exists(ToUpper($_REQUEST["sort"]), $arAvailableSort)) || (array_key_exists("sort", $_SESSION) && array_key_exists(ToUpper($_SESSION["sort"]), $arAvailableSort)) || $arParams["ELEMENT_SORT_FIELD"]){
+			if((array_key_exists("sort", $_REQUEST) && array_key_exists(ToUpper($_REQUEST["sort"]), $arAvailableSort)) || (array_key_exists("sort", $_SESSION) && array_key_exists(ToUpper($_SESSION["sort"]), $arAvailableSort)) || $arParams["LINKED_ELEMENT_TAB_SORT_FIELD"] ){
 				if($_REQUEST["sort"]){
 					$sort = htmlspecialcharsbx(ToUpper($_REQUEST["sort"]));
 					$_SESSION["sort"] = htmlspecialcharsbx(ToUpper($_REQUEST["sort"]));
@@ -90,12 +90,13 @@ $bShowSortInFilter = ($arParams['SHOW_SORT_IN_FILTER'] != 'N');
 					$sort = ToUpper($_SESSION["sort"]);
 				}
 				else{
-					$sort = ToUpper($arParams["ELEMENT_SORT_FIELD"]);
+					$sort = ToUpper($arParams["LINKED_ELEMENT_TAB_SORT_FIELD"]);					
+					$sort = (strpos($sort, 'SCALED_PRICE_') === 0) || (strpos($sort, 'CATALOG_PRICE_') === 0) || $sort == 'PROPERTY_MINIMUM_PRICE' || $sort == 'PROPERTY_MAXIMUM_PRICE' ? 'PRICE' : $sort;
 				}
 			}
 
 			$sort_order=$arAvailableSort[$sort][1];
-			if((array_key_exists("order", $_REQUEST) && in_array(ToLower($_REQUEST["order"]), Array("asc", "desc"))) || (array_key_exists("order", $_REQUEST) && in_array(ToLower($_REQUEST["order"]), Array("asc", "desc")) ) || $arParams["ELEMENT_SORT_ORDER"]){
+			if((array_key_exists("order", $_REQUEST) && in_array(ToLower($_REQUEST["order"]), Array("asc", "desc"))) || (array_key_exists("order", $_REQUEST) && in_array(ToLower($_REQUEST["order"]), Array("asc", "desc")) ) || $arParams["LINKED_ELEMENT_TAB_SORT_ORDER"] ){
 				if($_REQUEST["order"]){
 					$sort_order = htmlspecialcharsbx($_REQUEST["order"]);
 					$_SESSION["order"] = htmlspecialcharsbx($_REQUEST["order"]);
@@ -103,8 +104,8 @@ $bShowSortInFilter = ($arParams['SHOW_SORT_IN_FILTER'] != 'N');
 				elseif($_SESSION["order"]){
 					$sort_order = $_SESSION["order"];
 				}
-				else{
-					$sort_order = ToLower($arParams["ELEMENT_SORT_ORDER"]);
+				else{					
+					$sort_order = ToLower($arParams["LINKED_ELEMENT_TAB_SORT_ORDER"]);
 				}
 			}
 			$arDelUrlParams = array('sort', 'order', 'control_ajax', 'ajax_get_filter', 'linerow', 'display');

@@ -28,7 +28,7 @@
 						<?endif;?>
 					</div>
 				<?endif;?>
-				<div class="items">
+				<div class="items swipeignore mobile-overflow mobile-margin-16 mobile-compact c_<?=count($arResult["ITEMS"]);?>">
 					<?if(count($arResult["ITEMS"]) > 1):?>
 						<div class="flexslider thmb">
 						<ul class="flex-direction-nav"><li class="flex-nav-prev"><span class="flex-prev js-click">Previous</span></li><li class="flex-nav-next"><span class="flex-next js-click">Next</span></li></ul>
@@ -54,7 +54,7 @@
 
 			$item_id = $arItem["ID"];
 			$strMeasure = '';
-			
+
 			$totalCount = CMax::GetTotalCount($arItem, $arParams);
 			$arQuantityData = CMax::GetQuantityArray($totalCount, array('ID' => $item_id), 'N', ($arItem["OFFERS"] || $arItem['CATALOG_TYPE'] == CCatalogProduct::TYPE_SET || !$arParams['SHOW_STORES_POPUP'] ? false : true));
 
@@ -98,8 +98,12 @@
 					if($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["PREVIEW_PICTURE"])
 						$arItem["DETAIL_PICTURE"] = $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["DETAIL_PICTURE"];
 
+					if($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']){
+						$arItem['SELECTED_SKU_IPROPERTY_VALUES'] = $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES'];
+					}
+
 					if($arParams["SET_SKU_TITLE"] == "Y")
-						$arItem["NAME"] = $elementName = $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["NAME"];
+						$arItem["NAME"] = $elementName = ((isset($arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE']) && $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE']) ? $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['IPROPERTY_VALUES']['ELEMENT_PAGE_TITLE'] : $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]['NAME']);
 					$item_id = $currentSKUID;
 
 					// ARTICLE
@@ -118,7 +122,7 @@
 				$arAddToBasketData = CMax::GetAddToBasketArray($arItem, $totalCount, $arParams["DEFAULT_COUNT"], $arParams["BASKET_URL"], false, array('DOP_ID' => 'fav'), 'btn-lg', $arParams);
 			}?>
 
-			<div class="item<?=(!$key ? ' active' : '');?>">
+			<div class="item<?=(!$key ? ' active' : '');?> item-width-322 np">
 				<div class="basket_props_block" id="bx_basket_div_<?=$arItem["ID"];?>_fav" style="display: none;">
 					<?if (!empty($arItem['PRODUCT_PROPERTIES_FILL'])){
 						foreach ($arItem['PRODUCT_PROPERTIES_FILL'] as $propID => $propInfo){?>
@@ -293,7 +297,7 @@
 										<?}?>
 									<?}?>
 								</div>
-							
+
 								<div class="<?=($arItem["OFFERS"] && $arItem['OFFERS_PROP'] ? 'has_offer_prop' : '');?> footer-action inner_content js_offers__<?=$arItem['ID'];?>_fav">
 									<?if(!$arItem["OFFERS"]):?>
 										<div class="counter_wrapp">
@@ -321,6 +325,17 @@
 				</div>
 			</div>
 		<?}?>
+
+		<?if(count($arResult["ITEMS"]) > 1):?>
+			<ol class="flex-control-nav flex-control-paging flex-control-js-click">
+				<?for($i = 0;$i < count($arResult["ITEMS"]);$i++):?>
+					<li>
+						<a href="#" class="<?=(!$i ? 'flex-active' : '')?>" data-index="<?=$i?>"></a>
+					</li>
+				<?endfor;?>
+			</ol>
+		<?endif;?>
+
 		</div>
 		</div>
 		</div>

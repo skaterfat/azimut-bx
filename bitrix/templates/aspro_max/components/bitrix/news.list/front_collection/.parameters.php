@@ -60,5 +60,10 @@ $arTemplateParameters = array(
 		"TYPE" => "CHECKBOX",
 		"DEFAULT" => "N",
 	),
+	"MOBILE_TEMPLATE" => Array(
+		"NAME" => GetMessage("T_MOBILE_TEMPLATE"),
+		"TYPE" => "CHECKBOX",
+		"DEFAULT" => "N",
+	),
 );
 ?>

@@ -13,4 +13,5 @@ $MESS ['DISPLAY_DATE'] = "Отображать дату";
 
 $MESS ['NO_MARGIN_NAME'] = "Использовать отступ между блоками";
 $MESS ['FILLED_NAME'] = "Заливать блоки";
+$MESS["T_MOBILE_TEMPLATE"] = "Мобильный шаблон";
 ?>

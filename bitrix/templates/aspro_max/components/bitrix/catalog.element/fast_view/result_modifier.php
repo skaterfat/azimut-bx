@@ -1090,9 +1090,24 @@ if(in_array('HELP_TEXT', $arParams['PROPERTY_CODE']))
 					"EDIT_TEMPLATE" => ""
 				)
 			);?>
-		<?$arResult['HELP_TEXT'] = ob_get_contents();
+		<?$help_text = ob_get_contents();		
 		ob_end_clean();
-		$arResult['HELP_TEXT_FILE'] = true;?>
+		$bshowHelpTextFromFile = true;
+		if( strlen( trim($help_text) ) < 1){
+			$bshowHelpTextFromFile = false;
+		} else{
+			$bIsBitrixDiv = ( strpos($help_text, 'bx_incl_area') !== false );
+			$textWithoutTags = strip_tags($help_text);
+			if( $bIsBitrixDiv && (strlen( trim($textWithoutTags) ) < 1) ){
+				$bshowHelpTextFromFile = false;
+			}
+		}
+		
+		if( $bshowHelpTextFromFile ){
+			$arResult['HELP_TEXT'] = $help_text;
+			$arResult['HELP_TEXT_FILE'] = true;
+		}
+		?>
 	<?endif;?>
 <?}
 

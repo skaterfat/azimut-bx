@@ -68,6 +68,7 @@
 		"IS_AJAX" => CMax::checkAjaxRequest(),
 		"PAGER_BASE_LINK_ENABLE" => "N",
 		"SHOW_404" => "N",
+		"MOBILE_TEMPLATE" => "Y",
 		"COMPACT" => "Y",
 		"SIZE_IN_ROW" => "5",
 		"MESSAGE_404" => ""

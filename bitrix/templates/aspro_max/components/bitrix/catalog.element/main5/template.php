@@ -100,7 +100,8 @@ if($arResult["PROPERTIES"]["YM_ELEMENT_ID"] && $arResult["PROPERTIES"]["YM_ELEME
 
 $arSkuTemplate = array();
 if(!empty($arResult['SKU_PROPS']))
-	$arSkuTemplate=CMax::GetSKUPropsArray($arResult['SKU_PROPS'], $arResult["SKU_IBLOCK_ID"], "list", $arParams["OFFER_HIDE_NAME_PROPS"]);
+	$arSkuTemplate=CMax::GetSKUPropsArray($arResult['SKU_PROPS'], $arResult["SKU_IBLOCK_ID"], "list", $arParams["OFFER_HIDE_NAME_PROPS"], "N", array(), $arParams['OFFER_SHOW_PREVIEW_PICTURE_PROPS']);
+	//$arSkuTemplate=CMax::GetSKUPropsArray($arResult['SKU_PROPS'], $arResult["SKU_IBLOCK_ID"], "list", $arParams["OFFER_HIDE_NAME_PROPS"]);
 
 $strMainID = $this->GetEditAreaId($arResult['ID']);
 $strObName = 'ob'.preg_replace("/[^a-zA-Z0-9_]/", "x", $strMainID);
@@ -498,6 +499,10 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']);?>
 
 					<?\Aspro\Functions\CAsproMaxItem::showDelayCompareBtn($arParams, $arResult, $arAddToBasketData, $totalCount, $bUseSkuProps, 'list icons long', false, false, '_small', $currentSKUID, $currentSKUIBlock);?>
 
+					<?if($arResult["OFFERS"] && $arResult["FIRST_SKU_PICTURE"]):?>
+						<link class="first_sku_picture" href="<?=$arResult["FIRST_SKU_PICTURE"]["src"];?>"/>
+					<?endif;?>
+
 					<link href="<?=($arFirstPhoto["BIG"]["src"] ? $arFirstPhoto["BIG"]["src"] : $arFirstPhoto["SRC"]);?>" itemprop="image"/>
 					<div class="product-detail-gallery__slider<?if(!$bMagnifier):?> owl-carousel owl-theme big owl-bg-nav short-nav<?else:?> hidden-xs<?endif;?> <?=$arParams['PICTURE_RATIO'];?><?=($showCustomOffer && !empty($arResult['OFFERS_PROP']) ? ' sku-view' : '');?>" data-plugin-options='{"items": "1", "dots": true, "nav": true, "relatedTo": ".product-detail-gallery__slider.thmb", "loop": false}'>
 						<?if($showCustomOffer && !empty($arResult['OFFERS_PROP'])){?>
@@ -727,7 +732,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']);?>
 														$arResult['JS_OFFERS'][$keyOffer]['DISCOUNT_ACTIVE'] = $active_to;
 													}
 												}?>
-												<?\Aspro\Functions\CAsproMax::showDiscountCounter($totalCount, $arDiscount, $arQuantityData, $arItem, $strMeasure, 'v2 grey', $item_id);?>
+												<?\Aspro\Functions\CAsproMax::showDiscountCounter($totalCount, $arDiscount, $arQuantityData, $arResult, $strMeasure, 'v2 grey', $item_id);?>
 											<?endif;?>
 										<?}?>
 										<div class="prices_block">
@@ -1370,7 +1375,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']);?>
 			<div class="char_block rounded3 bordered files_block">
 				<div class="row flexbox">
 					<?foreach($arFiles as $arItem):?>
-						<div class="col-md-4 col-sm-6">
+						<div class="col-md-4 col-sm-6 col-xs-12">
 							<?$arFile=CMax::GetFileInfo($arItem);?>
 							<div class="file_type clearfix <?=$arFile["TYPE"];?>">
 								<i class="icon"></i>

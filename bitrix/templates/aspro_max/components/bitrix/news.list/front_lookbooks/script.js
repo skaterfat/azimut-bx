@@ -7,14 +7,14 @@ $(document).ready(function(){
     if (_this.hasClass('flex-prev')) {
       activeBlock.fadeOut(function(){
         $(this).removeClass('lookbook--active');
-
+console.log(activeBlock);
         block = activeBlock.prev('.lookbook');
         if (block.length) {
           block.fadeIn(function(){
             $(this).addClass('lookbook--active');
           })
         } else {
-          _this.closest('.lookbook-wrapper').find('> .lookbook:last-of-type').fadeIn(function(){
+          _this.closest('.lookbook-wrapper').find('.lookbook:last-of-type').fadeIn(function(){
             $(this).addClass('lookbook--active');
           })
         }
@@ -29,7 +29,7 @@ $(document).ready(function(){
             $(this).addClass('lookbook--active');
           })
         } else {
-          _this.closest('.lookbook-wrapper').find('> .lookbook:eq(0)').fadeIn(function(){
+          _this.closest('.lookbook-wrapper').find('.lookbook:eq(0)').fadeIn(function(){
             $(this).addClass('lookbook--active');
           })
         }
@@ -54,8 +54,13 @@ $(document).ready(function(){
     try{
       ignoreResize.push(true);
       if ((window.matchMedia('(max-width:991px)').matches) || (window.matchMedia('(max-width:1199px)').matches && $('.wrapper1').hasClass('with_left_block')))	{
-        if ($('.lookbook .scrollbars').length) {
-          $('.lookbook .scrollbars').removeClass('scroll-init').mCustomScrollbar('destroy');
+        if (window.matchMedia('(max-width:600px)').matches) {
+          $('.lookbook .scrollbars.to-text').removeClass('scroll-init');
+          InitLookbookScrollBar($('.swipeignore.mobile-overflow .lookbook .row > .lookbook--bl-1 .scrollbars'))
+        } else {
+          if ($('.lookbook .scrollbars').length) {
+            $('.lookbook .scrollbars').removeClass('scroll-init').mCustomScrollbar('destroy');
+          }
         }
       } else {
         InitLookbookScrollBar()

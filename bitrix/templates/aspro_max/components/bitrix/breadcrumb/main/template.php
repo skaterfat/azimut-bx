@@ -52,7 +52,9 @@ if($arResult){
 				endif;
 				$strReturn .= '<div class="breadcrumbs__dropdown-wrapper"><div class="breadcrumbs__dropdown rounded3">';
 					foreach($arSubSections as $arSubSection){
-						$strReturn .= '<a class="breadcrumbs__dropdown-item dark_link font_xs" href="'.$arSubSection["LINK"].'">'.$arSubSection["NAME"].'</a>';
+						if ($arSubSection["LINK"] !== $arItem["LINK"]) {
+							$strReturn .= '<a class="breadcrumbs__dropdown-item dark_link font_xs" href="'.$arSubSection["LINK"].'">'.$arSubSection["NAME"].'</a>';
+						}
 					}
 				$strReturn .= '</div></div>';
 			}
@@ -70,7 +72,7 @@ if($arResult){
 		}
 	}
 
-	return '<div class="breadcrumbs" itemscope="" itemtype="http://schema.org/BreadcrumbList">'.$strReturn.'</div>';
+	return '<div class="breadcrumbs swipeignore" itemscope="" itemtype="http://schema.org/BreadcrumbList">'.$strReturn.'</div>';
 	//return $strReturn;
 }
 else{

@@ -4,14 +4,17 @@ $aMenuLinksExt = array();
 
 if($arMenuParametrs = CMax::GetDirMenuParametrs(__DIR__))
 {
-	if($arMenuParametrs['MENU_SHOW_SECTIONS'] == 'Y')
-	{
-		$catalog_id = \Bitrix\Main\Config\Option::get('aspro.max', 'CATALOG_IBLOCK_ID', CMaxCache::$arIBlocks[SITE_ID]['aspro_max_catalog']['aspro_max_catalog'][0]);
-		$arSections = CMaxCache::CIBlockSection_GetList(array('SORT' => 'ASC', 'ID' => 'ASC', 'CACHE' => array('TAG' => CMaxCache::GetIBlockCacheTag($catalog_id), 'MULTI' => 'Y')), array('IBLOCK_ID' => $catalog_id, 'ACTIVE' => 'Y', 'GLOBAL_ACTIVE' => 'Y', 'ACTIVE_DATE' => 'Y', '<DEPTH_LEVEL' => \Bitrix\Main\Config\Option::get("aspro.max", "MAX_DEPTH_MENU", 2)), false, array('ID', 'ACTIVE', 'IBLOCK_ID', 'NAME', 'SECTION_PAGE_URL', 'DEPTH_LEVEL', 'IBLOCK_SECTION_ID', 'PICTURE', 'UF_REGION', 'UF_MENU_BANNER', 'UF_MENU_BRANDS', 'UF_CATALOG_ICON'));
-		$arSectionsByParentSectionID = CMaxCache::GroupArrayBy($arSections, array('MULTI' => 'Y', 'GROUP' => array('IBLOCK_SECTION_ID')));
-	}
-	if($arSections)
-		CMax::getSectionChilds(false, $arSections, $arSectionsByParentSectionID, $arItemsBySectionID, $aMenuLinksExt);
+	$iblock_id = \Bitrix\Main\Config\Option::get('aspro.max', 'CATALOG_IBLOCK_ID', CMaxCache::$arIBlocks[SITE_ID]['aspro_max_catalog']['aspro_max_catalog'][0]);
+	$arExtParams = array(
+		'IBLOCK_ID' => $iblock_id,
+		'MENU_PARAMS' => $arMenuParametrs,
+		'SECTION_FILTER' => array(),	// custom filter for sections (through array_merge)
+		'SECTION_SELECT' => array(),	// custom select for sections (through array_merge)
+		'ELEMENT_FILTER' => array(),	// custom filter for elements (through array_merge)
+		'ELEMENT_SELECT' => array(),	// custom select for elements (through array_merge)
+		'MENU_TYPE' => 'catalog',
+	);
+	CMax::getMenuChildsExt($arExtParams, $aMenuLinksExt);
 }
 
 $aMenuLinks = array_merge($aMenuLinks, $aMenuLinksExt);

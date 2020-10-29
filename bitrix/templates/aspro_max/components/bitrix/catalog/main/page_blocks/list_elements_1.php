@@ -135,70 +135,7 @@
 	?>
 <?endif;?>
 
-<?
-	$arCurrentIBlockSection = CIBlockSection::GetList(Array(), Array("IBLOCK_ID" => $arParams["IBLOCK_ID"], "ID" => $arResult["VARIABLES"]["SECTION_ID"]), false, Array("IBLOCK_SECTION_ID", "UF_IS_TAG"))->Fetch();
-?>
-
-<?$APPLICATION->IncludeComponent(
-	"bitrix:catalog.section.list",
-	"sections_compact_tags",
-	Array(
-		"IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
-		"IBLOCK_ID" => $arParams["IBLOCK_ID"],
-		"SECTION_ID" => $arCurrentIBlockSection['UF_IS_TAG'] ? $arCurrentIBlockSection['IBLOCK_SECTION_ID'] : $arResult["VARIABLES"]["SECTION_ID"],
-		"SECTION_CODE" => $arResult["VARIABLES"]["SECTION_CODE"],
-		"DISPLAY_PANEL" => $arParams["DISPLAY_PANEL"],
-		"CACHE_TYPE" => $arParams["CACHE_TYPE"],
-		"CACHE_TIME" => $arParams["CACHE_TIME"],
-		"CACHE_GROUPS" => $arParams["CACHE_GROUPS"],
-		"SECTION_URL" => $arResult["FOLDER"].$arResult["URL_TEMPLATES"]["section"],
-		"COUNT_ELEMENTS" => "N",
-		"ADD_SECTIONS_CHAIN" => ((!$iSectionsCount || $arParams['INCLUDE_SUBSECTIONS'] !== "N") ? 'N' : 'Y'),
-		"SHOW_SECTION_LIST_PICTURES" => $arParams["SHOW_SECTION_PICTURES"],
-		"TOP_DEPTH" => "1",
-		"SECTION_USER_FIELDS" => array("UF_IS_TAG")
-	),
-	$component
-);?>
-
 <?if($iSectionsCount):?>
-	<?$this->SetViewTarget("top_content");?>
-		<div class="section-block">
-			<? 
-			global $arSubSectionFilter;
-			$arSubSectionFilter['UF_IS_TAG'] = "";
-			?>
-			<?$APPLICATION->IncludeComponent(
-				"bitrix:catalog.section.list",
-				"sections_compact",
-				Array(
-					"IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
-					"IBLOCK_ID" => $arParams["IBLOCK_ID"],
-					"SECTION_ID" => $arResult["VARIABLES"]["SECTION_ID"],
-					"SECTION_CODE" => $arResult["VARIABLES"]["SECTION_CODE"],
-					"DISPLAY_PANEL" => $arParams["DISPLAY_PANEL"],
-					"CACHE_TYPE" => $arParams["CACHE_TYPE"],
-					"CACHE_TIME" => $arParams["CACHE_TIME"],
-					"CACHE_GROUPS" => $arParams["CACHE_GROUPS"],
-					"SECTION_URL" => $arResult["FOLDER"].$arResult["URL_TEMPLATES"]["section"],
-					"COUNT_ELEMENTS" => "N",
-					"ADD_SECTIONS_CHAIN" => ((!$iSectionsCount || $arParams['INCLUDE_SUBSECTIONS'] !== "N") ? 'N' : 'Y'),
-					"SHOW_SECTION_LIST_PICTURES" => $arParams["SHOW_SECTION_PICTURES"],
-					"TOP_DEPTH" => "1",
-					"FILTER_NAME" => "arSubSectionFilter",
-					"CACHE_FILTER" => "Y",
-					"SHOW_ICONS" => "Y",
-					"COUNT_ELEMENTS" => $arParams["SECTION_COUNT_ELEMENTS"],
-					"SECTION_USER_FIELDS" => array("UF_CATALOG_ICON"),
-					"NO_MARGIN" => "Y",
-				),
-				$component
-			);?>
-		</div>
-	<?$this->EndViewTarget();?>
-<?endif;?>
-
-<?/*if($iSectionsCount):?>
 	<?$this->SetViewTarget("top_content");?>
 		<?global $arTheme;?>
 		<div class="section-block">
@@ -211,7 +148,7 @@
 			<?@include_once($sViewElementTemplate.'.php');?>
 		</div>
 	<?$this->EndViewTarget();?>
-<?endif;*/?>
+<?endif;?>
 
 <?global $arTheme;?>
 <?$isAjax="N";?>
@@ -221,7 +158,7 @@
 <?if(isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == "xmlhttprequest" && isset($_GET["ajax_get_filter"]) && $_GET["ajax_get_filter"] == "Y" ){
 	$isAjaxFilter="Y";
 }
-if($isAjaxFilter == "Y")
+if(isset($isAjaxFilter) && $isAjaxFilter == "Y")
 {
 	$isAjax="N";
 }
@@ -261,7 +198,7 @@ if($isAjaxFilter == "Y")
 			</div>
 			<script type="text/javascript">
 
-				if(typeof window['trackBarOptions'] !== 'undefined'){
+				if(typeof window['trackBarOptions'] !== 'undefined' && window['trackBarOptions']){
 					window['trackBarValues'] = {}
 					for(key in window['trackBarOptions']){
 						window['trackBarValues'][key] = {
@@ -290,7 +227,7 @@ if($isAjaxFilter == "Y")
 				}
 				$('.filter_tmp').appendTo($('.filter_wrapper_ajax'));
 
-				if(typeof window['trackBarOptions'] !== 'undefined'){
+				if(typeof window['trackBarOptions'] !== 'undefined' && window['trackBarOptions']){
 					for(key in window['trackBarOptions']){
 						window['trackBarOptions'][key].leftPercent = window['trackBarValues'][key].leftPercent;
 						window['trackBarOptions'][key].rightPercent = window['trackBarValues'][key].rightPercent;
@@ -348,7 +285,10 @@ if($isAjaxFilter == "Y")
 <?endif;?>
 
 			<?if(!$arSeoItem):?>
-				<?if($arParams["SHOW_SECTION_DESC"] != 'N' && strpos($_SERVER['REQUEST_URI'], 'PAGEN') === false):?>
+				<?if(
+					$arParams["SHOW_SECTION_DESC"] != 'N' &&
+					strpos($_SERVER['REQUEST_URI'], 'PAGEN') === false
+				):?>
 					<?ob_start();?>
 					<?if($posSectionDescr=="BOTH"):?>
 						<?if ($arSection[$section_pos_top]):?>
@@ -481,7 +421,7 @@ if($isAjaxFilter == "Y")
 						"META_KEYWORDS" => $arParams["LIST_META_KEYWORDS"],
 						"META_DESCRIPTION" => $arParams["LIST_META_DESCRIPTION"],
 						"BROWSER_TITLE" => $arParams["LIST_BROWSER_TITLE"],
-						"ADD_SECTIONS_CHAIN" => $arParams["ADD_SECTIONS_CHAIN"],
+						"ADD_SECTIONS_CHAIN" => ($iSectionsCount && $arParams['INCLUDE_SUBSECTIONS'] == "N") ? 'N' : $arParams["ADD_SECTIONS_CHAIN"],
 						"HIDE_NOT_AVAILABLE" => $arParams["HIDE_NOT_AVAILABLE"],
 						'HIDE_NOT_AVAILABLE_OFFERS' => $arParams["HIDE_NOT_AVAILABLE_OFFERS"],
 						"DISPLAY_COMPARE" => CMax::GetFrontParametrValue('CATALOG_COMPARE'),
@@ -587,82 +527,102 @@ if($isAjaxFilter == "Y")
 <?endif;?>
 
 			<?if($isAjax=="N"){?>
-				<?if($linkedArticles && $arParams["BLOG_IBLOCK_ID"]):?>
+				<?if($arParams["BLOG_IBLOCK_ID"]):?>
 					<?
 					$filterName = "MAX_FILTER_LINKED_BLOG";
-					$GLOBALS[$filterName] = ["ID" => $linkedArticles];
+					$GLOBALS[$filterName] = array(
+						array(
+							'LOGIC' => 'OR',
+							array( "ID" => $linkedArticles ),
+							array( "PROPERTY_LINK_GOODS_SECTIONS" => $section['ID'] ),
+						),
+					);
+
+					if($sectionParent) {
+						$GLOBALS[$filterName][0][] = array( "PROPERTY_LINK_GOODS_SECTIONS" => $sectionParent['ID'] );
+					}
+					if($sectionRoot) {
+						$GLOBALS[$filterName][0][] = array( "PROPERTY_LINK_GOODS_SECTIONS" => $sectionRoot['ID'] );
+					}
+
 					if ($arParams["FILTER_NAME"] && $arParams["FILTER_NAME"] == "arRegionLink") {
 						$GLOBALS[$filterName] += $GLOBALS["arRegionLink"];
 					}
+					$blogsCount = CMaxCache::CIblockElement_GetList(array("CACHE" => array("TAG" => CMaxCache::GetIBlockCacheTag($arParams["BLOG_IBLOCK_ID"]))), $GLOBALS[$filterName], array());
+					if($blogsCount):
 					?>
-					<div class="linked-blog-list <?=$linkedArticlesPos?>" data-desktop_row="<?=$linkedArticlesRows?>" data-mobile_row="<?=$linkedArticlesRowsMobile?>">
-						<?$APPLICATION->IncludeComponent(
-							"bitrix:news.list",
-							"news-list",
-							array(
-								"IBLOCK_TYPE" => "aspro_max_content",
-								"IBLOCK_ID" => $arParams["BLOG_IBLOCK_ID"],
-								"NEWS_COUNT" => "10",
-								"SORT_BY1" => "SORT",
-								"SORT_ORDER1" => "ASC",
-								"SORT_BY2" => "ID",
-								"SORT_ORDER2" => "DESC",
-								"SLIDER" => ($linkedArticlesPos == "content" ? "Y" : "N"),
-								"FILTER_NAME" => $filterName,
-								"FIELD_CODE" => array(
-									0 => "NAME",
-									1 => "DETAIL_PAGE_URL",
-									2 => "PREVIEW_TEXT",
-									3 => "PREVIEW_PICTURE",
-									4 => "DATE_ACTIVE_FROM",
+						<div class="linked-blog-list <?=$linkedArticlesPos?>" data-desktop_row="<?=$linkedArticlesRows?>" data-mobile_row="<?=$linkedArticlesRowsMobile?>">
+							<?$APPLICATION->IncludeComponent(
+								"bitrix:news.list",
+								"news-list",
+								array(
+									"IBLOCK_TYPE" => "aspro_max_content",
+									"IBLOCK_ID" => $arParams["BLOG_IBLOCK_ID"],
+									"NEWS_COUNT" => "10",
+									"SORT_BY1" => "SORT",
+									"SORT_ORDER1" => "ASC",
+									"SORT_BY2" => "ID",
+									"SORT_ORDER2" => "DESC",
+									"SLIDER" => ($linkedArticlesPos == "content" ? "Y" : "N"),
+									"FILTER_NAME" => $filterName,
+									"FIELD_CODE" => array(
+										0 => "NAME",
+										1 => "DETAIL_PAGE_URL",
+										2 => "PREVIEW_TEXT",
+										3 => "PREVIEW_PICTURE",
+										4 => "DATE_ACTIVE_FROM",
+									),
+									"PROPERTY_CODE" => array(
+										0 => "PERIOD",
+									),
+									"CHECK_DATES" => "Y",
+									"DETAIL_URL" => "",
+									"AJAX_MODE" => "N",
+									"AJAX_OPTION_JUMP" => "N",
+									"AJAX_OPTION_STYLE" => "Y",
+									"AJAX_OPTION_HISTORY" => "N",
+									"CACHE_TYPE" => "N",
+									"CACHE_TIME" => "36000000",
+									"CACHE_FILTER" => "Y",
+									"HIDE_LINK_WHEN_NO_DETAIL" => "Y",
+									"CACHE_GROUPS" => "N",
+									"PREVIEW_TRUNCATE_LEN" => "",
+									"ACTIVE_DATE_FORMAT" => "j F Y",
+									"SET_TITLE" => "N",
+									"SET_STATUS_404" => "N",
+									"INCLUDE_IBLOCK_INTO_CHAIN" => "N",
+									"ADD_SECTIONS_CHAIN" => "N",
+									"PARENT_SECTION" => "",
+									"PARENT_SECTION_CODE" => "",
+									"INCLUDE_SUBSECTIONS" => "Y",
+									"PAGER_TEMPLATE" => ".default",
+									"DISPLAY_TOP_PAGER" => "N",
+									"DISPLAY_BOTTOM_PAGER" => "N",
+									"PAGER_TITLE" => "Новости",
+									"PAGER_SHOW_ALWAYS" => "N",
+									"PAGER_DESC_NUMBERING" => "N",
+									"PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
+									"PAGER_SHOW_ALL" => "N",
+									"VIEW_TYPE" => "list",
+									"IMAGE_POSITION" => "left",
+									"COUNT_IN_LINE" => "3",
+									"SHOW_TITLE" => "Y",
+									"AJAX_OPTION_ADDITIONAL" => "",
+									"LINKED_MODE" => ($linkedArticlesPos == "content" ? "N" : "Y"),
+									"BORDERED" => ($linkedArticlesPos == "content" ? "N" : "Y"),
+									"TITLE" => ($arParams["BLOCK_BLOG_NAME"] ? $arParams["BLOCK_BLOG_NAME"] : GetMessage("TAB_BLOG_NAME")),
+									"SHOW_TITLE" => "Y",
 								),
-								"PROPERTY_CODE" => array(
-									0 => "PERIOD",
-								),
-								"CHECK_DATES" => "Y",
-								"DETAIL_URL" => "",
-								"AJAX_MODE" => "N",
-								"AJAX_OPTION_JUMP" => "N",
-								"AJAX_OPTION_STYLE" => "Y",
-								"AJAX_OPTION_HISTORY" => "N",
-								"CACHE_TYPE" => "N",
-								"CACHE_TIME" => "36000000",
-								"CACHE_FILTER" => "Y",
-								"HIDE_LINK_WHEN_NO_DETAIL" => "Y",
-								"CACHE_GROUPS" => "N",
-								"PREVIEW_TRUNCATE_LEN" => "",
-								"ACTIVE_DATE_FORMAT" => "j F Y",
-								"SET_TITLE" => "N",
-								"SET_STATUS_404" => "N",
-								"INCLUDE_IBLOCK_INTO_CHAIN" => "N",
-								"ADD_SECTIONS_CHAIN" => "N",
-								"PARENT_SECTION" => "",
-								"PARENT_SECTION_CODE" => "",
-								"INCLUDE_SUBSECTIONS" => "Y",
-								"PAGER_TEMPLATE" => ".default",
-								"DISPLAY_TOP_PAGER" => "N",
-								"DISPLAY_BOTTOM_PAGER" => "N",
-								"PAGER_TITLE" => "Новости",
-								"PAGER_SHOW_ALWAYS" => "N",
-								"PAGER_DESC_NUMBERING" => "N",
-								"PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
-								"PAGER_SHOW_ALL" => "N",
-								"VIEW_TYPE" => "list",
-								"IMAGE_POSITION" => "left",
-								"COUNT_IN_LINE" => "3",
-								"SHOW_TITLE" => "Y",
-								"AJAX_OPTION_ADDITIONAL" => "",
-								"LINKED_MODE" => ($linkedArticlesPos == "content" ? "N" : "Y"),
-								"BORDERED" => ($linkedArticlesPos == "content" ? "N" : "Y"),
-								"TITLE" => ($arParams["BLOCK_BLOG_NAME"] ? $arParams["BLOCK_BLOG_NAME"] : GetMessage("TAB_BLOG_NAME")),
-								"SHOW_TITLE" => "Y",
-							),
-							false, array("HIDE_ICONS" => "Y")
-						);?>
-					</div>
+								false, array("HIDE_ICONS" => "Y")
+							);?>
+						</div>
+					<?endif;?>
 				<?endif;?>
 				<?if(!$arSeoItem):?>
-					<?if($arParams["SHOW_SECTION_DESC"] != 'N' && strpos($_SERVER['REQUEST_URI'], 'PAGEN') === false):?>
+					<?if(
+						$arParams["SHOW_SECTION_DESC"] != 'N' &&
+						strpos($_SERVER['REQUEST_URI'], 'PAGEN') === false
+					):?>
 						<?ob_start();?>
 						<?if($posSectionDescr=="BOTH"):?>
 							<?if($arSection[$section_pos_bottom]):?>
@@ -689,6 +649,8 @@ if($isAjaxFilter == "Y")
 						$html = ob_get_clean();
 						$APPLICATION->AddViewContent('bottom_desc', $html);
 						$APPLICATION->ShowViewContent('bottom_desc');
+						$APPLICATION->ShowViewContent('smartseo_bottom_description');
+						$APPLICATION->ShowViewContent('smartseo_additional_description');
 						$APPLICATION->ShowViewContent('sotbit_seometa_bottom_desc');
 						$APPLICATION->ShowViewContent('sotbit_seometa_add_desc');
 						?>
@@ -705,6 +667,7 @@ if($isAjaxFilter == "Y")
 					$html = ob_get_clean();
 					$APPLICATION->AddViewContent('bottom_desc', $html);
 					$APPLICATION->ShowViewContent('bottom_desc');
+					$APPLICATION->ShowViewContent('smartseo_bottom_description');
 					$APPLICATION->ShowViewContent('sotbit_seometa_bottom_desc');
 					?>
 				<?endif;?>
@@ -797,7 +760,7 @@ if($arSeoItem)
 		$APPLICATION->SetPageProperty("keywords", $arSeoItem["IPROPERTY_VALUES"]['ELEMENT_META_KEYWORDS']);
 	?>
 <?}?>
-<?if($isAjaxFilter):?>
+<?if(isset($isAjaxFilter) && $isAjaxFilter):?>
 	<?global $APPLICATION;?>
 	<?$arAdditionalData['TITLE'] = htmlspecialcharsback($APPLICATION->GetTitle());
 	if($arSeoItem)
@@ -809,8 +772,15 @@ if($arSeoItem)
 		BX.removeCustomEvent("onAjaxSuccessFilter", function tt(e){});
 		BX.addCustomEvent("onAjaxSuccessFilter", function tt(e){
 			var arAjaxPageData = <?=CUtil::PhpToJSObject($arAdditionalData);?>;
-			if($('.element-count-wrapper .element-count').length)
-				$('.element-count-wrapper .element-count').text($('.js_append > div:not(.flexbox)').length)
+			if($('.element-count-wrapper .element-count').length){
+				//$('.element-count-wrapper .element-count').text($('.js_append').closest('.ajax_load.cur').find('.bottom_nav').attr('data-all_count'));
+				var cntFromNav = $('.js_append').closest('.ajax_load.cur').find('.bottom_nav').attr('data-all_count');
+				if(cntFromNav){
+					$('.element-count-wrapper .element-count').text(cntFromNav);
+				} else {
+					$('.element-count-wrapper .element-count').text($('.js_append > div.item:not(.flexbox)').length)
+				}				
+			}			
 			if (arAjaxPageData.TITLE)
 				BX.ajax.UpdatePageTitle(arAjaxPageData.TITLE);
 			if (arAjaxPageData.WINDOW_TITLE || arAjaxPageData.TITLE)

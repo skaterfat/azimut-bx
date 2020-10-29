@@ -12,8 +12,7 @@ $APPLICATION->IncludeComponent(
 		"CACHE_TYPE" => $arParams["CACHE_TYPE"],
 		"CACHE_TIME" => $arParams["CACHE_TIME"],
 		"CACHE_GROUPS" => $arParams["CACHE_GROUPS"],
-		"SECTION_URL" => $arResult["FOLDER"].$arResult["URL_TEMPLATES"]["section"],
-		"COUNT_ELEMENTS" => "N",
+		"SECTION_URL" => $arResult["FOLDER"].$arResult["URL_TEMPLATES"]["section"],		
 		"ADD_SECTIONS_CHAIN" => ((!$iSectionsCount || $arParams['INCLUDE_SUBSECTIONS'] !== "N") ? 'N' : 'Y'),
 		"SHOW_SECTION_LIST_PICTURES" => $arParams["SHOW_SECTION_PICTURES"],
 		"TOP_DEPTH" => "1",
@@ -24,6 +23,7 @@ $APPLICATION->IncludeComponent(
 		"SECTION_USER_FIELDS" => array("UF_CATALOG_ICON"),
 		"SECTION_FIELDS" => array('ID', 'IBLOCK_ID', 'PICTURE'),
 		"NO_MARGIN" => "Y",
+		"COUNT_ELEMENTS_FILTER" => ($arParams["HIDE_NOT_AVAILABLE"] == "Y" ? "CNT_AVAILABLE" : "CNT_ACTIVE"),
 	),
 	$component
 );?>

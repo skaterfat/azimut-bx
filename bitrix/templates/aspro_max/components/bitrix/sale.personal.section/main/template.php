@@ -119,13 +119,13 @@ else
 			foreach ($availablePages as $blockElement)
 			{
 				?>
-				<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+				<div class="col-lg-4 col-md-6 col-sm-12 col-xs-6">
 					<div class="sale-personal-section-index-block bx-theme-<?=$theme?>">
-						<a class="sale-personal-section-index-block-link" href="<?=htmlspecialcharsbx($blockElement['path'])?>">
+						<a class="sale-personal-section-index-block-link box-shadow" href="<?=htmlspecialcharsbx($blockElement['path'])?>">
 						<span class="sale-personal-section-index-block-ico">
 							<?=$blockElement['icon']?>
 						</span>
-							<h2 class="sale-personal-section-index-block-name">
+							<h2 class="sale-personal-section-index-block-name color-theme-hover">
 								<?=htmlspecialcharsbx($blockElement['name'])?>
 							</h2>
 						</a>

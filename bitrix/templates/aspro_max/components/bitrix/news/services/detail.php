@@ -10,6 +10,10 @@ if(isset($arParams["TYPE_LEFT_BLOCK_DETAIL"]) && $arParams["TYPE_LEFT_BLOCK_DETA
 if(isset($arParams["SIDE_LEFT_BLOCK_DETAIL"]) && $arParams["SIDE_LEFT_BLOCK_DETAIL"]!='FROM_MODULE'){
 	$arTheme['SIDE_MENU']['VALUE'] = $arParams["SIDE_LEFT_BLOCK_DETAIL"];
 }
+
+if($arTheme['HIDE_SUBSCRIBE']['VALUE'] == 'Y'){
+	$arParams["USE_SUBSCRIBE_IN_TOP"] = "N";
+}
 ?>
 
 <?
@@ -132,9 +136,11 @@ if($arParams["SHOW_MAX_ELEMENT"] == "Y")
 						</div>
 					<?endif;?>
 
-					<div><div class="colored_theme_hover_bg-block dark_link animate-load" data-event="jqm" data-param-type="subscribe" data-name="subscribe" title="<?=GetMessage('SUBSCRIBE_TEXT')?>">
-						<?=CMax::showIconSvg("subscribe", SITE_TEMPLATE_PATH."/images/svg/subscribe_insidepages.svg", "", "colored_theme_hover_bg-el-svg", true, false);?>
-					</div></div>
+					<?if($arParams["USE_SUBSCRIBE_IN_TOP"] == "Y"):?>
+						<div><div class="colored_theme_hover_bg-block dark_link animate-load" data-event="jqm" data-param-type="subscribe" data-name="subscribe" title="<?=GetMessage('SUBSCRIBE_TEXT')?>">
+							<?=CMax::showIconSvg("subscribe", SITE_TEMPLATE_PATH."/images/svg/subscribe_insidepages.svg", "", "colored_theme_hover_bg-el-svg", true, false);?>
+						</div></div>
+					<?endif;?>
 				<?$this->EndViewTarget();?>
 			<?else:?>
 				<?$this->SetViewTarget('share_in_contents');?>
@@ -146,9 +152,11 @@ if($arParams["SHOW_MAX_ELEMENT"] == "Y")
 						</div>
 					<?endif;?>
 
-					<div><div class="colored_theme_hover_bg-block dark_link animate-load" data-event="jqm" data-param-type="subscribe" data-name="subscribe" title="<?=GetMessage('SUBSCRIBE_TEXT')?>">
-						<?=CMax::showIconSvg("subscribe", SITE_TEMPLATE_PATH."/images/svg/subscribe_insidepages.svg", "", "colored_theme_hover_bg-el-svg", true, false);?>
-					</div></div>
+					<?if($arParams["USE_SUBSCRIBE_IN_TOP"] == "Y"):?>
+						<div><div class="colored_theme_hover_bg-block dark_link animate-load" data-event="jqm" data-param-type="subscribe" data-name="subscribe" title="<?=GetMessage('SUBSCRIBE_TEXT')?>">
+							<?=CMax::showIconSvg("subscribe", SITE_TEMPLATE_PATH."/images/svg/subscribe_insidepages.svg", "", "colored_theme_hover_bg-el-svg", true, false);?>
+						</div></div>
+					<?endif;?>
 				<?$this->EndViewTarget();?>
 			<?endif;?>
 
@@ -225,21 +233,29 @@ if($arParams["SHOW_MAX_ELEMENT"] == "Y")
 				    if($arRegion["LIST_STORES"] && $arParams["HIDE_NOT_AVAILABLE"] == "Y")
 				    {
 					    if($arParams['STORES']){
-						    if(count($arParams['STORES']) > 1){
-							    $arStoresFilter = array('LOGIC' => 'OR');
-							    foreach($arParams['STORES'] as $storeID)
-							    {
-								    $arStoresFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-							    }
-						    }
-						    else{
-							    foreach($arParams['STORES'] as $storeID)
-							    {
-								    $arStoresFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-							    }
-						    }
+						    if(CMax::checkVersionModule('18.6.200', 'iblock')){
+								$arStoresFilter = array(
+									'STORE_NUMBER' => $arParams['STORES'],
+									'>STORE_AMOUNT' => 0,
+								);
+							}
+							else{
+								if(count($arParams['STORES']) > 1){
+									$arStoresFilter = array('LOGIC' => 'OR');
+									foreach($arParams['STORES'] as $storeID)
+									{
+										$arStoresFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+									}
+								}
+								else{
+									foreach($arParams['STORES'] as $storeID)
+									{
+										$arStoresFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+									}
+								}
+							}
 
-						    $arTmpFilter = array('!TYPE' => '2');
+						    $arTmpFilter = array('!TYPE' => array('2', '3'));
 						    if($arStoresFilter){
 							    if(count($arStoresFilter) > 1){
 								    $arTmpFilter[] = $arStoresFilter;
@@ -250,7 +266,7 @@ if($arParams["SHOW_MAX_ELEMENT"] == "Y")
 
 							    $GLOBALS['arrProductsFilter'][] = array(
 								    'LOGIC' => 'OR',
-								    array('TYPE' => '2'),
+								    array('TYPE' => array('2', '3')),
 								    $arTmpFilter,
 							    );
 						    }
@@ -259,7 +275,7 @@ if($arParams["SHOW_MAX_ELEMENT"] == "Y")
 			    }
 			    ?>
 			<?endif;?>
-		<?endif;?><?//var_dump($arTmpGoods);?>
+		<?endif;?>
 		<?/*end goods filter*/?>
 
 		<?//element?>

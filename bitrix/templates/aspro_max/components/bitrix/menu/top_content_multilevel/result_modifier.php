@@ -54,10 +54,6 @@ if($arResult){
 		$arResult[0]["CHILD"]=$arTmpResult;
 	}
 
-	echo '<pre>';
-	print_r($arResult);
-	echo '</pre>';
-
 	if($MENU_TYPE == 3) {
 		CMax::replaceMenuChilds($arResult, $arParams);
 	}

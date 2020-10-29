@@ -1,47 +1,48 @@
 $(document).ready(function(){
-	// var lastVisible = $('.landings-list__item.last');
 	$(document).on('click', '.landings-list__item--js-more', function(){
+		if($(this).closest('.from_smartseo').length){
+			return;
+		}
+
 		var $this = $(this),
 			block = $this.find('> span'),
 			dataOpened = $this.data('opened'),
 			thisText = block.text()
 			dataText = block.data('text'),
-			item = $this.closest('.landings-list__info').find('.landings-list__item-more');
+			showCount = $this.data('visible')
+			item = $this.closest('.landings-list__info').find('.landings-list__item.hidden').get();
 
-		item.removeClass('hidden');
-
-		if(dataOpened != 'Y'){
-			item.velocity('stop').velocity({
-				'opacity': 1,
-			}, {
-				'display': 'inline',
-				'duration': 200,
-				begin: function(){
-					// lastVisible.toggleClass('last');
-				}
-			});
+		var items = item.filter(function(item1, index){
+			return ++index <= showCount
+		})
+		if (items) {
+			items.forEach(function(item, index){
+				$(item).removeClass('hidden');
+			})
+		}
+		if (!item.length) {
+			$this.closest('.landings-list__info').find('.landings-list__item.js-hidden').addClass('hidden');
+			block.data('text', thisText).text(dataText);
+			$this.removeClass('opened').data('opened', 'N');
+		} else if (item.length <= showCount) {
+			block.data('text', thisText).text(dataText);
 			$this.addClass('opened').data('opened', 'Y');
 		}
-		else{
-			item.velocity('stop').velocity({
-				'opacity': 0,
-			}, {
-				'display': 'none',
-				'duration': 100,
-				complete: function(){
-					// lastVisible.toggleClass('last');
-				}
-			});
-			$this.removeClass('opened').data('opened', 'N');
-		}
-		
-		block.data('text', thisText).text(dataText);
 	});
 
 	$(document).on('click', '.landings-list__clear-filter', function(){
+		if($(this).closest('.from_smartseo').length){
+			return;
+		}
+
 		$('.bx_filter_search_reset').trigger('click');
 	})
+
 	$(document).on('click', 'a.landings-list__name', function(e){
+		if($(this).closest('.from_smartseo').length){
+			return;
+		}
+
 		var _this = $(this);
 
 		if(_this.closest('.no_ajax.landings_list_wrapper').length) {
@@ -64,6 +65,8 @@ $(document).ready(function(){
 					CheckTopMenuFullCatalogSubmenu();
 
 					BX.onCustomEvent('onAjaxSuccessFilter');
+
+					checkFilterLandgings()
 
 					var eventdata = {action:'jsLoadBlock'};
 					BX.onCustomEvent('onCompleteAction', [eventdata, this]);

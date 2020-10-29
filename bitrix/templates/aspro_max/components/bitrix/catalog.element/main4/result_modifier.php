@@ -221,6 +221,7 @@ if('Y' !== $arParams['ADD_DETAIL_TO_SLIDER'] && $arResult['DETAIL_PICTURE']){
 }
 $arResult['ALT_TITLE_GET'] = $arParams['ALT_TITLE_GET'];
 $productSlider = CMax::getSliderForItemExt($arResult, $arParams['ADD_PICT_PROP'], 'Y' == $arParams['ADD_DETAIL_TO_SLIDER']);
+$bEmptyPictureProduct = false;
 
 if (empty($productSlider))
 {
@@ -233,6 +234,7 @@ if (empty($productSlider))
 		$productSlider = array(
 			0 => $arEmptyPreview
 		);
+		$bEmptyPictureProduct = true;
 	}
 }
 
@@ -1048,6 +1050,24 @@ if ($arResult['MODULES']['catalog'] && $arResult['CATALOG'])
 			$arResult['OFFERS'],
 			$boolConvert ? $arResult['CONVERT_CURRENCY']['CURRENCY_ID'] : $strBaseCurrency
 		);
+
+		$arFirstSkuPicture = array();
+		$bNeedFindPicture = (CMax::GetFrontParametrValue("SHOW_FIRST_SKU_PICTURE") == "Y") && $bEmptyPictureProduct;
+		if( $bNeedFindPicture ){
+			$bFindPicture = false;
+						
+			foreach ($arResult['OFFERS'] as $keyOffer => $arOffer) {
+				if (($arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE']) || (!$arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE'])) {
+					$arOffer['DETAIL_PICTURE'] = $arOffer['PREVIEW_PICTURE'];
+				}
+
+				if ($arOffer['DETAIL_PICTURE'] && !$bFindPicture) {
+					$arResult["FIRST_SKU_PICTURE"] = CFile::ResizeImageGet($arOffer["DETAIL_PICTURE"], array("width"=>350, "height"=>350), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+					$bFindPicture = true;
+					break;
+				}
+			}
+		}
 	}
 
 	//format prices when USE_PRICE_COUNT
@@ -1373,9 +1393,24 @@ if(in_array('HELP_TEXT', $arParams['PROPERTY_CODE']))
 					"EDIT_TEMPLATE" => ""
 				)
 			);?>
-		<?$arResult['HELP_TEXT'] = ob_get_contents();
+		<?$help_text = ob_get_contents();		
 		ob_end_clean();
-		$arResult['HELP_TEXT_FILE'] = true;?>
+		$bshowHelpTextFromFile = true;
+		if( strlen( trim($help_text) ) < 1){
+			$bshowHelpTextFromFile = false;
+		} else{
+			$bIsBitrixDiv = ( strpos($help_text, 'bx_incl_area') !== false );
+			$textWithoutTags = strip_tags($help_text);
+			if( $bIsBitrixDiv && (strlen( trim($textWithoutTags) ) < 1) ){
+				$bshowHelpTextFromFile = false;
+			}
+		}
+		
+		if( $bshowHelpTextFromFile ){
+			$arResult['HELP_TEXT'] = $help_text;
+			$arResult['HELP_TEXT_FILE'] = true;
+		}
+		?>
 	<?endif;?>
 <?}
 

@@ -23,9 +23,14 @@
 						</div>
 						<div class="col-md-9">
 			<?endif;?>
+			<?
+			$sTemplateMobile = (isset($arParams['MOBILE_TEMPLATE']) ? $arParams['MOBILE_TEMPLATE'] : '');
+        	$bList = ($sTemplateMobile === 'list');
+        	//var_dump($bList);
+        	?>
 			<div class="item-views tizers <?=$arParams['TYPE_IMG'];?>">
 				<div class="items <?=($bSmallBlock ? 'small-block' : '');?> <?=($arParams['TYPE_IMG'] !== 'top' ? ' tops': '');?>">
-					<div class="row flexbox <?=($bSmallBlock ? '' : 'justify-center');?>">
+					<div class="row flexbox <?=($bSmallBlock ? '' : 'justify-center');?> <?=$sTemplateMobile;?><?=($bList ? ' mobile-list' : '');?>">
 						<?foreach($arResult['ITEMS'] as $i => $arItem):?>
 							<?
 							// edit/add/delete buttons for edit mode

@@ -22,6 +22,11 @@
 .item-views.float_banners2 .item.sm.bottom .image{order:2;}
 .item-views.float_banners2 .item.sm.top .inner-text{padding: 29px 34px 25px;}
 
+.item-views.float_banners2 .item:hover .image .img_inner span {
+	-webkit-animation: flash 0.8s;
+	animation: flash 0.8s;
+}
+
 @media (min-width: 1200px){
 	.item-views.float_banners2 .item.big .inner-text{padding: 50px 10px 50px 54px;min-height: 360px;}
 }
@@ -62,7 +67,27 @@
 	.item-views.float_banners2 .item .lazy{padding-top: 86%;}
 }
 @media (max-width: 600px){
-	body .item-views.float_banners2 .item.flexbox div.image{position: relative;bottom: 0;padding: 0px 0 27px;}
+	body .item-views.float_banners2 .items > .row {margin-left: -16px;margin-right: -16px;padding-left: 16px;}
+	body .item-views.float_banners2 .items > .row > div {width: 276px;flex-shrink: 0;padding-left: 0px;padding-right: 16px;}
+	body .item-views.float_banners2 .item.big .title {line-height: 1.39em;}
+	.item-views.float_banners2 .item .previewtext {line-height: 1.54em;margin-top: 1px;}
+	body .item-views.float_banners2 .item.flexbox div.inner-text {padding: 27px 30px 90%;}
+	.item-views.float_banners2 .item .top-text {margin: 0px 0px 7px 1px;}
+	.item-views.float_banners2 .item .lazy {padding-top: 0;}
+	body .item-views.float_banners2 .item.flexbox div.image{position: relative;bottom: 0;padding: 0px 0 20px;}
+	.item-views.float_banners2 .item .lazy, 
+	.item-views.float_banners2 .item .lazyloaded {padding-top: 74.4%;}
+	body#main .wrapper1 .wrapper_inner.front .drag-block.container .item-views.float_banners2{padding-bottom: 17px;}
 	body .item-views.float_banners2 .item.flexbox div.inner-text{padding-bottom:21px;}
-	body .wrapper1:not(.with_left_block) .wrapper_inner.front .drag-block.container .item-views.float_banners2{padding-bottom: 17px;}
+
+	.item-views.float_banners2.top .item .lazy, 
+	.item-views.float_banners2.top .item .lazyloaded {padding-top: 67.4%;}
+	body .item-views.float_banners2.top .item.flexbox div.image {padding-bottom: 0;}
+	.item-views.float_banners2 .item.sm.top .inner-text {padding-top: 26px;padding-bottom: 18px;}
+	body .item-views.float_banners2.top .item .title {line-height: 1.44em;}
+
+	body .item-views.float_banners2.bottom.sm-block .item {justify-content: space-between;}
+
+	body .item-views.float_banners2.one-item .items > .row > div {width: 100%;max-width: 400px;}
+	body .item-views.float_banners2 .item.flexbox.top div.image{height: auto;}
 }

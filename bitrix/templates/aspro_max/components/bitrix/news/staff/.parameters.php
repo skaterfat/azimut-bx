@@ -193,6 +193,13 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
             "TYPE" => "STRING", 
             "DEFAULT" => "",
         ),
+	'USE_SUBSCRIBE_IN_TOP' => array(
+		'PARENT' => 'DETAIL_SETTINGS',
+		'SORT' => 600,
+		'NAME' => GetMessage('USE_SUBSCRIBE_IN_TOP'),
+		'TYPE' => 'CHECKBOX',
+		'DEFAULT' => 'N',
+	),
 ));
 
 $arTemplateParameters['IMAGE_POSITION'] = array(

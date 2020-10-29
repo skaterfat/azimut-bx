@@ -3218,6 +3218,7 @@ window.JCCatalogElementFast.prototype.setStoreBlock = function(id)
 {
 	$('.stores_tab > div').hide();
 	$('.stores_tab .sku_stores_'+id).show();
+	$('.fastview-product__info .quantity_block_wrapper .js-show-stores').data('id', id);
 }
 
 /*set store quantity*/

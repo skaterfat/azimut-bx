@@ -35,6 +35,16 @@
 			<?endif;?>
 		<?endif;?>
 
+		<?//STORIES?>
+		<?if($optionCode == "STORIES"):?>
+			<?global $bShowStories, $bStoriesIndexClass;?>
+			<?if($bShowStories):?>
+				<div class="drag-block container <?=$optionCode?> <?=$bStoriesIndexClass;?>" data-class="<?=$subtype?>_drag" data-order="<?=++$key;?>">
+					<?=CMax::ShowPageType('mainpage', $subtype, $strTemplateName, true);?>
+				</div>
+			<?endif;?>
+		<?endif;?>
+
 		<?//TIZERS_INDEX?>
 		<?if($optionCode == "TIZERS"):?>
 			<?global $bShowTizers, $bTizersIndexClass;?>

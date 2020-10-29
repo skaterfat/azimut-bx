@@ -11,4 +11,6 @@ $MESS ['IMG_POSITION_NAME'] = "Расположение иконки";
 $MESS ['TOP'] = "сверху";
 $MESS ['LEFT'] = "слева";
 $MESS ['RIGHT'] = "справа";
+
+$MESS ['T_MOBILE_TEMPLATE'] = "Мобильный шаблон";
 ?>

@@ -1512,6 +1512,7 @@ function bx_rcm_get_from_cloud(injectId, rcmParameters, localAjaxData)
 				InitOwlSlider();
 				InitLazyLoad();
 
+				if(typeof window['stickySidebar'] !== 'undefined') { window['stickySidebar'].updateSticky(); }
 			}
 		});
 	};

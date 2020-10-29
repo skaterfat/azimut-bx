@@ -1,8 +1,11 @@
 .reviews.item-views .item .preview-text p{margin-top: 0px;}
 .reviews.item-views .item .link-block-more{margin: 30px 0px 0px;}
+.reviews.item-views .owl-carousel.shadow .owl-stage-outer {margin: -25px;padding: 25px;}
+.reviews.item-views .owl-carousel.shadow .owl-item {flex-shrink: 0;}
 
-.reviews.item-views.compact .item-wrapper{margin: 2px 0px 0px 0px;}
-.reviews.item-views.compact .item{padding: 26px 51px 36px;}
+.reviews.item-views.compact .item-wrapper{margin: 2px 0px 0px 0px; padding: 0;}
+.reviews.item-views.compact .owl-item:hover {z-index: 2;}
+.reviews.item-views.compact .item{padding: 26px 51px 36px;margin-right: -1px;}
 .reviews.item-views.compact .item.wlogo .image{width: 60px;height: 50px;line-height: 50px;}
 .reviews.item-views.compact .item:not(.wlogo) .image{width: 50px;height: 50px;line-height: 50px;}
 .reviews.item-views.compact .votes_block.nstar.big .ratings .item-rating svg{width: 15px;height:14px;}
@@ -11,6 +14,9 @@
 .reviews.item-views.compact .item .svg-inline-quote{left:-22px;}
 .reviews.item-views.compact .item .svg-inline-quote svg{width: 22px;height: 15px;}
 .reviews.item-views.compact .item .link-block-more{margin-top:25px;}
+.reviews.item-views.compact .owl-stage {display: flex;}
+.reviews.item-views.compact .item-wrapper,
+.reviews.item-views.compact .item {height: 100%;}
 
 .reviews.item-views.compact.linked .item.wlogo .image{width: 80px;height: 62px;line-height: 62px;}
 .reviews.item-views.compact.linked .item:not(.wlogo) .image{width: 70px;height: 70px;line-height: 70px;}
@@ -82,7 +88,33 @@ body .reviews.item-views.more-item .item .svg-inline-quote{display:none;}
 	.reviews.item-views .item .top-info .votes_block.nstar{display:none;}
 	.reviews.item-views .item .body-info .votes_block{display:block;margin: -10px 0px 10px;}
 }
-@media (min-width: 500px){
+@media(max-width:600px){
+	#main .reviews.item-views.compact {border: none;}
+	.reviews.item-views .owl-carousel .owl-stage-outer {margin-left: -16px;margin-right: -16px;padding-left: 16px;padding-right: 16px;}
+	.reviews.item-views .owl-carousel .owl-stage {display: flex;}
+	.front_review .reviews.item-views .item-wrapper {width: 320px !important;border: 1px solid #ececec;background-color: #fff;height: 100%;padding: 25px 29px 29px;border-radius: 3px;margin-top: 0;}
+	#main .reviews.item-views .item-wrapper .item {padding: 0;border: none;box-shadow: none;}
+	.reviews.item-views .item .top_wrapper {display: flex;}
+	.reviews.item-views .item .top_wrapper .image {margin-right: 20px;}
+	.reviews.item-views .item .top_wrapper .top-info {margin-top: -5px;padding-left: 0;padding-right: 0;}
+	body .reviews.item-views .item .top_wrapper .top-info .wrap {padding-bottom: 2px;}
+	body .reviews.item-views .item:not(.wlogo) .image {width: 50px;height: 50px;line-height: 50px;flex-shrink: 0;margin-bottom: 5px;}
+	.reviews.item-views .item .date {font-size: 10px;line-height: 13px;}
+	body .reviews.item-views .item .title {font-size: 18px;line-height: 25px;margin-bottom: -2px;}
+	.reviews.item-views .item .body-info .votes_block {margin-bottom: 5px;}
+	.reviews.item-views .item .votes_block.nstar.big .ratings .item-rating svg {width: 13px;height: 13px;}
+	.reviews.item-views .item .votes_block.nstar .ratings .item-rating {padding: 0px 4px 0 0px;}
+	.reviews.item-views .item .link-block-more {margin: 23px 1px 0px;}
+
+	.front_review .text_before_items {line-height: 1.54em;}
+	.front_review .with-text-block-wrapper .btn {margin-top: 8px;}
+
+
+	.reviews.item-views.compact.list-mode .item-wrapper {padding: 0;}
+	#main .reviews.item-views.compact.list-mode .item-wrapper .item {padding: 25px 29px 36px;}
+	.reviews.item-views.list-mode .respone_wrap {margin: -1px;}
+}
+@media (min-width: 601px){
 	.reviews.item-views .item .image.pull-left + .top-info{padding-left: 111px;}
 	.reviews.item-views .item:not(.wlogo) .image.pull-left+ .top-info{padding-left: 100px;}
 	.reviews.item-views .item .image.pull-right + .top-info{padding-right: 111px;}
@@ -106,4 +138,8 @@ body .reviews.item-views.more-item .item .svg-inline-quote{display:none;}
     .reviews.item-views.list-mode .response_img {float:none; margin-bottom:16px;}
     .reviews.item-views.list-mode .with-img .response_body{padding-left:0;}
     .reviews.item-views.list-mode .respone_wrap .response_title{margin-top: 0;}
+}
+
+@media(max-width:360px){
+    .front_review .reviews.item-views .item-wrapper {width: 285px !important;}
 }

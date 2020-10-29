@@ -3,6 +3,7 @@
 	"aspro:catalog.section.list.max",
 	"front_sections_only",
 	array(
+		"MOBILE_TEMPLATE" => $arParams['MOBILE_TEMPLATE'],
 		"IBLOCK_TYPE" => $arParams['IBLOCK_TYPE'],
 		"IBLOCK_ID" => $arParams['IBLOCK_ID'],
 		"CACHE_TYPE" => $arParams["CACHE_TYPE"],

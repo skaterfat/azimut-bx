@@ -515,7 +515,7 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 							}
 						}
 
-						$arTmpFilter = array('!TYPE' => '2');
+						$arTmpFilter = array('!TYPE' => array('2', '3'));
 						if($arStoresFilter){
 							if(!CMax::checkVersionModule('18.6.200', 'iblock') && count($arStoresFilter) > 1){
 								$arTmpFilter[] = $arStoresFilter;
@@ -526,7 +526,7 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 
 							$GLOBALS[$arParams["FILTER_NAME"]][] = array(
 								'LOGIC' => 'OR',
-								array('TYPE' => '2'),
+								array('TYPE' => array('2', '3')),
 								$arTmpFilter,
 							);
 						}
@@ -568,6 +568,12 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 					$APPLICATION->AddViewContent('filter_content', $htmlSections);
 				}
 
+				// sort
+				ob_start();
+				include_once 'sort.php';
+				$htmlSort = ob_get_clean();
+				$listElementsTemplate = $template;
+
 				// filter
 				ob_start();
 				include_once 'filter.php';
@@ -575,13 +581,6 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 				if ($arTheme["FILTER_VIEW"]["VALUE"] == 'VERTICAL') {
 					$APPLICATION->AddViewContent('filter_content', $htmlFilter);
 				}
-
-				// sort
-				ob_start();
-				include_once 'sort.php';
-				$htmlSort = ob_get_clean();
-				$listElementsTemplate = $template;
-
 			}
 			?>
 			<?if($isAjax === "Y"):?>
@@ -769,6 +768,7 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 									'CURRENT_BASE_PAGE' => $arLanding && strlen($arLanding['PROPERTY_URL_CONDITION_VALUE']) ? $canonicalUrl : null,
 									"SET_SKU_TITLE" => (($arTheme["TYPE_SKU"]["VALUE"] == "TYPE_1" && $arTheme["CHANGE_TITLE_ITEM"]["VALUE"] == "Y") ? "Y" : ""),
 									"IBINHERIT_TEMPLATES" => $arLanding ? $arIBInheritTemplates : array(),
+									'OFFER_SHOW_PREVIEW_PICTURE_PROPS' => $arParams['OFFER_SHOW_PREVIEW_PICTURE_PROPS'],
 								),
 								$arResult["THEME_COMPONENT"]
 							);?>
@@ -804,13 +804,14 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 					<?$GLOBALS["arLandingsFilter"] = $arLandingsFilter;?>
 					<?$APPLICATION->IncludeComponent(
 						"bitrix:news.list",
-						// "landings_search_list",
-						"landings_list",
+						"landings_search_list",
 						array(
 							"IBLOCK_TYPE" => "aspro_max_catalog",
 							"IBLOCK_ID" => CMaxCache::$arIBlocks[SITE_ID]["aspro_max_catalog"]["aspro_max_search"][0],
 							"NEWS_COUNT" => "999",
-							"SHOW_COUNT" => $arParams["LANDING_SECTION_COUNT"],
+							"SHOW_COUNT" => 1,
+							"SHOW_COUNT_MOBILE" => 1,
+							"VIEW_TYPE" => $arTheme['CATALOG_PAGE_LANDINGS_VIEW']['VALUE'],
 							"SORT_BY1" => "SORT",
 							"SORT_ORDER1" => "ASC",
 							"SORT_BY2" => "ID",
@@ -833,7 +834,7 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 							"AJAX_OPTION_JUMP" => "N",
 							"AJAX_OPTION_STYLE" => "Y",
 							"AJAX_OPTION_HISTORY" => "N",
-							"CACHE_TYPE" =>$arParams["CACHE_TYPE"],
+							"CACHE_TYPE" => $arParams["CACHE_TYPE"],
 							"CACHE_TIME" => $arParams["CACHE_TIME"],
 							"CACHE_FILTER" => "Y",
 							"CACHE_GROUPS" => "N",
@@ -900,17 +901,20 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 					<?$APPLICATION->ShowViewContent('under_sidebar_content');?>
 
 					<?CMax::get_banners_position('SIDE', 'Y');?>
-					<?$APPLICATION->IncludeComponent("bitrix:main.include", ".default",
-						array(
-							"COMPONENT_TEMPLATE" => ".default",
-							"PATH" => SITE_DIR."include/left_block/comp_subscribe.php",
-							"AREA_FILE_SHOW" => "file",
-							"AREA_FILE_SUFFIX" => "",
-							"AREA_FILE_RECURSIVE" => "Y",
-							"EDIT_TEMPLATE" => "include_area.php"
-						),
-						false
-					);?>
+
+					<?if(\Bitrix\Main\ModuleManager::isModuleInstalled("subscribe") && $arTheme['HIDE_SUBSCRIBE']['VALUE'] != 'Y'):?>
+						<?$APPLICATION->IncludeComponent("bitrix:main.include", ".default",
+							array(
+								"COMPONENT_TEMPLATE" => ".default",
+								"PATH" => SITE_DIR."include/left_block/comp_subscribe.php",
+								"AREA_FILE_SHOW" => "file",
+								"AREA_FILE_SUFFIX" => "",
+								"AREA_FILE_RECURSIVE" => "Y",
+								"EDIT_TEMPLATE" => "include_area.php"
+							),
+							false
+						);?>
+					<?endif;?>
 				</div>
 			</div>
 		<?else:?>

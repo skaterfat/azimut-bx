@@ -132,6 +132,9 @@ $arCounters = CMax::updateBasketCounters(array('READY' => array('COUNT' => $norm
 		</form>
 
 		<script>
+			if (typeof updateBottomIconsPanel === 'function') {
+				updateBottomIconsPanel(<?=CUtil::PhpToJSObject($arCounters)?>);
+			}
 			$(document).ready(function(){
 				$("#basket_line .basket_fly").on('submit', function(e) {
 					e.preventDefault();

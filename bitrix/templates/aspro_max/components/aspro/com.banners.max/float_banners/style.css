@@ -46,4 +46,20 @@
 @media (max-width: 600px){
 	body .item-views.float_banners .item{padding-bottom: 10px;}
 	body .wrapper1:not(.with_left_block) .wrapper_inner.front .drag-block.container .item-views.float_banners:not(.type2){padding-bottom: 0px;}
+
+	/*new mobile*/
+	body .item-views.float_banners .swipeignore.mobile-overflow .item .lazy, body .item-views.float_banners .swipeignore.mobile-overflow .item .lazyloaded{padding-top: 100%;}
+	body .item-views.float_banners .swipeignore.mobile-overflow .col-md-3 .item .lazy, body .item-views.float_banners .swipeignore.mobile-overflow .col-md-3 .item .lazyloaded{padding-top: 137%;}
+	body .item-views.float_banners .swipeignore.mobile-overflow .col-md-6 .item .lazy, body .item-views.float_banners .swipeignore.mobile-overflow .col-md-6 .item .lazyloaded{padding-top: 66.7%;}
+	.item-views.float_banners .swipeignore.mobile-overflow{margin-bottom: 10px;}
+	.item-views.float_banners .swipeignore.mobile-overflow .item .inner-text{padding-top: 15px;}
+	.item-views.float_banners .swipeignore.mobile-overflow .item .inner-text .title{margin-bottom: 2px;}
+	.item-views.float_banners .swipeignore.mobile-overflow .item .inner-text .previewtext {margin-top: 2px;}
+
+	#main .wrapper1 .wrapper_inner.front .drag-block.container .item-views.float_banners.type2{padding-bottom: 0px;}
+	.item-views.float_banners.type2 .swipeignore.mobile-overflow .item .image span{padding-top: 100%;}
+	.item-views.float_banners.type2 .swipeignore.mobile-overflow .item .inner-text{bottom: 22px;left: 14px;}
+	.item-views.float_banners.type2 .swipeignore.mobile-overflow .item .inner-text .top-text{padding-bottom: 6px;}
+	.item-views.float_banners.type2 .swipeignore.mobile-overflow > div{padding-bottom: 25px;}
+	/**/
 }

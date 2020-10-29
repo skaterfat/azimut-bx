@@ -65,8 +65,6 @@ body .wrapper1 .menu-wrapper .menu_top_block.catalog_block .right-side.BRANDS .b
     -webkit-filter: grayscale(0%);
 }
 
-.wrapper1.sticky_menu .header_wrap{z-index: 997;}
-
 body.menu-hovered .wrapper1 .header_wrap #header{position: static;}
 .menu-hovered .sticky_menu header .sidebar_menu{z-index: 1060;}
 

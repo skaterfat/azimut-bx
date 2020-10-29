@@ -18,17 +18,21 @@
 		<?$APPLICATION->ShowViewContent('under_sidebar_content');?>
 
 		<?CMax::get_banners_position('SIDE', 'Y');?>
-		<?$APPLICATION->IncludeComponent("bitrix:main.include", ".default",
-			array(
-				"COMPONENT_TEMPLATE" => ".default",
-				"PATH" => SITE_DIR."include/left_block/comp_subscribe.php",
-				"AREA_FILE_SHOW" => "file",
-				"AREA_FILE_SUFFIX" => "",
-				"AREA_FILE_RECURSIVE" => "Y",
-				"EDIT_TEMPLATE" => "include_area.php"
-			),
-			false
-		);?>
+
+		<?if(\Bitrix\Main\ModuleManager::isModuleInstalled("subscribe") && $arTheme['HIDE_SUBSCRIBE']['VALUE'] != 'Y'):?>
+			<?$APPLICATION->IncludeComponent("bitrix:main.include", ".default",
+				array(
+					"COMPONENT_TEMPLATE" => ".default",
+					"PATH" => SITE_DIR."include/left_block/comp_subscribe.php",
+					"AREA_FILE_SHOW" => "file",
+					"AREA_FILE_SUFFIX" => "",
+					"AREA_FILE_RECURSIVE" => "Y",
+					"EDIT_TEMPLATE" => "include_area.php"
+				),
+				false
+			);?>
+		<?endif;?>
+
 		<?$APPLICATION->IncludeComponent("bitrix:main.include", ".default",
 			array(
 				"COMPONENT_TEMPLATE" => ".default",

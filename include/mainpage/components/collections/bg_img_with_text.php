@@ -67,6 +67,7 @@
 		"ALL_URL" => "landings/",
 		"PAGER_BASE_LINK_ENABLE" => "N",
 		"SHOW_404" => "N",
+		"MOBILE_TEMPLATE" => "Y",
 		"COMPACT" => "Y",
 		"IS_AJAX" => CMax::checkAjaxRequest(),
 		"SIZE_IN_ROW" => "4",

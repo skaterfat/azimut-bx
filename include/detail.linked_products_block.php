@@ -38,7 +38,7 @@ if($arRegion)
 		"SHOW_ALL_WO_SECTION" => "Y",
 		"PAGER_TEMPLATE" => "ajax",
 		"DISPLAY_TYPE" => "block",
-		"TYPE_SKU" => "TYPE_1",
+		"TYPE_SKU" => "TYPE_2",
 		"SLIDE_ITEMS" => ($arParams['DETAIL_LINKED_GOODS_SLIDER'] != 'N'),
 		"AJAX_REQUEST" => $arParams["FROM_AJAX"],
 		"LINE_ELEMENT_COUNT" => "4",
@@ -119,6 +119,7 @@ if($arRegion)
 		"SHOW_RATING" => $arParams["SHOW_RATING"],
 		"ADD_PICT_PROP" => $arParams["ADD_PICT_PROP"],
 		"DISPLAY_WISH_BUTTONS" => $arParams["DISPLAY_WISH_BUTTONS"],
+		"DISPLAY_WISH_BUTTONS" => CMax::GetFrontParametrValue('CATALOG_DELAY'),
 		"COMPOSITE_FRAME_MODE" => "A",
 		"REVIEWS_VIEW" => CMax::GetFrontParametrValue('REVIEWS_VIEW') == 'EXTENDED',
 		"COMPOSITE_FRAME_TYPE" => "AUTO"

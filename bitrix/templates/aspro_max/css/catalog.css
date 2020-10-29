@@ -84,7 +84,8 @@ body .catalog_detail .main_item_wrapper div.total_summ{padding:12px 0px 13px;dis
 .catalog_detail .wrapp_docs{width:25%;padding:0px 20px 0px 0px;}
 .catalog_detail .show_btn{width:15%;float:left;}
 .catalog_detail .form_wr{width:85%;font-size:12px;padding:0px 0px 0px 21px;float:left;}
-.catalog_detail .buy_block  .button.in-cart i, .catalog_detail .buy_block  .btn.in-cart i{margin-right:10px;width:12px;}
+.catalog_detail .buy_block  .button.in-cart i:not(.svg-inline-prediction), 
+.catalog_detail .buy_block  .btn.in-cart i:not(.svg-inline-prediction){margin-right:10px;width:12px;}
 .catalog_detail .info_item .middle_info .buy_block .sku_props{display:block;}
 .content_wr_float.with-share .catalog_detail{float:right;}
 .catalog_detail .offers_table .many_prices .price.discount{ margin-top:0px;}

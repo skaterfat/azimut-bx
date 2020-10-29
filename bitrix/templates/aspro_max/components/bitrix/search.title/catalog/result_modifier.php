@@ -161,6 +161,21 @@ foreach($arResult["SEARCH"] as $i=>$arItem)
 						$arElement["PICTURE"] = CFile::ResizeImageGet($arElement["PREVIEW_PICTURE"], array("width"=>$PREVIEW_WIDTH, "height"=>$PREVIEW_HEIGHT), BX_RESIZE_IMAGE_PROPORTIONAL, true);
 					elseif ($arElement["DETAIL_PICTURE"] > 0)
 						$arElement["PICTURE"] = CFile::ResizeImageGet($arElement["DETAIL_PICTURE"], array("width"=>$PREVIEW_WIDTH, "height"=>$PREVIEW_HEIGHT), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+					elseif ($arElement['OFFERS'] && \Bitrix\Main\Config\Option::get('aspro.max', 'SHOW_FIRST_SKU_PICTURE', 'N') === 'Y') {
+						$bFindPicture = false;
+						
+						foreach ($arElement['OFFERS'] as $keyOffer => $arOffer) {
+							if (($arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE']) || (!$arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE'])) {
+								$arOffer['DETAIL_PICTURE'] = $arOffer['PREVIEW_PICTURE'];
+							}
+
+							if ($arOffer['DETAIL_PICTURE'] && !$arElement['PREVIEW_PICTURE']['ID'] && !$bFindPicture) {
+								$arElement['PICTURE'] = CFile::ResizeImageGet($arOffer["DETAIL_PICTURE"], array("width"=>$PREVIEW_WIDTH, "height"=>$PREVIEW_HEIGHT), BX_RESIZE_IMAGE_PROPORTIONAL, true);
+								$bFindPicture = true;
+								break;
+							}
+						}
+					}
 				}
 			}
 			break;

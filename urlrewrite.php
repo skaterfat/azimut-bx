@@ -136,6 +136,14 @@ $arUrlRewrite=array (
     'PATH' => '/info/brands/index.php',
     'SORT' => 100,
   ),
+  32 => 
+  array (
+    'CONDITION' => '#^/sharebasket/#',
+    'RULE' => '',
+    'ID' => 'aspro:basket.share.max',
+    'PATH' => '/sharebasket/index.php',
+    'SORT' => 100,
+  ),
   27 => 
   array (
     'CONDITION' => '#^/lookbooks/#',

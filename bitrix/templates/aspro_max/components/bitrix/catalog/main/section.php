@@ -55,11 +55,13 @@ if ($section) {
 		}
 	}
 
-	if(strlen($section["DESCRIPTION"]))
-		$arSection["DESCRIPTION"] = $section["DESCRIPTION"];
-	if(strlen($section["UF_SECTION_DESCR"]))
-		$arSection["UF_SECTION_DESCR"] = $section["UF_SECTION_DESCR"];
 	$posSectionDescr = COption::GetOptionString("aspro.max", "SHOW_SECTION_DESCRIPTION", "BOTTOM", SITE_ID);
+	if(strlen($section["DESCRIPTION"])){
+		$arSection["DESCRIPTION"] = $section["DESCRIPTION"];
+	}
+	if(strlen($section["UF_SECTION_DESCR"])){
+		$arSection["UF_SECTION_DESCR"] = $section["UF_SECTION_DESCR"];
+	}
 
 	global $arSubSectionFilter;
 	$arSubSectionFilter = array(
@@ -204,13 +206,13 @@ if ($section) {
 }
 $linerow = $arParams["LINE_ELEMENT_COUNT"];
 
-if (!$linkedArticlesPos) {
+if (!isset($linkedArticlesPos) || !$linkedArticlesPos) {
 	$linkedArticlesPos = 'content';
 }
-if (!$linkedArticlesRows) {
+if (!isset($linkedArticlesRows) || !$linkedArticlesRows) {
 	$linkedArticlesRows = 1;
 }
-if (!$linkedArticlesRowsMobile) {
+if (!isset($linkedArticlesRowsMobile) || !$linkedArticlesRowsMobile) {
 	$linkedArticlesRowsMobile = 1;
 }
 
@@ -225,7 +227,7 @@ if ($bSimpleSectionTemplate) {
 
 	$arParams["USE_PRICE_COUNT"] = "N";
 	$bSetElementsLineRow = true;
-	
+
 	$arTheme['MOBILE_CATALOG_LIST_ELEMENTS_COMPACT']['VALUE'] = 'Y';
 	$arTheme['TYPE_SKU']['VALUE'] = 'TYPE_2';
 }?>
@@ -237,7 +239,7 @@ if ($bHideSideSectionBlock) {
 
 <?$bShowLeftBlock = (!$bSimpleSectionTemplate && ($APPLICATION->GetProperty("HIDE_LEFT_BLOCK") != "Y" && !($arTheme['HEADER_TYPE']['VALUE'] == 28 || $arTheme['HEADER_TYPE']['VALUE'] == 29)));?>
 
-<div class="main-catalog-wrapper">
+<div class="main-catalog-wrapper clearfix">
 	<div class="section-content-wrapper <?=($bShowLeftBlock ? 'with-leftblock' : '');?>">
 		<?
 		if($section)
@@ -249,12 +251,16 @@ if ($bHideSideSectionBlock) {
 					<div class="section-banner-top">
 						<div class="section-banner-top__picture" style="background: url(<?=CFile::GetPath($section[$arParams['SECTION_BG']])?>) center/cover no-repeat;"></div>
 					</div>
-					<?global $dopClass;
+				<?endif;?>
+			<?$this->EndViewTarget();?>
+
+			<?if($section[$arParams['SECTION_BG']]):?>
+				<?global $dopClass;
 					$dopClass .= ' has-secion-banner';
 					if(!$section['UF_SECTION_BG_DARK'])
 						$dopClass .= ' light-menu-color';?>
-				<?endif;?>
-			<?$this->EndViewTarget();?>
+				<div class="js-banner" data-class="<?=$dopClass?>"></div>
+			<?endif;?>
 		<?}
 		else{
 			\Bitrix\Iblock\Component\Tools::process404(
@@ -310,7 +316,7 @@ if ($bHideSideSectionBlock) {
 			{
 				$iLandingItemID = 0;
 				$current_url =  $APPLICATION->GetCurDir();
-				$url = urldecode(str_replace(' ', '+', $current_url)); 
+				$url = urldecode(str_replace(' ', '+', $current_url));
 				foreach($arSeoItems as $arItem)
 				{
 					if(!is_array($arItem['PROPERTY_LINK_REGION_VALUE']))
@@ -319,7 +325,7 @@ if ($bHideSideSectionBlock) {
 					if(!$arSeoItem)
 					{
 						$urldecoded = urldecode($arItem["PROPERTY_FILTER_URL_VALUE"]);
-						$urldecodedCP = iconv("utf-8","windows-1251", $urldecoded);
+						$urldecodedCP = iconv("utf-8", "windows-1251//IGNORE", $urldecoded);
 						if($urldecoded == $url || $urldecoded == $current_url || $urldecodedCP == $current_url)
 						{
 							if($arItem['PROPERTY_LINK_REGION_VALUE'])
@@ -345,6 +351,8 @@ if ($bHideSideSectionBlock) {
 									"SKU_PREVIEW_PICTURE_FILE_ALT" => $arSeoItem["PROPERTY_I_SKU_PREVIEW_PICTURE_FILE_ALT_VALUE"],
 									"SKU_PREVIEW_PICTURE_FILE_TITLE" => $arSeoItem["PROPERTY_I_SKU_PREVIEW_PICTURE_FILE_TITLE_VALUE"],
 								);
+
+								\Aspro\Max\Smartseo\General\Smartseo::disallowNoindexRule(true);
 							}
 						}
 					}
@@ -366,24 +374,32 @@ if ($bHideSideSectionBlock) {
 		{
 			if($arRegion["LIST_STORES"] && $arParams["HIDE_NOT_AVAILABLE"] == "Y")
 			{
-				if($arParams['STORES']){
-					if(count($arParams['STORES']) > 1){
-						$arStoresFilter = array('LOGIC' => 'OR');
-						foreach($arParams['STORES'] as $storeID)
-						{
-							$arStoresFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-						}
+				if($arParams['STORES']){					
+					if(CMax::checkVersionModule('18.6.200', 'iblock')){
+						$arStoresFilter = array(
+							'STORE_NUMBER' => $arParams['STORES'],
+							'>STORE_AMOUNT' => 0,
+						);						
 					}
 					else{
-						foreach($arParams['STORES'] as $storeID)
-						{
-							$arStoresFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+						if(count($arParams['STORES']) > 1){
+							$arStoresFilter = array('LOGIC' => 'OR');
+							foreach($arParams['STORES'] as $storeID)
+							{
+								$arStoresFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+							}
+						}
+						else{
+							foreach($arParams['STORES'] as $storeID)
+							{
+								$arStoresFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
+							}
 						}
 					}
 
-					$arTmpFilter = array('!TYPE' => '2');
+					$arTmpFilter = array('!TYPE' => array('2', '3'));
 					if($arStoresFilter){
-						if(count($arStoresFilter) > 1){
+						if(!CMax::checkVersionModule('18.6.200', 'iblock') && count($arStoresFilter) > 1){
 							$arTmpFilter[] = $arStoresFilter;
 						}
 						else{
@@ -392,9 +408,10 @@ if ($bHideSideSectionBlock) {
 
 						$GLOBALS[$arParams["FILTER_NAME"]][] = array(
 							'LOGIC' => 'OR',
-							array('TYPE' => '2'),
+							array('TYPE' => array('2','3')),
 							$arTmpFilter,
 						);
+						
 					}
 				}
 			}
@@ -408,6 +425,8 @@ if ($bHideSideSectionBlock) {
 		if(CMax::GetFrontParametrValue('CATALOG_COMPARE') == 'N')
 			$arParams["USE_COMPARE"] = 'N';
 		/**/
+
+		$arParams['DISPLAY_WISH_BUTTONS'] = CMax::GetFrontParametrValue('CATALOG_DELAY');
 		?>
 		<?if(!in_array("DETAIL_PAGE_URL", (array)$arParams["LIST_OFFERS_FIELD_CODE"]))
 			$arParams["LIST_OFFERS_FIELD_CODE"][] = "DETAIL_PAGE_URL";?>
@@ -461,12 +480,12 @@ if ($bHideSideSectionBlock) {
 
 		<?$bContolAjax = (isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == "xmlhttprequest" && isset($_GET["control_ajax"]) && $_GET["control_ajax"] == "Y" );?>
 		<?// section elements?>
-		<div class="js_wrapper_items" data-params='<?=str_replace('\'', '"', CUtil::PhpToJSObject($arTransferParams, false))?>'>
+		<div class="js_wrapper_items<?=($arTheme["LAZYLOAD_BLOCK_CATALOG"]["VALUE"] == "Y" ? ' with-load-block' : '')?>" data-params='<?=str_replace('\'', '"', CUtil::PhpToJSObject($arTransferParams, false))?>'>
 			<div class="js-load-wrapper">
 				<?if($bContolAjax):?>
 					<?$APPLICATION->RestartBuffer();?>
 				<?endif;?>
-				
+
 				<?@include_once('page_blocks/'.$arParams["SECTION_ELEMENTS_TYPE_VIEW"].'.php');?>
 
 				<?if($bContolAjax):?>
@@ -477,74 +496,6 @@ if ($bHideSideSectionBlock) {
 
 		<?CMax::checkBreadcrumbsChain($arParams, $arSection);?>
 		<?$APPLICATION->AddHeadScript(SITE_TEMPLATE_PATH.'/js/jquery.history.js');?>
-
-		<?if(\Bitrix\Main\Loader::includeModule("sotbit.seometa")):?>
-			<?
-			// unset, because the sotbit:seo.meta component may have already been included
-			unset($APPLICATION->__view['sotbit_seometa_h1']);
-			unset($APPLICATION->__view['sotbit_seometa_top_desc']);
-			unset($APPLICATION->__view['sotbit_seometa_bottom_desc']);
-			unset($APPLICATION->__view['sotbit_seometa_add_desc']);
-			unset($APPLICATION->__view['sotbit_seometa_file']);
-			?>
-			<?$APPLICATION->IncludeComponent(
-				"sotbit:seo.meta",
-				".default",
-				array(
-					"FILTER_NAME" => $arParams["FILTER_NAME"],
-					"SECTION_ID" => $arSection['ID'],
-					"CACHE_TYPE" => $arParams["CACHE_TYPE"],
-					"CACHE_TIME" => $arParams["CACHE_TIME"],
-				)
-			);?>
-			<?
-			$sotbit_top_desc = trim($APPLICATION->GetViewContent('sotbit_seometa_top_desc'));
-			if($sotbit_top_desc)
-			{
-				if($arSeoItem || (!$arSeoItem && $arParams["SHOW_SECTION_DESC"] != 'N' && strpos($_SERVER['REQUEST_URI'], 'PAGEN') === false))
-					$APPLICATION->AddViewContent('top_content', '<div class="sotbit-block">'.$sotbit_top_desc.'</div>');
-			}
-
-			$sotbit_add_desc = trim($APPLICATION->GetViewContent('sotbit_seometa_add_desc'));
-			if($sotbit_add_desc)
-			{
-				if($arSeoItem)
-					$APPLICATION->AddViewContent('top_content2', '<div class="sotbit-block">'.$sotbit_add_desc.'</div>');
-			}
-
-			if($arTheme['PRIORITY_SECTION_DESCRIPTION_SOURCE']['VALUE'] !== 'NOT')
-			{
-				$top_desc = trim($APPLICATION->GetViewContent('top_desc'));
-				$bottom_desc = trim($APPLICATION->GetViewContent('bottom_desc'));
-				$sotbit_bottom_desc = trim($APPLICATION->GetViewContent('sotbit_seometa_bottom_desc'));
-
-				$countTopContent = count($APPLICATION->__view['top_content']);
-
-				if($arTheme['PRIORITY_SECTION_DESCRIPTION_SOURCE']['VALUE'] !== 'IBLOCK')
-				{
-					if(strlen($top_desc) && strlen($sotbit_top_desc))
-					{
-						unset($APPLICATION->__view['top_desc']);
-						unset($APPLICATION->__view['top_content'][$countTopContent-2]);
-					}
-
-					if(strlen($bottom_desc) && strlen($sotbit_bottom_desc.$sotbit_add_desc))
-						unset($APPLICATION->__view['bottom_desc']);
-				}
-				else
-				{
-					if(strlen($top_desc) && strlen($sotbit_top_desc))
-					{
-						unset($APPLICATION->__view['top_desc']);
-						unset($APPLICATION->__view['top_content'][$countTopContent-1]);
-					}
-
-					if(strlen($bottom_desc) && strlen($sotbit_bottom_desc.$sotbit_add_desc))
-						unset($APPLICATION->__view['sotbit_seometa_bottom_desc'], $APPLICATION->__view['sotbit_seometa_add_desc']);
-				}
-			}
-			?>
-		<?endif;?>
 	</div>
 	<?if($bShowLeftBlock):?>
 		<?CMax::ShowPageType('left_block');?>
@@ -561,4 +512,14 @@ if ($bTopHeaderOpacity && $section[$arParams['SECTION_BG']]) {
 	global $dopBodyClass;
 	$dopBodyClass .= ' top_header_opacity';
 }
-?>
+
+CMax::setCatalogSectionDescription(
+	array(
+		'FILTER_NAME' => $arParams['FILTER_NAME'],
+		'CACHE_TYPE' => $arParams['CACHE_TYPE'],
+		'CACHE_TIME' => $arParams['CACHE_TIME'],
+		'SECTION_ID' => $arSection['ID'],
+		'SHOW_SECTION_DESC' => $arParams['SHOW_SECTION_DESC'],
+		'SEO_ITEM' => $arSeoItem,
+	)
+);

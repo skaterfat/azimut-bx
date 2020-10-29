@@ -24,7 +24,7 @@
 			"STORES_FILTER_ORDER" => ($arParams["STORES_FILTER_ORDER"] ? $arParams["STORES_FILTER_ORDER"] : "SORT_ASC"),
 			"BUNDLE_ITEMS_COUNT" => $arParams["BUNDLE_ITEMS_COUNT"],
 			"WIDE_BLOCK" => $isWideBlock,
-			"PICTURE_RATIO" => $sViewPictureDetail,
+			"PICTURE_RATIO" => (isset($sViewPictureDetail) ? $sViewPictureDetail : ''),
 			"DETAIL_DOCS_PROP"=>$arParams["DETAIL_DOCS_PROP"],
 			"SHOW_DISCOUNT_TIME"=>$arParams["SHOW_DISCOUNT_TIME"],
 			"TYPE_SKU" => ($typeSKU ? $typeSKU : $arTheme["TYPE_SKU"]["VALUE"]),
@@ -103,6 +103,9 @@
 			"USE_PRODUCT_QUANTITY" => $arParams["USE_PRODUCT_QUANTITY"],
 			"PRODUCT_QUANTITY_VARIABLE" => $arParams["PRODUCT_QUANTITY_VARIABLE"],
 			"BLOG_URL" => $arParams["BLOG_URL"],
+			"SHOW_SEND_GIFT" => $arParams['SHOW_SEND_GIFT'],
+			"RECOMEND_COUNT" => $arParams["RECOMEND_COUNT"],
+			"SEND_GIFT_FORM_NAME" => $arParams['SEND_GIFT_FORM_NAME'],
 
 			"IBLOCK_LINK_SALE_ID" => $arParams["IBLOCK_STOCK_ID"],
 			"IBLOCK_LINK_NEWS_ID" => $arParams["IBLOCK_LINK_NEWS_ID"],
@@ -238,7 +241,7 @@
 			"LINKED_FILTER_BY_FILTER" => $arTab,
 			"BIG_DATA_TEMPLATE" => $_SERVER["DOCUMENT_ROOT"].$this->__folder.'/page_blocks/'.$sViewBigDataExtTemplate.'.php',
 			"TITLE_SLIDER" => $arParams['TITLE_SLIDER'],
-			"LINKED_BLOG" => $linkedArticles,
+			"LINKED_BLOG" => (isset($linkedArticles) ? $linkedArticles : ''),
 
 			"SHOW_PAYMENT" => (isset($arParams["SHOW_PAYMENT"]) ? $arParams["SHOW_PAYMENT"] : "Y"),
 			"SHOW_DELIVERY" => (isset($arParams["SHOW_DELIVERY"]) ? $arParams["SHOW_DELIVERY"] : "Y"),

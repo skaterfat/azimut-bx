@@ -23,6 +23,15 @@ $arSite = CSite::GetByID($SITE_ID)->Fetch();
 Loader::includeModule('aspro.max');
 $moduleClass = 'CMax';
 $arFrontParametrs = $moduleClass::GetFrontParametrsValues($SITE_ID, $SITE_DIR);
+$tmp = $arFrontParametrs['DATE_FORMAT'];
+$DATE_MASK = ($tmp == 'DOT' ? 'd.m.y' : ($tmp == 'HYPHEN' ? 'd-m-y' : ($tmp == 'SPACE' ? 'd m y' : ($tmp == 'SLASH' ? 'd/m/y' : 'd:m:y'))));
+$VALIDATE_DATE_MASK = ($tmp == 'DOT' ? '^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{4}$' : ($tmp == 'HYPHEN' ? '^[0-9]{1,2}\-[0-9]{1,2}\-[0-9]{4}$' : ($tmp == 'SPACE' ? '^[0-9]{1,2} [0-9]{1,2} [0-9]{4}$' : ($tmp == 'SLASH' ? '^[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}$' : '^[0-9]{1,2}\:[0-9]{1,2}\:[0-9]{4}$'))));
+$DATE_PLACEHOLDER = ($tmp == 'DOT' ? GetMessage('DATE_FORMAT_DOT') : ($tmp == 'HYPHEN' ? GetMessage('DATE_FORMAT_HYPHEN') : ($tmp == 'SPACE' ? GetMessage('DATE_FORMAT_SPACE') : ($tmp == 'SLASH' ? GetMessage('DATE_FORMAT_SLASH') : GetMessage('DATE_FORMAT_COLON')))));
+$DATETIME_MASK = ($tmp == 'DOT' ? 'd.m.y' : ($tmp == 'HYPHEN' ? 'd-m-y' : ($tmp == 'SPACE' ? 'd m y' : ($tmp == 'SLASH' ? 'd/m/y' : 'd:m:y')))).' h:s';
+$DATETIME_PLACEHOLDER = ($tmp == 'DOT' ? GetMessage('DATE_FORMAT_DOT') : ($tmp == 'HYPHEN' ? GetMessage('DATE_FORMAT_HYPHEN') : ($tmp == 'SPACE' ? GetMessage('DATE_FORMAT_SPACE') : ($tmp == 'SLASH' ? GetMessage('DATE_FORMAT_SLASH') : GetMessage('DATE_FORMAT_COLON'))))).' '.GetMessage('TIME_FORMAT_COLON');
+$VALIDATE_DATETIME_MASK = ($tmp == 'DOT' ? '^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{4} [0-9]{1,2}\:[0-9]{1,2}$' : ($tmp == 'HYPHEN' ? '^[0-9]{1,2}\-[0-9]{1,2}\-[0-9]{4} [0-9]{1,2}\:[0-9]{1,2}$' : ($tmp == 'SPACE' ? '^[0-9]{1,2} [0-9]{1,2} [0-9]{4} [0-9]{1,2}\:[0-9]{1,2}$' : ($tmp == 'SLASH' ? '^[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4} [0-9]{1,2}\:[0-9]{1,2}$' : '^[0-9]{1,2}\:[0-9]{1,2}\:[0-9]{4} [0-9]{1,2}\:[0-9]{1,2}$'))));
+
+list($bPhoneAuthSupported, $bPhoneAuthShow, $bPhoneAuthRequired, $bPhoneAuthUse) = Aspro\Max\PhoneAuth::getOptions();
 ?>
 <?header('Content-Type: application/javascript');?>
 var arAsproOptions = window[solutionName] = ({
@@ -80,6 +89,9 @@ var arAsproOptions = window[solutionName] = ({
 				'ORDER_BASKET_VIEW' : '<?=$arFrontParametrs['ORDER_BASKET_VIEW']?>',
 				'SHOW_BASKET_ONADDTOCART' : '<?=$arFrontParametrs['SHOW_BASKET_ONADDTOCART']?>',
 				'SHOW_BASKET_PRINT' : '<?=$arFrontParametrs['SHOW_BASKET_PRINT']?>',
+				'SHOW_SHARE_BASKET' : '<?=$arFrontParametrs['SHOW_SHARE_BASKET']?>',
+				"SHOW_DOWNLOAD_BASKET" : '<?=$arFrontParametrs['SHOW_DOWNLOAD_BASKET'];?>',
+				"BASKET_FILE_DOWNLOAD_TEMPLATE" : '<?=$arFrontParametrs['BASKET_FILE_DOWNLOAD_TEMPLATE'];?>',
 				"SHOW_ONECLICKBUY_ON_BASKET_PAGE" : '<?=$arFrontParametrs['SHOW_ONECLICKBUY_ON_BASKET_PAGE'];?>',
 				'SHOW_LICENCE' : '<?=$arFrontParametrs['SHOW_LICENCE'];?>',
 				'LICENCE_CHECKED' : '<?=$arFrontParametrs['LICENCE_CHECKED'];?>',
@@ -112,6 +124,8 @@ var arAsproOptions = window[solutionName] = ({
 				'USE_LAZY_LOAD' : '<?=$arFrontParametrs['USE_LAZY_LOAD']?>',
 				'EXPRESSION_FOR_PRINT_PAGE' : '<?=$arFrontParametrs['EXPRESSION_FOR_PRINT_PAGE']?>',
 				'EXPRESSION_FOR_FAST_VIEW' : '<?=$arFrontParametrs['EXPRESSION_FOR_FAST_VIEW']?>',
+				'EXPRESSION_FOR_SHARE_BASKET' : '<?=$arFrontParametrs['EXPRESSION_FOR_SHARE_BASKET']?>',
+				'EXPRESSION_FOR_DOWNLOAD_BASKET' : '<?=$arFrontParametrs['EXPRESSION_FOR_DOWNLOAD_BASKET']?>',
 				'FILTER_VIEW' : '<?=$arFrontParametrs['FILTER_VIEW']?>',
 				'YA_GOALS' : '<?=$arFrontParametrs['YA_GOALS']?>',
 				'YA_COUNTER_ID' : '<?=$arFrontParametrs['YA_COUNTER_ID']?>',
@@ -179,7 +193,7 @@ if ($curPreset) {
 } else {
 	$precetID = $moduleClass::$arThematicsList['UNVERSAL']['PRESETS']['DEFAULT'];
 }?>
-<?if ($moduleClass::$arPresetsList[$precetID]['BANNER_INDEX']):?>
+<?if ($moduleClass::$arPresetsList[$precetID]['BANNER_INDEX'] && Bitrix\Main\Config\Option::get('aspro.max', 'USE_BIG_BANNERS', 'N', $SITE_ID) === 'Y'):?>
 	window[solutionName]['CURRENT_BANNER_INDEX'] = "<?=$moduleClass::$arPresetsList[$precetID]['BANNER_INDEX'];?>";
 <?endif;?>
 <?/**/?>

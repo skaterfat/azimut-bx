@@ -390,16 +390,6 @@ else
 					</div>
 					<div class="bx-soa-section-content container-fluid"></div>
 				</div>
-				
-				<!--	BUYER PROPS BLOCK	-->
-				<div id="bx-soa-properties" data-visited="false" class="bx-soa-section bx-active">
-					<div class="bx-soa-section-title-container">
-						<h2 class="bx-soa-section-title col-sm-9">
-							<span class="bx-soa-section-title-count"></span><?=$arParams['MESS_BUYER_BLOCK_NAME']?>
-						</h2>
-					</div>
-					<div class="bx-soa-section-content container-fluid"></div>
-				</div>
 
 				<div class="pandd">
 					<? if ($arParams['DELIVERY_TO_PAYSYSTEM'] === 'p2d'): ?>
@@ -462,6 +452,15 @@ else
 					<?if($arParams['SHOW_COUPONS_DELIVERY'] === 'Y' || $arParams['SHOW_COUPONS_PAY_SYSTEM'] === 'Y'):?>
 						<div id="bx-soa-coupon" data-visited="false" class="bx-soa-section bx-active"><div class="bx-soa-section-content"></div></div>
 					<?endif;?>
+				</div>
+				<!--	BUYER PROPS BLOCK	-->
+				<div id="bx-soa-properties" data-visited="false" class="bx-soa-section bx-active">
+					<div class="bx-soa-section-title-container">
+						<h2 class="bx-soa-section-title col-sm-9">
+							<span class="bx-soa-section-title-count"></span><?=$arParams['MESS_BUYER_BLOCK_NAME']?>
+						</h2>
+					</div>
+					<div class="bx-soa-section-content container-fluid"></div>
 				</div>
 
 				<? if ($arParams['BASKET_POSITION'] === 'after'): ?>
@@ -652,8 +651,9 @@ else
 		if ($arParams['PICKUP_MAP_TYPE'] === 'yandex')
 		{
 			$this->addExternalJs($templateFolder.'/scripts/yandex_maps.js');
+			$apiKey = htmlspecialcharsbx(Main\Config\Option::get('fileman', 'yandex_map_api_key', ''));
 			?>
-			<script src="<?=$scheme?>://api-maps.yandex.ru/2.1.50/?load=package.full&lang=<?=$locale?>"></script>
+			<script src="<?=$scheme?>://api-maps.yandex.ru/2.1.50/?apikey=<?=$apiKey?>&load=package.full&lang=<?=$locale?>"></script>
 			<script>
 				(function bx_ymaps_waiter(){
 					if (typeof ymaps !== 'undefined' && BX.Sale && BX.Sale.OrderAjaxComponent)

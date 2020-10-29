@@ -115,7 +115,7 @@ if($arTheme['USE_DETAIL_TABS']['VALUE'] != 'Y')
 						3 => "DETAIL_TEXT",
 					),
 					"PROPERTY_CODE" => array(
-						0 => "",
+						0 => "REDIRECT",
 					),
 					"CHECK_DATES" => "Y",
 					"DETAIL_URL" => "",
@@ -289,7 +289,7 @@ if($arTheme['USE_DETAIL_TABS']['VALUE'] != 'Y')
 				<?//tabs?>
 				<?elseif($code == 'tabs'):?>
 					<?if($bShowDetailTextTab || $bShowPropsTab || $bShowVideoTab || $bShowHowBuyTab || $bShowPaymentTab || $bShowDeliveryTab || $bShowStoresTab || $bShowCustomTab || $bShowReviewsTab):?>
-						<div class="ordered-block js-store-scroll">
+						<div class="ordered-block js-store-scroll tabs-block">
 							<?if($i > 1):?>
 								<div class="tabs arrow_scroll">
 									<ul class="nav nav-tabs font_upper_md">
@@ -361,288 +361,7 @@ if($arTheme['USE_DETAIL_TABS']['VALUE'] != 'Y')
 									</ul>
 								</div>
 							<?endif;?>
-							<div class="tab-content<?=($i <= 1 ? ' not_tabs' : '')?>">							
-								
-								<?if($arResult['PROPERTY_KONSTRUKTOR_KOLODCEV']['VALUE']):?>
-
-									<div class="tab-pane active" id="assembly-table">
-										
-										<?
-
-										$arFilter = array(		
-											'ACTIVE' => 'Y',
-											'IBLOCK_ID' => $arResult['PROPERTY_KONSTRUKTOR_KOLODCEV']['LINK_IBLOCK_ID'],
-											'GLOBAL_ACTIVE' => 'Y',
-										);
-
-										$arSelect = Array('IBLOCK_ID', 'ID', 'NAME', 'DEPTH_LEVEL', 'IBLOCK_SECTION_ID', 'PICTURE', 'UF_PRODUCTS');
-										$arOrder = Array('DEPTH_LEVEL' => 'ASC','SORT' => 'ASC');
-
-										$rsSections = CIBlockSection::GetList($arOrder, $arFilter, false, $arSelect);
-										$sectionLinc = array();
-										$arResult['ROOT'] = array();
-										$sectionLinc[0] = &$arResult['ROOT'];
-
-										while($arSection = $rsSections->Fetch()) {
-											/*if($arSection['PICTURE'])
-												$arSection['PICTURE'] = CFile::GetFileArray($arSection['PICTURE']);*/
-											$sectionLinc[intval($arSection['IBLOCK_SECTION_ID'])]['CHILD'][$arSection['ID']] = $arSection;
-											$sectionLinc[$arSection['ID']] = &$sectionLinc[intval($arSection['IBLOCK_SECTION_ID'])]['CHILD'][$arSection['ID']];
-										}
-										unset($sectionLinc);
-										$arResult['KONSTRUKTOR_KOLODCEV'] = $arResult['ROOT']['CHILD'][$arResult['PROPERTY_KONSTRUKTOR_KOLODCEV']['VALUE']];
-
-										function printAssemblyTable($SECTIONS) {
-
-											foreach($SECTIONS as $arSection) {
-
-												?>
-												<div class="assembly-table__section assembly-table__section--<?=$arSection['DEPTH_LEVEL']?>">
-													
-													<div class="assembly-table__section-title"><?=$arSection['NAME']?></div>
-
-													<?if($arSection['UF_PRODUCTS']):
-														global $arrFilterAssemblyTable;
-														global $APPLICATION;
-														$arrFilterAssemblyTable['ID'] = $arSection['UF_PRODUCTS'];
-													?>
-													<div class="assembly-table__section-products">
-
-														<?$APPLICATION->IncludeComponent(
-															"bitrix:catalog.section",
-															"catalog_table_assembly",
-															Array(
-															    "USE_REGION" => "N",
-															    "STORES" => "",
-															    "SHOW_BIG_BLOCK" => "N",
-															    "IS_CATALOG_PAGE" => "Y",
-															    "SHOW_UNABLE_SKU_PROPS" => "Y",
-															    "ALT_TITLE_GET" => "NORMAL",
-															    "SEF_URL_TEMPLATES" => Array
-															        (
-															            "sections" => "",
-															            "section" => "#SECTION_CODE_PATH#/",
-															            "element" => "#SECTION_CODE_PATH#/#ELEMENT_CODE#/",
-															            "compare" => "compare.php?action=#ACTION_CODE#",
-															            "smart_filter" => "#SECTION_CODE_PATH#/filter/#SMART_FILTER_PATH#/apply/"
-															        ),
-															    "IBLOCK_TYPE" => "aspro_max_catalog",
-															    "IBLOCK_ID" => "24",
-															    "SHOW_COUNTER_LIST" => "Y",
-															    "SECTION_ID" => "",
-															    "SECTION_CODE" => "",
-															    "AJAX_REQUEST" => "N",
-															    "ELEMENT_SORT_FIELD" => "SHOWS",
-															    "ELEMENT_SORT_ORDER" => "asc",
-															    "SHOW_DISCOUNT_TIME_EACH_SKU" => "N",
-															    "ELEMENT_SORT_FIELD2" => "sort",
-															    "ELEMENT_SORT_ORDER2" => "asc",
-															    "FILTER_NAME" => "arrFilterAssemblyTable",
-															    "INCLUDE_SUBSECTIONS" => "Y",
-															    "PAGE_ELEMENT_COUNT" => "20",
-															    "LINE_ELEMENT_COUNT" => "4",
-															    "SET_LINE_ELEMENT_COUNT" => "",
-															    "DISPLAY_TYPE" => "block",
-															    "TYPE_SKU" => "TYPE_1",
-															    "SET_SKU_TITLE" => "Y",
-															    "PROPERTY_CODE" => Array(
-															            "0" => "HIT",
-															            "1" => "BRAND",
-															            "2" => "CML2_ARTICLE",
-															            "3" => "PROP_2104",
-															            "4" => "PODBORKI",
-															            "5" => "rating",
-															            "6" => "CML2_LINK",
-															            "7" => ""
-															        ),
-															    "SHOW_ARTICLE_SKU" => "Y",
-															    "SHOW_MEASURE_WITH_RATIO" => "N",
-															    "OFFERS_FIELD_CODE" => Array(
-															            "0" => "NAME",
-															            "1" => "CML2_LINK",
-															            "2" => "DETAIL_PAGE_URL",
-															            "3" => ""
-															        ),
-															    "OFFERS_PROPERTY_CODE" => Array(
-															            "0" => "ARTICLE",
-															            "1" => "MORE_PHOTO",
-															            "2" => "COLOR_REF",
-															            "3" => "SIZES",
-															            "4" => "SIZES2",
-															            "5" => "VOLUME",
-															            "6" => "SIZES3",
-															            "7" => "SIZES4",
-															            "8" => "SIZES5",
-															            "9" => "SPORT",
-															            "10" => ""
-															        ),
-															    "OFFERS_SORT_FIELD" => "sort",
-															    "OFFERS_SORT_ORDER" => "asc",
-															    "OFFERS_SORT_FIELD2" => "sort",
-															    "OFFERS_SORT_ORDER2" => "asc",
-															    "OFFER_TREE_PROPS" => Array(
-															            "0" => "COLOR_REF",
-															            "1" => "SIZES",
-															            "2" => "VOLUME",
-															            "3" => "FRTYPE",
-															            "4" => "WEIGHT",
-															            "5" => "SIZES2",
-															            "6" => "SIZES3",
-															            "7" => "SIZES4",
-															            "8" => "SIZES5"
-															        ),
-															    "OFFER_SHOW_PREVIEW_PICTURE_PROPS" => "",
-															    "OFFERS_LIMIT" => "10",
-															    "SECTION_URL" => "/catalog/#SECTION_CODE_PATH#/",
-															    "DETAIL_URL" => "/catalog/#SECTION_CODE_PATH#/#ELEMENT_CODE#/",
-															    "BASKET_URL" => "/basket/",
-															    "ACTION_VARIABLE" => "action",
-															    "PRODUCT_ID_VARIABLE" => "id",
-															    "PRODUCT_QUANTITY_VARIABLE" => "quantity",
-															    "PRODUCT_PROPS_VARIABLE" => "prop",
-															    "MAX_GALLERY_ITEMS" => "5",
-															    "SHOW_GALLERY" => "Y",
-															    "SHOW_PROPS" => "N",
-															    "SHOW_POPUP_PRICE" => "N",
-															    "TYPE_VIEW_BASKET_BTN" => "TYPE_1",
-															    "TYPE_VIEW_CATALOG_LIST" => "TYPE_1",
-															    "SHOW_STORES_POPUP" => "",
-															    "SECTION_ID_VARIABLE" => "",
-															    "SET_LAST_MODIFIED" => "Y",
-															    "AJAX_MODE" => "N",
-															    "AJAX_OPTION_JUMP" => "N",
-															    "AJAX_OPTION_STYLE" => "Y",
-															    "AJAX_OPTION_HISTORY" => "Y",
-															    "CACHE_TYPE" => "A",
-															    "CACHE_TIME" => "3600000",
-															    "CACHE_GROUPS" => "Y",
-															    "CACHE_FILTER" => "Y",
-															    "META_KEYWORDS" => "-",
-															    "META_DESCRIPTION" => "-",
-															    "BROWSER_TITLE" => "-",
-															    "ADD_SECTIONS_CHAIN" => "Y",
-															    "HIDE_NOT_AVAILABLE" => "N",
-															    "HIDE_NOT_AVAILABLE_OFFERS" => "N",
-															    "DISPLAY_COMPARE" => "N",
-															    "USE_FAST_VIEW" => "fast_view_1",
-															    "MANY_BUY_CATALOG_SECTIONS" => "N",
-															    "SET_TITLE" => "Y",
-															    "SET_STATUS_404" => "Y",
-															    "SHOW_404" => "Y",
-															    "MESSAGE_404" => "",
-															    "FILE_404" => "",
-															    "PRICE_CODE" => Array(
-															            "0" => "BASE"
-															        ),
-															    "USE_PRICE_COUNT" => "N",
-															    "SHOW_PRICE_COUNT" => "1",
-															    "PRICE_VAT_INCLUDE" => "Y",
-															    "USE_PRODUCT_QUANTITY" => "Y",
-															    "OFFERS_CART_PROPERTIES" => "",
-															    "DISPLAY_TOP_PAGER" => "N",
-															    "DISPLAY_BOTTOM_PAGER" => "Y",
-															    "PAGER_TITLE" => "Ð¢Ð¾Ð²Ð°Ñ€Ñ‹",
-															    "PAGER_SHOW_ALWAYS" => "N",
-															    "PAGER_TEMPLATE" => "main",
-															    "PAGER_DESC_NUMBERING" => "N",
-															    "PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
-															    "PAGER_SHOW_ALL" => "N",
-															    "AJAX_OPTION_ADDITIONAL" => "",
-															    "ADD_CHAIN_ITEM" => "N",
-															    "SHOW_QUANTITY" => "Y",
-															    "ADD_DETAIL_TO_SLIDER" => "Y",
-															    "OFFER_ADD_PICT_PROP" => "MORE_PHOTO",
-															    "SHOW_QUANTITY_COUNT" => "Y",
-															    "SHOW_DISCOUNT_PERCENT_NUMBER" => "Y",
-															    "SHOW_DISCOUNT_PERCENT" => "Y",
-															    "SHOW_DISCOUNT_TIME" => "Y",
-															    "SHOW_ONE_CLICK_BUY" => "Y",
-															    "SHOW_OLD_PRICE" => "Y",
-															    "CONVERT_CURRENCY" => "Y",
-															    "CURRENCY_ID" => "RUB",
-															    "USE_STORE" => "Y",
-															    "MAX_AMOUNT" => "20",
-															    "MIN_AMOUNT" => "10",
-															    "USE_MIN_AMOUNT" => "N",
-															    "USE_ONLY_MAX_AMOUNT" => "Y",
-															    "DISPLAY_WISH_BUTTONS" => "Y",
-															    "LIST_DISPLAY_POPUP_IMAGE" => "Y",
-															    "DEFAULT_COUNT" => "1",
-															    "SHOW_MEASURE" => "Y",
-															    "SHOW_HINTS" => "Y",
-															    "OFFER_HIDE_NAME_PROPS" => "N",
-															    "SHOW_SECTIONS_LIST_PREVIEW" => "",
-															    "SECTIONS_LIST_PREVIEW_PROPERTY" => "UF_SECTION_DESCR",
-															    "SHOW_SECTION_LIST_PICTURES" => "Y",
-															    "USE_MAIN_ELEMENT_SECTION" => "Y",
-															    "ADD_PROPERTIES_TO_BASKET" => "Y",
-															    "PARTIAL_PRODUCT_PROPERTIES" => "Y",
-															    "PRODUCT_PROPERTIES" => "",
-															    "SALE_STIKER" => "SALE_TEXT",
-															    "STIKERS_PROP" => "HIT",
-															    "SHOW_RATING" => "Y",
-															    "REVIEWS_VIEW" => "",
-															    "ADD_PICT_PROP" => "MORE_PHOTO",
-															    "IBINHERIT_TEMPLATES" => "",
-															    "FIELDS" => Array(
-															            "0" => "",
-															            "1" => ""
-															        ),
-															    "USER_FIELDS" => Array(
-															            "0" => "",
-															            "1" => "UF_CATALOG_ICON",
-															            "2" => ""
-															        ),
-															    "SECTION_COUNT_ELEMENTS" => "Y",
-															)
-														);?>
-														
-													</div>
-													<?endif;?>
-													
-												</div>
-
-												<?if($arSection['CHILD'])
-													printAssemblyTable($arSection['CHILD']);
-
-											}
-
-										}
-										?>	
-										<div class="maxwidth-theme--assembly-table">
-											
-											<div class="assembly-table">
-												
-												<div class="assembly-table__title h2 text-center"><?=$arResult['KONSTRUKTOR_KOLODCEV']['NAME']?></div>
-
-												<div class="assembly-table__container">
-													
-													<?/*if($arResult['KONSTRUKTOR_KOLODCEV']['PICTURE']):?>
-													<div class="assembly-table__left">
-														<picture>
-															<img src="<?=$arResult['KONSTRUKTOR_KOLODCEV']['PICTURE']['SRC']?>" alt="" title="">
-														</picture>
-													</div>
-													<?endif;?>
-
-													<div class="assembly-table__right<?=($arResult['KONSTRUKTOR_KOLODCEV']['PICTURE']?'':' assembly-table__right--full')?>">
-
-														<?printAssemblyTable($arResult['KONSTRUKTOR_KOLODCEV']['CHILD'])?>
-														
-													</div>*/?>
-
-													<?printAssemblyTable($arResult['KONSTRUKTOR_KOLODCEV']['CHILD'])?>
-													
-												</div>
-
-											</div>
-
-										</div>
-										
-									</div>
-
-								<?endif;?>
-
+							<div class="tab-content<?=($i <= 1 ? ' not_tabs' : '')?>">
 								<?$iTab = 0;?>
 								<?foreach($arTabOrder as $value):?>
 									<?//detail text?>
@@ -1157,7 +876,7 @@ if($arTheme['USE_DETAIL_TABS']['VALUE'] != 'Y')
 								"PAGER_TEMPLATE" => ".default",
 								"DISPLAY_TOP_PAGER" => "N",
 								"DISPLAY_BOTTOM_PAGER" => "Y",
-								"PAGER_TITLE" => "ÃÃ®Ã¢Ã®Ã±Ã²Ã¨",
+								"PAGER_TITLE" => "Íîâîñòè",
 								"PAGER_SHOW_ALWAYS" => "N",
 								"PAGER_DESC_NUMBERING" => "N",
 								"PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
@@ -1230,7 +949,7 @@ if($arTheme['USE_DETAIL_TABS']['VALUE'] != 'Y')
 								"PAGER_TEMPLATE" => ".default",
 								"DISPLAY_TOP_PAGER" => "N",
 								"DISPLAY_BOTTOM_PAGER" => "Y",
-								"PAGER_TITLE" => "ÃÃ®Ã¢Ã®Ã±Ã²Ã¨",
+								"PAGER_TITLE" => "Íîâîñòè",
 								"PAGER_SHOW_ALWAYS" => "N",
 								"PAGER_DESC_NUMBERING" => "N",
 								"PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
@@ -1303,7 +1022,7 @@ if($arTheme['USE_DETAIL_TABS']['VALUE'] != 'Y')
 								"PAGER_TEMPLATE" => ".default",
 								"DISPLAY_TOP_PAGER" => "N",
 								"DISPLAY_BOTTOM_PAGER" => "Y",
-								"PAGER_TITLE" => "ÃÃ®Ã¢Ã®Ã±Ã²Ã¨",
+								"PAGER_TITLE" => "Íîâîñòè",
 								"PAGER_SHOW_ALWAYS" => "N",
 								"PAGER_DESC_NUMBERING" => "N",
 								"PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
@@ -1378,7 +1097,7 @@ if($arTheme['USE_DETAIL_TABS']['VALUE'] != 'Y')
 								"PAGER_TEMPLATE" => ".default",
 								"DISPLAY_TOP_PAGER" => "N",
 								"DISPLAY_BOTTOM_PAGER" => "Y",
-								"PAGER_TITLE" => "ÃÃ®Ã¢Ã®Ã±Ã²Ã¨",
+								"PAGER_TITLE" => "Íîâîñòè",
 								"PAGER_SHOW_ALWAYS" => "N",
 								"PAGER_DESC_NUMBERING" => "N",
 								"PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
@@ -1453,7 +1172,7 @@ if($arTheme['USE_DETAIL_TABS']['VALUE'] != 'Y')
 								"PAGER_TEMPLATE" => ".default",
 								"DISPLAY_TOP_PAGER" => "N",
 								"DISPLAY_BOTTOM_PAGER" => "Y",
-								"PAGER_TITLE" => "ÃÃ®Ã¢Ã®Ã±Ã²Ã¨",
+								"PAGER_TITLE" => "Íîâîñòè",
 								"PAGER_SHOW_ALWAYS" => "N",
 								"PAGER_DESC_NUMBERING" => "N",
 								"PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
@@ -1698,70 +1417,123 @@ if($arTheme['USE_DETAIL_TABS']['VALUE'] != 'Y')
 </script>
 
 <?$des = new \Bitrix\Main\Page\FrameStatic('des');$des->startDynamicArea();?>
-	<script>
-		setElementStore = function(check, oid){
-			if(typeof check !== 'undefined' && check == "Y")
-				return;
-
-			if($('.stores_tab').length )
-			{
-				var objUrl = parseUrlQuery(),
-					oidValue = '',
-					add_url = '';
-				if('clear_cache' in objUrl)
-				{
-					if(objUrl.clear_cache == 'Y')
-						add_url = '?clear_cache=Y';
-				}
-				if('oid' in objUrl)
-				{
-					if(parseInt(objUrl.oid)>0)
-						oidValue = objUrl.oid;
-				}
-				if(typeof oid !== 'undefined' && parseInt(oid)>0)
-				{
-					oidValue = oid;
-				}
-				if(oidValue)
-				{
-					if(add_url)
-						add_url +='&oid='+oidValue;
-					else
-						add_url ='?oid='+oidValue;
-				}
-
-				$.ajax({
-					type:"POST",
-					url:arMaxOptions['SITE_DIR']+"ajax/productStoreAmount.php"+add_url,
-					data:<?=CUtil::PhpToJSObject($templateData["STORES"], false, true, true)?>,
-					success: function(data){
-						if(typeof map === 'object' && typeof map.destroy === 'function'){
-							map.destroy();
-						}
-
-						$('.stores .stores_tab').html(data);
-						if($('.stores .stores_tab').siblings('.ordered-block__title').length)
-						{
-							if($('.stores > .ordered-block__title + .stores-title').length)
-								$('.stores > .ordered-block__title + .stores-title').remove();
-							$('.stores .stores_tab .stores-title').insertAfter($('.stores .stores_tab').siblings('.ordered-block__title'))
-						}
-
-						$('.block_container .items, .block_container .detail_items').mCustomScrollbar({
-							mouseWheel: {
-								scrollAmount: 150,
-								preventDefault: true
-							}
-						})
-					}
-				});
-			}
+<script>
+	insertElementStoreBlock = function(html){
+		if(
+			typeof map === 'object' &&
+			map && typeof map.destroy === 'function'
+		){
+			// there is a map on the page
+			map.destroy();
 		}
-		BX.ready(
-			BX.defer(function(){
-				setElementStore('<?=$templateData["STORES"]["OFFERS"];?>');
-			})
-		);
-	</script>
+
+		html = html.replace('this.parentNode.removeChild(script);', 'try{this.parentNode.removeChild(script);} catch(e){}');
+		html = html.replace('(document.head || document.documentElement).appendChild(script);', '(typeof ymaps === \'undefined\') && (document.head || document.documentElement).appendChild(script);');
+
+		$('.stores .stores_tab').html(html);
+
+		if($('.stores .stores_tab').siblings('.ordered-block__title').length){
+			if($('.stores > .ordered-block__title + .stores-title').length){
+				$('.stores > .ordered-block__title + .stores-title').remove();
+			}
+
+			$('.stores .stores_tab .stores-title').insertAfter($('.stores .stores_tab').siblings('.ordered-block__title'));
+		}
+
+		$('.block_container .items, .block_container .detail_items').mCustomScrollbar({
+			mouseWheel: {
+				scrollAmount: 150,
+				preventDefault: true
+			}
+		});
+	}
+
+	setElementStore = function(check, oid){
+		if(typeof check !== 'undefined' && check == "Y")
+			return;
+
+		if($('.stores_tab').length )
+		{
+			var objUrl = parseUrlQuery(),
+				oidValue = '',
+				add_url = '';
+			if('clear_cache' in objUrl)
+			{
+				if(objUrl.clear_cache == 'Y')
+					add_url = '?clear_cache=Y';
+			}
+			if('oid' in objUrl)
+			{
+				if(parseInt(objUrl.oid)>0)
+					oidValue = objUrl.oid;
+			}
+			if(typeof oid !== 'undefined' && parseInt(oid)>0)
+			{
+				oidValue = oid;
+			}
+			if(oidValue)
+			{
+				if(add_url)
+					add_url +='&oid='+oidValue;
+				else
+					add_url ='?oid='+oidValue;
+			}
+
+			$.ajax({
+				type:"POST",
+				url:arMaxOptions['SITE_DIR']+"ajax/productStoreAmount.php"+add_url,
+				data:<?=CUtil::PhpToJSObject($templateData["STORES"], false, true, true)?>,
+				success: function(html){
+					if(html.indexOf('new ymaps.Map') !== -1){
+						// there is a map in response
+						if(typeof setElementStore.mapListner === 'undefined'){
+							setElementStore.wait = false;
+
+							window.addEventListener('message', setElementStore.mapListner = function(event){
+								if(typeof event.data === 'string'){
+									if(
+										event.data.indexOf('ready') !== -1 &&
+										event.origin.indexOf('maps.ya') !== -1
+									){
+										// message ready recieved from yandex maps
+										setTimeout(function(){
+											if(typeof setElementStore.lastHtml !== 'undefined'){
+												// insert the last
+												insertElementStoreBlock(setElementStore.lastHtml);
+												delete setElementStore.lastHtml;
+											}
+											else{
+												setElementStore.wait = false;
+											}
+										}, 50);
+									}
+								}
+							});
+						}
+
+						if(setElementStore.wait){
+							// save response until not ready
+							setElementStore.lastHtml = html;
+						}
+						else{
+							// insert the first
+							setElementStore.wait = true;
+							insertElementStoreBlock(html);
+						}
+					}
+					else{
+						// there is no a map on the page
+						insertElementStoreBlock(html);
+					}
+				}
+			});
+		}
+	}
+	BX.ready(
+		BX.defer(function(){
+			setElementStore('<?=$templateData["STORES"]["OFFERS"];?>');
+		})
+	);
+</script>
 <?$des->finishDynamicArea();?>
 <?if($_GET["RID"]){?><script>$(document).ready(function(){$("<div class='rid_item' data-rid='<?=htmlspecialcharsbx($_GET["RID"]);?>'></div>").appendTo($('body'));});</script><?}?>

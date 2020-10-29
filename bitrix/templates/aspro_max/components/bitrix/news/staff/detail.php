@@ -10,6 +10,10 @@ if(isset($arParams["TYPE_LEFT_BLOCK_DETAIL"]) && $arParams["TYPE_LEFT_BLOCK_DETA
 if(isset($arParams["SIDE_LEFT_BLOCK_DETAIL"]) && $arParams["SIDE_LEFT_BLOCK_DETAIL"]!='FROM_MODULE'){
 	$arTheme['SIDE_MENU']['VALUE'] = $arParams["SIDE_LEFT_BLOCK_DETAIL"];
 }
+
+if($arTheme['HIDE_SUBSCRIBE']['VALUE'] == 'Y'){
+	$arParams["USE_SUBSCRIBE_IN_TOP"] = "N";
+}
 ?>
 
 <?
@@ -53,9 +57,11 @@ $arElement = CMaxCache::CIblockElement_GetList(array("CACHE" => array("TAG" => C
 				</div>
 			<?endif;?>
 
-			<div><div class="colored_theme_hover_bg-block dark_link animate-load" data-event="jqm" data-param-type="subscribe" data-name="subscribe" title="<?=GetMessage('SUBSCRIBE_TEXT')?>">
-				<?=CMax::showIconSvg("subscribe", SITE_TEMPLATE_PATH."/images/svg/subscribe_insidepages.svg", "", "colored_theme_hover_bg-el-svg", true, false);?>
-			</div></div>
+			<?if($arParams["USE_SUBSCRIBE_IN_TOP"] == "Y"):?>
+				<div><div class="colored_theme_hover_bg-block dark_link animate-load" data-event="jqm" data-param-type="subscribe" data-name="subscribe" title="<?=GetMessage('SUBSCRIBE_TEXT')?>">
+					<?=CMax::showIconSvg("subscribe", SITE_TEMPLATE_PATH."/images/svg/subscribe_insidepages.svg", "", "colored_theme_hover_bg-el-svg", true, false);?>
+				</div></div>
+			<?endif;?>
 		<?$this->EndViewTarget();?>
 
 	<?endif;?>

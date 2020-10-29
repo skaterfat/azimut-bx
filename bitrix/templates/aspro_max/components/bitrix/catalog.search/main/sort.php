@@ -17,10 +17,22 @@ else{
 }
 $template = "catalog_".$display;
 
+
 if($arTheme['HEADER_TYPE']['VALUE'] == 28 || $arTheme['HEADER_TYPE']['VALUE'] == 29)
 {
 	$APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", "Y");
 	$arTheme['LEFT_BLOCK_CATALOG_SECTIONS']['VALUE'] = 'N';
+}
+
+$bHideLeftBlock = ($arTheme['LEFT_BLOCK_CATALOG_SECTIONS']['VALUE'] == 'N');
+$bShowCompactHideLeft = ($arTheme['COMPACT_FILTER_HIDE_LEFT_BLOCK']['VALUE'] == 'Y');
+if($bHideLeftBlock){
+	if($bShowCompactHideLeft){
+		$arTheme["FILTER_VIEW"]["VALUE"] = 'COMPACT';
+	} else {
+		$arTheme["FILTER_VIEW"]["VALUE"] = 'VERTICAL';
+	}
+	
 }
 
 $bShowSortInFilter = ($arParams['SHOW_SORT_IN_FILTER'] != 'N');
@@ -29,9 +41,9 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 // $arTheme["FILTER_VIEW"]["VALUE"] = 'VERTICAL';
 ?>
 
-<div class="filter-panel sort_header view_<?=$display?>  <?=(!$bShowSortInFilter ? 'show-normal-sort' : '' );?>">
+<div class="filter-panel sort_header view_<?=$display?> <?=($bShowCompactHideLeft && $bHideLeftBlock ? 'show-compact' : '' );?>  <?=(!$bShowSortInFilter ? 'show-normal-sort' : '' );?>">
 	<?if($bShowFilter):?>
-		<div class="filter-panel__filter pull-left filter-<?=strtolower($arTheme['FILTER_VIEW']['VALUE']);?> <?=($bHideLeftBlock ? 'filter-panel__filter--visible' : '');?>">
+		<div class="filter-panel__filter pull-left filter-<?=strtolower($arTheme['FILTER_VIEW']['VALUE']);?> <?=($bHideLeftBlock && !$bShowCompactHideLeft ? 'filter-panel__filter--visible' : '');?>">
 			<div class="bx-filter-title filter_title <?=($bActiveFilter && $bActiveFilter[1] != 'clear' ? 'active-filter' : '')?>">
 				<?=CMax::showIconSvg("icon", SITE_TEMPLATE_PATH.'/images/svg/catalog/filter.svg', '', '', true, false);?>
 				<span class="font_upper_md font-bold darken <?=($bHideLeftBlock ? 'dotted' : '')?>"><?=\Bitrix\Main\Localization\Loc::getMessage("CATALOG_SMART_FILTER_TITLE");?></span>

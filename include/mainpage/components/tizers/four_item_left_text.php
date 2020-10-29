@@ -66,6 +66,7 @@
 		"SIZE_IN_ROW" => "4",
 		"PAGER_BASE_LINK_ENABLE" => "N",
 		"SHOW_404" => "N",
+		"MOBILE_TEMPLATE" => $GLOBALS['arTheme']['MOBILE_TIZERS']['VALUE'],
 		"MESSAGE_404" => ""
 	),
 	false

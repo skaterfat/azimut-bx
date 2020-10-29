@@ -81,6 +81,7 @@ global $USER_FIELD_MANAGER;
 $arParams['SORT_PROP'] = $_SESSION['REVIEW_SORT_PROP'] ? $_SESSION['REVIEW_SORT_PROP'] : 'UF_ASPRO_COM_RATING';
 $arParams['SORT_ORDER'] = $_SESSION['REVIEW_SORT_ORDER'] ? $_SESSION['REVIEW_SORT_ORDER'] : 'SORT_DESC';
 
+$arCommentsSort = array();
 if($arResult["PagesComment"]) {
 	$pagesCount = count($arResult["PagesComment"]);
 	$countOnPage = $arParams["COMMENTS_COUNT"];

@@ -6,6 +6,7 @@ function setQuantityFly(basketId, ratio, direction){
 	var currentValue = BX("QUANTITY_INPUT_" + basketId).value, newVal;
 
 	var isDblQuantity = $("#QUANTITY_INPUT_" + basketId).data('float_ratio'),
+		maxQuantity = $("#QUANTITY_INPUT_" + basketId).attr('max'),
 		ratio=( isDblQuantity ? parseFloat(ratio) : parseInt(ratio, 10));
 
 	if(isDblQuantity)
@@ -21,6 +22,15 @@ function setQuantityFly(basketId, ratio, direction){
 
 	if (curValue < 0) curValue = 0;
 	if (curValue > 0) {
+
+		//check quantity more availiable amount
+		if(maxQuantity > 0){
+			if(curValue > maxQuantity) {
+				curValue = maxQuantity;
+				return;
+			}
+		}
+		/**/
 		
 		BX("QUANTITY_INPUT_" + basketId).value = curValue;
 		BX("QUANTITY_INPUT_" + basketId).defaultValue = currentValue;
@@ -55,6 +65,7 @@ function setQuantityFly(basketId, ratio, direction){
 function updateQuantityFly(controlId, basketId, ratio, animate) {
 
 	var oldVal = BX(controlId).defaultValue, newVal = parseFloat(BX(controlId).value) || 0; bValidChange = false; // if quantity is correct for this ratio
+	var maxQuantity = $("#QUANTITY_INPUT_" + basketId).attr('max');
 
 	if (!newVal) {
 		bValidChange = false;
@@ -106,6 +117,11 @@ function delete_all_items(type, item_section, correctSpeed){
 		$('.banner_buttons.with_actions .wraps_buttons .wish_item_add').removeClass('added');
 
 		getActualBasket();
+
+		if ($('#headerfixed .but-cell .type_block').length) {
+			$('#headerfixed .but-cell .type_block span').text(BX.message('MORE_INFO_SKU'));
+			$('#headerfixed .but-cell .type_block .svg-inline-fw').remove();
+		}
 
 		var eventdata = {action:'loadBasket'};
 		BX.onCustomEvent('onCompleteAction', [eventdata]);

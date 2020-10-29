@@ -145,7 +145,7 @@ if (!empty($arResult['ITEMS'])){
 				$arSKUPropKeys = array_fill_keys($arSKUPropIDs, false);
 		}
 	}
-	
+
 	$arNewItemsList = array();
 	foreach ($arResult['ITEMS'] as $key => $arItem)
 	{
@@ -160,7 +160,7 @@ if (!empty($arResult['ITEMS'])){
 				$arResult['ITEMS'][$key]['DISPLAY_PROPERTIES']['CML2_ARTICLE']['VALUE'] = $arItem['DISPLAY_PROPERTIES']['CML2_ARTICLE']['VALUE'];
 			}
 		}
-		
+
 		$arItem['CHECK_QUANTITY'] = false;
 		if (!isset($arItem['CATALOG_MEASURE_RATIO']))
 			$arItem['CATALOG_MEASURE_RATIO'] = 1;
@@ -531,16 +531,16 @@ if (!empty($arResult['ITEMS'])){
 					if(($arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE']) || (!$arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE']))
 						$arOffer['DETAIL_PICTURE'] = $arOffer['PREVIEW_PICTURE'];
 
-					if($arParams['SHOW_GALLERY'] == 'Y')
-					{
+					if ($arParams['SHOW_GALLERY'] == 'Y') {
 						$arItem['OFFERS'][$keyOffer]['GALLERY'] = CMax::getSliderForItemExt($arOffer, $arParams['OFFER_ADD_PICT_PROP'], true);
 
-						if($arItem['GALLERY'])
-						{
+						if ($arItem['GALLERY']) {
 							$arItem['OFFERS'][$keyOffer]['GALLERY'] = array_merge($arItem['OFFERS'][$keyOffer]['GALLERY'], $arItem['GALLERY']);
 						}
-						if($arItem['OFFERS'][$keyOffer]['GALLERY'])
+						if ($arItem['OFFERS'][$keyOffer]['GALLERY']) {
+							array_splice($arItem['OFFERS'][$keyOffer]['GALLERY'], $arParams['MAX_GALLERY_ITEMS']);
 							array_splice($arItem['GALLERY'], $arParams['MAX_GALLERY_ITEMS']);
+						}
 					}
 				}
 				if (-1 == $intSelected)
@@ -580,7 +580,7 @@ if (!empty($arResult['ITEMS'])){
 			foreach ($arItem['DISPLAY_PROPERTIES'] as $propKey => $arDispProp)
 			{
 				if ('F' == $arDispProp['PROPERTY_TYPE'])
-					unset($arItem['DISPLAY_PROPERTIES'][$propKey]);				
+					unset($arItem['DISPLAY_PROPERTIES'][$propKey]);
 
 			}
 		}
@@ -604,9 +604,14 @@ if (!empty($arResult['ITEMS'])){
 		}
 
 		$arItem['LAST_ELEMENT'] = 'N';
+
+		if($arParams['IBINHERIT_TEMPLATES']){
+			\Aspro\Max\Property\IBInherited::modifyItemTemplates($arParams, $arItem);
+		}
+
 		$arNewItemsList[$key] = $arItem;
 	}
-	
+
 	$arNewItemsList[$key]['LAST_ELEMENT'] = 'Y';
 	$arResult['ITEMS'] = $arNewItemsList;
 	$arResult['SKU_PROPS'] = $arSKUPropList;

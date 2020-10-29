@@ -37,4 +37,19 @@ body .wrapper1:not(.with_left_block) .wrapper_inner.front .middle .drag-block.co
 @media (max-width: 600px){
 	body#main .wrapper1 .wrapper_inner.front .middle .drag-block.container.BOTTOM_BANNERS .maxwidth-theme.wide, 
 	body#main .wrapper1 .wrapper_inner.front .middle .drag-block.container.BOTTOM_BANNERS .maxwidth-theme.wide .item-views.bottom_banners{padding-top: 0px;}
+
+
+	.BANNER_IMG_TEXT .item-views.bottom_banners .img {width: 90px;height: 90px;margin-left: 14px;}
+	.BANNER_IMG_TEXT .item-views.bottom_banners .img.pull-left + .inner-text {padding-left: 124px;padding-right: 13px;min-height: 90px;}
+	.BANNER_IMG_TEXT .item-views.bottom_banners .inner-text {padding-top: 6px;}
+	.BANNER_IMG_TEXT .bottom_banners.item-views .item .previewtext{line-height: 1.500em;margin-top: 7px;margin-bottom: 0;}
+	.BANNER_IMG_TEXT.maxwidth-theme .item-views.bottom_banners{padding-top: 15px;}
+	.BANNER_IMG_TEXT.maxwidth-theme .item-views.bottom_banners .item{padding-bottom: 30px;}
+	.wrapper1:not(.with_left_block) .wrapper_inner.front .drag-block.container .BANNER_IMG_TEXT.maxwidth-theme .item-views.bottom_banners,
+	.wrapper1.with_left_block .wrapper_inner.front .drag-block.container .BANNER_IMG_TEXT.maxwidth-theme .item-views.bottom_banners{padding-bottom: 17px;}
+
+	.BANNER_IMG_TYPE2.maxwidth-theme .item-views.bottom_banners .item{padding-bottom: 16px;}
+	.BANNER_IMG_TYPE2.maxwidth-theme .item-views.bottom_banners{padding-top: 15px;}
+	.wrapper1:not(.with_left_block) .wrapper_inner.front .drag-block.container .BANNER_IMG_TYPE2.maxwidth-theme .item-views.bottom_banners,
+	.wrapper1.with_left_block .wrapper_inner.front .drag-block.container .BANNER_IMG_TYPE2.maxwidth-theme .item-views.bottom_banners{padding-bottom: 29px;}
 }

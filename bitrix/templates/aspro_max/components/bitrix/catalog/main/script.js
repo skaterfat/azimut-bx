@@ -4,9 +4,6 @@ function setNewHeader(obOffer){
 	if(arMaxOptions['THEME']['SHOW_HEADER_GOODS'] != 'Y' || !$('.main-catalog-wrapper.details').length)
 		return;
 
-	/*if($('.logo-row.wproducts').length)
-		return;*/
-
 	$('#headerfixed').addClass('with-product');
 
 	if($('.product-info-headnote .rating').length) //show rating
@@ -118,13 +115,15 @@ function setNewHeader(obOffer){
 	{
 		imgSrc = ($('.product-detail-gallery__slider #photo-0 .product-detail-gallery__picture').data('src') ? $('.product-detail-gallery__slider #photo-0 .product-detail-gallery__picture').data('src') : $('.product-detail-gallery__slider #photo-0 .product-detail-gallery__picture').attr('src'));
 	}
-
-	if($('.slide_offer').length) //show button
-		buttonHtml = '<span class="buy_block"><span class="btn btn-default btn-sm slide_offer type_block">'+($('.product-container .buy_block .offer_buy_block .in-cart').is(':visible') ? $('.product-container .buy_block .offer_buy_block .in-cart').html() : BX.message('MORE_INFO_SKU'))+'</span></span>';
-	else if($('.buy_block .sku_props').length)
-		buttonHtml = '<span class="buy_block"><span class="btn btn-default btn-sm more type_block">'+($('.product-container .buy_block .offer_buy_block .in-cart').is(':visible') ? $('.product-container .buy_block .offer_buy_block .in-cart').html() : BX.message('MORE_INFO_SKU'))+'</span></span>';
-	else if($('.buy_block .button_block').length)
+	//show button
+	if ($('.slide_offer').length) {
+		buttonHtml = '<span class="buy_block"><span class="btn btn-default btn-sm slide_offer more type_block'+($('.product-container .buy_block .offer_buy_block .btn').hasClass('has_prediction') ? ' has_prediction' : '')+'">'+($('.product-container .buy_block .offer_buy_block .in-cart').is(':visible') ? $('.product-container .buy_block .offer_buy_block .in-cart').html() : BX.message('MORE_INFO_SKU'))+'</span></span>';
+	} else if ($('.buy_block .sku_props').length) {
+		buttonHtml = '<span class="buy_block"><span class="btn btn-default btn-sm more type_block'+($('.product-container .buy_block .offer_buy_block .btn').hasClass('has_prediction') ? ' has_prediction' : '')+'">'+($('.product-container .buy_block .offer_buy_block .in-cart').is(':visible') ? $('.product-container .buy_block .offer_buy_block .in-cart').html() : BX.message('MORE_INFO_SKU'))+'</span></span>';
+		// buttonHtml = $('.buy_block .button_block').html().replace(/btn-lg/g, 'btn-sm more ww');
+	} else if ($('.buy_block .button_block').length) {
 		buttonHtml = $('.buy_block .button_block').html().replace(/btn-lg/g, 'btn-sm');
+	}
 
 	if($('.sku_props .bx_catalog_item_scu > div').length)
 	{
@@ -191,7 +190,17 @@ function setNewHeader(obOffer){
 
 	InitLazyLoad();
 	InitScrollBar();
-}
+
+	if(typeof obMaxPredictions === 'object'){
+		obMaxPredictions.showAll();
+	}
+}	
+
+BX.addCustomEvent('onWindowResize', function(eventdata){
+	if( window.predictionWindow && typeof window.predictionWindow.close === 'function' ) {
+		window.predictionWindow.close();
+	}
+});
 
 $(document).on('click', '.ordered-block.goods .tabs li', function(){
 	setTimeout(
@@ -206,7 +215,10 @@ $(document).on('click', ".item-stock .store_view", function(){
 $(document).on('click', '.blog-info__rating--top-info, #headerfixed .wproducts .wrapp_stockers .rating .votes_block', function() {
 	var reviews = $('.reviews.EXTENDED');
 	if(reviews.length) {
-		scroll_block($('.js-store-scroll'), $('.ordered-block .nav-tabs a[href="#reviews"]'));
+		//scroll_block($('.js-store-scroll'), $('.ordered-block .nav-tabs a[href="#reviews"]'));
+		var tabsBlock = $('.ordered-block.tabs-block');
+		var blockToScroll = tabsBlock.length ? tabsBlock : reviews;
+		scroll_block(blockToScroll, $('.ordered-block .nav-tabs a[href="#reviews"]'));
 	}
 });
 
@@ -215,10 +227,15 @@ $(document).on('click', ".table-view__item--has-stores .item-stock .value", func
 });
 
 $(document).on('click', '#headerfixed .item-buttons .more', function(){
-	if($('.product-container .buy_block .offer_buy_block .to-cart').is(':visible'))
+	if ($('.product-container .buy_block .offer_buy_block .to-cart').is(':visible')) {
 		$('.product-container .buy_block .offer_buy_block .to-cart').trigger('click');
-	else
+	} else if ($('.middle-info-wrapper .to-cart').is(':visible')) {
+		$('.middle-info-wrapper .to-cart').trigger('click')
+	} else if ($('.product-side .to-cart').is(':visible')) {
+		$('.product-side .to-cart').trigger('click')
+	} else {
 		location.href = arAsproOptions['PAGES']['BASKET_PAGE_URL'];
+	}
 })
 
 $(document).on('click', '#headerfixed .item-actions .bx_catalog_item_scu', function(){
@@ -283,14 +300,38 @@ $(document).on('click', ".stores-icons .btn", function(){
 	}
 });
 
+var checkFilterLandgings = function(){
+	if ($('.top-content-block .with-filter .with-filter-wrapper').length) {
+		var bActiveClass = false;
+		if ($("#mobilefilter .with-filter-wrapper").length) {
+			if ($("#mobilefilter .with-filter-wrapper .bx_filter_parameters_box").hasClass('active')) {
+				bActiveClass = true;
+			}
+			$("#mobilefilter .with-filter-wrapper").empty()
+			$('.top-content-block .with-filter .with-filter-wrapper').prependTo($("#mobilefilter .with-filter-wrapper"))
+		} else {
+			$('.top-content-block .with-filter .with-filter-wrapper').prependTo($("#mobilefilter .bx_filter_parameters"))
+		}
+		if ($("#mobilefilter .bx_filter_parameters .landings-list__item--active").length || bActiveClass) {
+			$("#mobilefilter .with-filter-wrapper .bx_filter_parameters_box").addClass('active')
+		}
+		$('#mobilefilter .scrollbar').scrollTop(0)
+		if ($('#mobilefilter .bx_filter_parameters.scroll-init').length) {
+			$('#mobilefilter .bx_filter_parameters.scroll-init').mCustomScrollbar('scrollTo', 0)
+		}
+	}
+}
+
+
 $(document).ready(function(){
+	lazyLoadPagenBlock();
 	BX.addCustomEvent('onWindowResize', function(){
 		try {
 			var fixedMobile = arAsproOptions.THEME['FIXED_BUY_MOBILE'] == 'Y';
 
 			if(fixedMobile) {
-				var buyBlock = $('.buy_block');
-				var counterWrapp = $('.counter_wrapp');
+				var buyBlock = $('.product-action .buy_block');
+				var counterWrapp = $('.product-action .counter_wrapp');
 
 				if(buyBlock.length && counterWrapp.length && !$('.list-offers.ajax_load').length) {
 					if( window.matchMedia('(max-width: 767px)').matches ) {	

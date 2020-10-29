@@ -2,33 +2,19 @@
 if(!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();
 $aMenuLinksExt = array();
 
-if($arMenuParametrs = CMax::GetDirMenuParametrs(__DIR__)){
-	if($arMenuParametrs['MENU_SHOW_SECTIONS'] == 'Y'){
-		$arSections = CMaxCache::CIBlockSection_GetList(array('SORT' => 'ASC', 'ID' => 'ASC', 'CACHE' => array('TAG' => CMaxCache::GetIBlockCacheTag(CMaxCache::$arIBlocks[SITE_ID]['aspro_max_content']['aspro_max_projects'][0]), 'MULTI' => 'Y')), array('IBLOCK_ID' => CMaxCache::$arIBlocks[SITE_ID]['aspro_max_content']['aspro_max_projects'][0], 'ACTIVE' => 'Y', 'GLOBAL_ACTIVE' => 'Y', 'ACTIVE_DATE' => 'Y'));
-		$arSectionsByParentSectionID = CMaxCache::GroupArrayBy($arSections, array('MULTI' => 'Y', 'GROUP' => array('IBLOCK_SECTION_ID')));
-	}
-
-	if($arMenuParametrs['MENU_SHOW_ELEMENTS'] == 'Y'){
-		$arSelect = array('ID', 'NAME', 'IBLOCK_ID', 'IBLOCK_SECTION_ID', 'DEPTH_LEVEL', 'ACTIVE', 'SORT', 'DETAIL_PAGE_URL', 'PROPERTY_LINK_REGION');
-		$arItems = CMaxCache::CIBlockElement_GetList(array('SORT' => 'ASC', 'ID' => 'DESC', 'CACHE' => array('TAG' => CMaxCache::GetIBlockCacheTag(CMaxCache::$arIBlocks[SITE_ID]['aspro_max_content']['aspro_max_projects'][0]), 'MULTI' => 'Y')), array('IBLOCK_ID' => CMaxCache::$arIBlocks[SITE_ID]['aspro_max_content']['aspro_max_projects'][0], 'ACTIVE' => 'Y', 'SECTION_GLOBAL_ACTIVE' => 'Y', 'ACTIVE_DATE' => 'Y', 'INCLUDE_SUBSECTIONS' => 'Y'), false, false, $arSelect);
-		if($arMenuParametrs['MENU_SHOW_SECTIONS'] == 'Y'){
-			$arItemsBySectionID = CMaxCache::GroupArrayBy($arItems, array('MULTI' => 'Y', 'GROUP' => array('IBLOCK_SECTION_ID')));
-		}
-		else{
-			$arItemsRoot = CMaxCache::CIBlockElement_GetList(array('SORT' => 'ASC', 'ID' => 'DESC', 'CACHE' => array('TAG' => CMaxCache::GetIBlockCacheTag(CMaxCache::$arIBlocks[SITE_ID]['aspro_max_content']['aspro_max_projects'][0]), 'MULTI' => 'Y')), array('IBLOCK_ID' => CMaxCache::$arIBlocks[SITE_ID]['aspro_max_content']['aspro_max_projects'][0], 'ACTIVE' => 'Y', 'ACTIVE_DATE' => 'Y', 'SECTION_ID' => 0));
-			$arItems = array_merge((array)$arItems, (array)$arItemsRoot);
-		}
-	}
-	
-	if($arSections){
-		CMax::getSectionChilds(false, $arSections, $arSectionsByParentSectionID, $arItemsBySectionID, $aMenuLinksExt);
-	}
-
-	if($arItems && $arMenuParametrs['MENU_SHOW_SECTIONS'] != 'Y'){
-		foreach($arItems as $arItem){
-			$aMenuLinksExt[] = array($arItem['NAME'], $arItem['DETAIL_PAGE_URL'], array(), array('FROM_IBLOCK' => 1, 'DEPTH_LEVEL' => 1));
-		}
-	}
+if($arMenuParametrs = CMax::GetDirMenuParametrs(__DIR__))
+{
+	$iblock_id = CMaxCache::$arIBlocks[SITE_ID]['aspro_max_content']['aspro_max_projects'][0];
+	$arExtParams = array(
+		'IBLOCK_ID' => $iblock_id,
+		'MENU_PARAMS' => $arMenuParametrs,
+		'SECTION_FILTER' => array(),	// custom filter for sections (through array_merge)
+		'SECTION_SELECT' => array(),	// custom select for sections (through array_merge)
+		'ELEMENT_FILTER' => array(),	// custom filter for elements (through array_merge)
+		'ELEMENT_SELECT' => array(),	// custom select for elements (through array_merge)
+		'MENU_TYPE' => 'projects',
+	);
+	CMax::getMenuChildsExt($arExtParams, $aMenuLinksExt);
 }
 
 $aMenuLinks = array_merge($aMenuLinks, $aMenuLinksExt);

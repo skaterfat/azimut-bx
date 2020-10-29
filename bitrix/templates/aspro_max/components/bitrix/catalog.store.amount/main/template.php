@@ -17,8 +17,8 @@ if(strlen($arResult["ERROR_MESSAGE"]) > 0){
 			$arShops[$arShop['PROPERTY_STORE_ID_VALUE']] = $arShop;
 		}
 	}
-
 	$bCombineMode = ($arParams["STORE_AMOUNT_VIEW"] == "COMBINE_AMOUNT");
+	$bMapMode = ($arParams["STORE_AMOUNT_VIEW"] == "MAP_AMOUNT");
 	?>
 	<div class="stores_block_wrap <?if($bCombineMode):?>combine<?endif;?>">
 
@@ -34,7 +34,6 @@ if(strlen($arResult["ERROR_MESSAGE"]) > 0){
 				</div>
 			</div>
 
-
 			<div class="stores-amount-list stores-amount-list--active">
 		<?endif;?>
 
@@ -48,75 +47,89 @@ if(strlen($arResult["ERROR_MESSAGE"]) > 0){
 				$empty_count++;
 				continue;
 			}?>
-			<div class="stores_block bordered rounded3 <?=(isset($arProperty["IMAGE_ID"]) && !empty($arProperty["IMAGE_ID"]) ? 'w_image' : 'wo_image')?>" <? echo ($arParams['SHOW_EMPTY_STORE'] == 'N' && $amount <= 0 ? 'style="display: none"' : ''); ?>>
-				<div class="stores_text_wrapp <?=(isset($arProperty["IMAGE_ID"]) && !empty($arProperty["IMAGE_ID"]) ? 'image_block' : '')?>">
-					<?					
-					if (isset($arProperty["IMAGE_ID"]) && !empty($arProperty["IMAGE_ID"])):?>
-						<div class="imgs"><?=GetMessage('S_IMAGE')?> <?=CFile::ShowImage($arProperty["IMAGE_ID"], 100, 100, "border=0", "", false);?></div>
-					<?endif;?>
-					<div class="main_info ">
-						<?if (isset($arProperty["TITLE"])):?>
-							<span>
-								<?
-								if($arParams['FIELDS'] && (in_array('TITLE', $arParams['FIELDS']) || in_array('ADDRESS', $arParams['FIELDS'])) ) {
-									$setTitle = in_array('TITLE', $arParams['FIELDS']) && strlen($arProperty["TITLE"]);
-									$setAddress = in_array('ADDRESS', $arParams['FIELDS']) && strlen($arProperty["ADDRESS"]);
-									$storeName = ($setTitle ? $arProperty["TITLE"] : '');
-									$storeName .= $setTitle && $setAddress ? ', ' : '';
-									$storeName .= ($setAddress ? $arProperty["ADDRESS"] : '');
-								} else {
-									$storeName = $arProperty["TITLE"].(strlen($arProperty["ADDRESS"]) && strlen($arProperty["TITLE"]) ? ', ' : '').$arProperty["ADDRESS"];
-								}
-								?>
-								<a class="title_stores font_sm" href="<?=$arProperty["URL"]?>" data-storehref="<?=$arProperty["URL"]?>" data-iblockhref="<?=$arShops[$arProperty['ID']]['DETAIL_PAGE_URL']?>"> <?=$storeName?></a>
-							</span>
+
+			<?if (isset($arProperty["TITLE"])):?>
+					<?
+					if($arParams['FIELDS'] && (in_array('TITLE', $arParams['FIELDS']) || in_array('ADDRESS', $arParams['FIELDS'])) ) {
+						$setTitle = in_array('TITLE', $arParams['FIELDS']) && strlen($arProperty["TITLE"]);
+						$setAddress = in_array('ADDRESS', $arParams['FIELDS']) && strlen($arProperty["ADDRESS"]);
+						$storeName = ($setTitle ? $arProperty["TITLE"] : '');
+						$storeName .= $setTitle && $setAddress ? ', ' : '';
+						$storeName .= ($setAddress ? $arProperty["ADDRESS"] : '');
+					} else {
+						$storeName = $arProperty["TITLE"].(strlen($arProperty["ADDRESS"]) && strlen($arProperty["TITLE"]) ? ', ' : '').$arProperty["ADDRESS"];
+					}
+					?>
+			<?endif;?>
+
+			<?
+			$totalCount = CMax::CheckTypeCount($arProperty["NUM_AMOUNT"]);
+			$arQuantityData = CMax::GetQuantityArray($totalCount);
+			?>
+
+			<?if(!$bMapMode):?>
+				<div class="stores_block bordered rounded3 <?=(isset($arProperty["IMAGE_ID"]) && !empty($arProperty["IMAGE_ID"]) ? 'w_image' : 'wo_image')?>" <? echo ($arParams['SHOW_EMPTY_STORE'] == 'N' && $amount <= 0 ? 'style="display: none"' : ''); ?>>
+					<div class="stores_text_wrapp <?=(isset($arProperty["IMAGE_ID"]) && !empty($arProperty["IMAGE_ID"]) ? 'image_block' : '')?>">
+						<?					
+						if (isset($arProperty["IMAGE_ID"]) && !empty($arProperty["IMAGE_ID"])):?>
+							<div class="imgs"><?=GetMessage('S_IMAGE')?> <?=CFile::ShowImage($arProperty["IMAGE_ID"], 100, 100, "border=0", "", false);?></div>
 						<?endif;?>
-						<?if($arParams['FIELDS'] && in_array('PHONE', $arParams['FIELDS']) && isset($arProperty["PHONE"]) && $arProperty["PHONE"]):?><div class="store_phone p10 muted777 font_xs"><?=GetMessage('S_PHONE')?> <?=$arProperty["PHONE"]?></div><?endif;?>
-						<?if(isset($arProperty["SCHEDULE"]) && $arProperty["SCHEDULE"]):?><div class="schedule p10 muted777 font_xs"><?=GetMessage('S_SCHEDULE')?>&nbsp;<?=str_replace("&lt;br/&gt;", "<br/>", $arProperty["SCHEDULE"]);?></div><?endif;?>
-						<?if(isset($arProperty["EMAIL"]) && $arProperty["EMAIL"]):?><div class="email p10 muted777 font_xs"><?=GetMessage('S_EMAIL')?>&nbsp;<a href="<?='mailto:'.$arProperty["EMAIL"]?>"><?=$arProperty["EMAIL"];?></a></div><?endif;?>
-						<?if (!empty($arProperty['USER_FIELDS']) && is_array($arProperty['USER_FIELDS'])){
-							foreach ($arProperty['USER_FIELDS'] as $userField){
-								if (isset($userField['CONTENT'])){
-									?><span class="muted777 font_xs"><?=$userField['TITLE']?>: <?=$userField['CONTENT']?></span><br /><?
+						<div class="main_info ">
+							<?if (isset($arProperty["TITLE"])):?>
+								<span>
+									<a class="title_stores font_sm dark_link option-font-bold" href="<?=$arProperty["URL"]?>" data-storehref="<?=$arProperty["URL"]?>" data-iblockhref="<?=$arShops[$arProperty['ID']]['DETAIL_PAGE_URL']?>"> <?=$storeName?></a>
+								</span>
+							<?endif;?>
+							<?if($arParams['FIELDS'] && in_array('PHONE', $arParams['FIELDS']) && isset($arProperty["PHONE"]) && $arProperty["PHONE"]):?><div class="store_phone p10 muted777 font_xs"><?=GetMessage('S_PHONE')?> <?=$arProperty["PHONE"]?></div><?endif;?>
+							<?if(isset($arProperty["SCHEDULE"]) && $arProperty["SCHEDULE"]):?><div class="schedule p10 muted777 font_xs"><?=GetMessage('S_SCHEDULE')?>&nbsp;<?=str_replace("&lt;br/&gt;", "<br/>", $arProperty["SCHEDULE"]);?></div><?endif;?>
+							<?if(isset($arProperty["EMAIL"]) && $arProperty["EMAIL"]):?><div class="email p10 muted777 font_xs"><?=GetMessage('S_EMAIL')?>&nbsp;<a href="<?='mailto:'.$arProperty["EMAIL"]?>"><?=$arProperty["EMAIL"];?></a></div><?endif;?>
+							<?if (!empty($arProperty['USER_FIELDS']) && is_array($arProperty['USER_FIELDS'])){
+								foreach ($arProperty['USER_FIELDS'] as $userField){
+									if (isset($userField['CONTENT'])){
+										?><span class="muted777 font_xs"><?=$userField['TITLE']?>: <?=$userField['CONTENT']?></span><br /><?
+									}
 								}
-							}
-						}?>
-						<?if ($arParams['SHOW_GENERAL_STORE_INFORMATION'] == "Y"){?>
-							<?=GetMessage('BALANCE')?>
-						<?}?>
-					</div>
+							}?>
+							<?if ($arParams['SHOW_GENERAL_STORE_INFORMATION'] == "Y"){?>
+								<?=GetMessage('BALANCE')?>
+							<?}?>
+						</div>
+					</div>					
+					<?if(strlen($arQuantityData["TEXT"])):?>
+						<?=$arQuantityData["HTML"]?>
+					<?endif;?>
 				</div>
-				<?
-				$totalCount = CMax::CheckTypeCount($arProperty["NUM_AMOUNT"]);
-				$arQuantityData = CMax::GetQuantityArray($totalCount);
-				?>
-				<?if(strlen($arQuantityData["TEXT"])):?>
-					<?$arProperty["QUANTITY"] = $arQuantityData["HTML"]?>
-					<?=$arQuantityData["HTML"]?>
-				<?endif;?>
+			<?endif;?>
 
-				<?
-				if($arProperty["GPS_N"] && $arProperty["GPS_N"])
-				{
-					if($arProperty["METRO"])
-						$arProperty["METRO_PLACEMARK_HTML"] = implode('/', $arProperty["METRO"]);
-					$arProperty["ADDRESS"] = $storeName;//$arProperty["TITLE"].(strlen($arProperty["ADDRESS"]) && strlen($arProperty["TITLE"]) ? ', ' : '').$arProperty["ADDRESS"];
+			<?if(strlen($arQuantityData["TEXT"])):?>
+				<?$arProperty["QUANTITY"] = $arQuantityData["HTML"]?>
+			<?endif;?>
+			<?
+			if($arProperty["GPS_N"] && $arProperty["GPS_N"])
+			{
+				if($arProperty["METRO"])
+					$arProperty["METRO_PLACEMARK_HTML"] = implode('/', $arProperty["METRO"]);
+				$arProperty["ADDRESS"] = $storeName;//$arProperty["TITLE"].(strlen($arProperty["ADDRESS"]) && strlen($arProperty["TITLE"]) ? ', ' : '').$arProperty["ADDRESS"];
 
-					if(CMax::GetFrontParametrValue("STORES_SOURCE", $_POST["SITE_ID"]) == 'IBLOCK')
-						$arProperty["URL"] = $arShops[$arProperty['ID']]['DETAIL_PAGE_URL'];
-					$arTmpItems[$pid] = $arProperty;
-				}?>
-			</div>
+				if(CMax::GetFrontParametrValue("STORES_SOURCE", $_POST["SITE_ID"]) == 'IBLOCK')
+					$arProperty["URL"] = $arShops[$arProperty['ID']]['DETAIL_PAGE_URL'];
+				$arTmpItems[$pid] = $arProperty;
+			}?>
 		<?endforeach;?>
-		<?if($empty_count==$count_stores){?>
-			<div class="stores_block">
-				<div class="stores_text_wrapp"><?=GetMessage('NO_STORES')?></div>
-			</div>
-		<?}?>
+		
+		<?if(!$bMapMode):?>
+			<?if($empty_count==$count_stores){?>
+				<div class="stores_block">
+					<div class="stores_text_wrapp"><?=GetMessage('NO_STORES')?></div>
+				</div>
+			<?}?>
+		<?endif;?>
 
-		<?if($bCombineMode):?>
-			</div>
-			<div class="stores-amount-list">
+		<?if($bCombineMode || $bMapMode):?>
+			<?if($bCombineMode):?>
+				</div>
+			<?endif;?>
+			<div class="stores-amount-list<?=($bMapMode ? '  stores-amount-list--active' : '');?>">
 				<?if($arTmpItems):?>
 					<?$nCountItems = count($arTmpItems);?>
 					<?$arShop=CMax::prepareShopListArray($arTmpItems, $arParams);?>

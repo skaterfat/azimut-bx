@@ -6,17 +6,20 @@ use \Bitrix\Main\Localization\Loc;
 
 global $arTheme, $isHideLeftBlock, $isWidePage;
 
-//var_dump($APPLICATION->GetProperty('HIDE_LEFT_BLOCK_DETAIL'));
-/*if($APPLICATION->GetProperty('HIDE_LEFT_BLOCK_DETAIL')=='Y')
-{
-	$APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", "Y");
-	$isHideLeftBlock = false;
-}
-var_dump($isHideLeftBlock);*/
-
 
 $arItemFilter = CMax::GetCurrentElementFilter($arResult["VARIABLES"], $arParams);
-$arElement = CMaxCache::CIblockElement_GetList(array("CACHE" => array("TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]), "MULTI" => "N")), $arItemFilter, false, false, array("ID", 'NAME', 'PREVIEW_TEXT', "IBLOCK_SECTION_ID", 'DETAIL_PICTURE', 'DETAIL_PAGE_URL', 'PROPERTY_LINK_PROJECTS', 'PROPERTY_LINK_REVIEWS', 'PROPERTY_DOCUMENTS', 'PROPERTY_SECTION', 'PROPERTY_FILTER_URL', 'PROPERTY_H3_GOODS', 'PROPERTY_COLLECTION_TEMPLATE', 'PROPERTY_FILTER_NEW', 'ElementValues'));
+$arElement = CMaxCache::CIblockElement_GetList(array("CACHE" => array("TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]), "MULTI" => "N")), $arItemFilter, false, false, array("ID", 'NAME', 'PREVIEW_TEXT', "IBLOCK_SECTION_ID", 'DETAIL_PICTURE', 'DETAIL_PAGE_URL', 'PROPERTY_LINK_PROJECTS', 'PROPERTY_LINK_REVIEWS', 'PROPERTY_DOCUMENTS', 'PROPERTY_SECTION', 'PROPERTY_FILTER_URL', 'PROPERTY_H3_GOODS', 'PROPERTY_COLLECTION_TEMPLATE', 'PROPERTY_FILTER_NEW', 'ElementValues', 'PROPERTY_I_ELEMENT_PAGE_TITLE', 'PROPERTY_I_ELEMENT_PREVIEW_PICTURE_FILE_ALT', 'PROPERTY_I_ELEMENT_PREVIEW_PICTURE_FILE_TITLE', 'PROPERTY_I_SKU_PAGE_TITLE', 'PROPERTY_I_SKU_PREVIEW_PICTURE_FILE_ALT', 'PROPERTY_I_SKU_PREVIEW_PICTURE_FILE_TITLE'));
+
+if($arElement){
+	$arIBInheritTemplates = array(
+		"ELEMENT_PAGE_TITLE" => $arElement["PROPERTY_I_ELEMENT_PAGE_TITLE_VALUE"],
+		"ELEMENT_PREVIEW_PICTURE_FILE_ALT" => $arElement["PROPERTY_I_ELEMENT_PREVIEW_PICTURE_FILE_ALT_VALUE"],
+		"ELEMENT_PREVIEW_PICTURE_FILE_TITLE" => $arElement["PROPERTY_I_ELEMENT_PREVIEW_PICTURE_FILE_TITLE_VALUE"],
+		"SKU_PAGE_TITLE" => $arElement["PROPERTY_I_SKU_PAGE_TITLE_VALUE"],
+		"SKU_PREVIEW_PICTURE_FILE_ALT" => $arElement["PROPERTY_I_SKU_PREVIEW_PICTURE_FILE_ALT_VALUE"],
+		"SKU_PREVIEW_PICTURE_FILE_TITLE" => $arElement["PROPERTY_I_SKU_PREVIEW_PICTURE_FILE_TITLE_VALUE"],
+	);
+}
 ?>
 <?$bHideBackUrl = false;?>
 
@@ -38,6 +41,10 @@ if(isset($arParams["TYPE_LEFT_BLOCK_DETAIL"]) && $arParams["TYPE_LEFT_BLOCK_DETA
 if(isset($arParams["SIDE_LEFT_BLOCK_DETAIL"]) && $arParams["SIDE_LEFT_BLOCK_DETAIL"]!='FROM_MODULE'){
 	$arTheme['SIDE_MENU']['VALUE'] = $arParams["SIDE_LEFT_BLOCK_DETAIL"];
 }
+
+if($arTheme['HIDE_SUBSCRIBE']['VALUE'] == 'Y'){
+	$arParams["USE_SUBSCRIBE_IN_TOP"] = "N";
+}
 ?>
 
 <?
@@ -46,7 +53,7 @@ if(!$isHideLeftBlock && $APPLICATION->GetProperty("HIDE_LEFT_BLOCK_DETAIL") == "
 	$APPLICATION->AddViewContent('container_inner_class', ' contents_page ');
 	$APPLICATION->AddViewContent('wrapper_inner_class', ' wide_page ');
 	if(!$isWidePage){
-		$APPLICATION->AddViewContent('right_block_class', ' maxwidth-theme ');		
+		$APPLICATION->AddViewContent('right_block_class', ' maxwidth-theme ');
 	}
 }
 ?>
@@ -56,7 +63,7 @@ if(!$isHideLeftBlock && $APPLICATION->GetProperty("HIDE_LEFT_BLOCK_DETAIL") == "
 <?elseif(!$arElement && $arParams['SET_STATUS_404'] === 'Y'):?>
 	<?CMax::goto404Page();?>
 <?else:?>
-	
+
 	<?CMax::AddMeta(
 		array(
 			'og:description' => $arElement['PREVIEW_TEXT'],
@@ -70,10 +77,10 @@ if(!$isHideLeftBlock && $APPLICATION->GetProperty("HIDE_LEFT_BLOCK_DETAIL") == "
 		$arParams["DISPLAY_COMPARE"] = 'N';
 	/**/
 	?>
-	
+
 	<div class="detail <?=($templateName = $component->{'__template'}->{'__name'})?> fixed_wrapper">
 
-	    
+
 	<?if($arElement):?>
 		<?$this->SetViewTarget('product_share');?>
 			<?if($arParams["USE_SHARE"] == "Y"):?>
@@ -94,7 +101,7 @@ if(!$isHideLeftBlock && $APPLICATION->GetProperty("HIDE_LEFT_BLOCK_DETAIL") == "
 		<?$this->EndViewTarget();?>
 
 	<?endif;?>
-	
+
 	<?//element?>
 	<?$sViewElementTemplate = ($arParams["ELEMENT_TYPE_VIEW"] == "FROM_MODULE" ? $arTheme["LANDINGS_PAGE_DETAIL"]["VALUE"] : $arParams["ELEMENT_TYPE_VIEW"]);?>
 	<?@include_once('page_blocks/'.$sViewElementTemplate.'.php');?>
@@ -118,7 +125,7 @@ if(!$isHideLeftBlock && $APPLICATION->GetProperty("HIDE_LEFT_BLOCK_DETAIL") == "
 		<?if($arParams["SHOW_MAX_ELEMENT"] == "Y" && $arElementNext):?>
 			<a class="muted next-url url-block" href="<?=$arElementNext['DETAIL_PAGE_URL']?>">
 			<span class="font_upper next-url-text"><?=($arParams["T_MAX_LINK"] ? $arParams["T_MAX_LINK"] : GetMessage('MAX_LINK'));?></span>
-			<?=CMax::showIconSvg("next_element", SITE_TEMPLATE_PATH."/images/svg/return_to_the_list.svg", "");?>    
+			<?=CMax::showIconSvg("next_element", SITE_TEMPLATE_PATH."/images/svg/return_to_the_list.svg", "");?>
 			</a>
 		<?endif;?>
 

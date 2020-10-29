@@ -16,7 +16,11 @@
 	?>
 	<?
 	$TOP_VERTICAL_FILTER_PANEL = $bHideLeftBlock ? 'N' : $arTheme["FILTER_VIEW"]['DEPENDENT_PARAMS']['TOP_VERTICAL_FILTER_PANEL']['VALUE'];
-
+	
+	/*if ($arTheme['LEFT_BLOCK_CATALOG_SECTIONS']['VALUE'] == 'N') {
+		$template_filter = 'main';
+	}*/
+	
 	$APPLICATION->IncludeComponent(
 		"aspro:catalog.smart.filter",
 		$template_filter,

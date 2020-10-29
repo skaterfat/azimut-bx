@@ -51,6 +51,15 @@ if(!window.JCSmartFilterBinds){
 					domain: '',
 					expires: 360
 				});
+
+				/*setTimeout(() => {
+					InitStickySideBar();
+				}, 300);*/
+
+				setTimeout(function () {					
+					InitStickySideBar();
+				}, 300);
+
 			}
 		});
 		$('.bx_filter_parameters_box').each(function(){
@@ -62,6 +71,9 @@ if(!window.JCSmartFilterBinds){
 				$(this).find('.bx_filter_block').show();
 			}
 		});
+		if(typeof window['stickySidebar'] !== 'undefined'){						
+			window['stickySidebar'].updateSticky();
+		}
 		$(document).click(function(e) {
 			if(!$(e.target).hasClass('tooltip')){
 				$('.bx_filter .hint.active').removeClass("active").find(".tooltip").slideUp(200);
@@ -388,6 +400,11 @@ if(!window.JCSmartFilterBinds){
 					$('.js-load-wrapper').html($(html).find('.js-load-wrapper').html());
 					$('.left_block').html($(html).find('.left_block').html());
 					$('.top-content-block').html($(html).find('.top-content-block').html());
+
+					if ('checkFilterLandgings' in window && typeof checkFilterLandgings == 'function') {
+						checkFilterLandgings()
+					}
+
 					InitStickySideBar();
 					InitScrollBar($('.left_block .smartfilter .srollbar-custom'));
 				}
@@ -430,6 +447,10 @@ if(!window.JCSmartFilterBinds){
 						if(window.sortFilterPopup !== undefined && typeof(window.sortFilterPopup.destroy) == 'function' ) {
 							window.sortFilterPopup.destroy();
 						}
+					}
+
+					if ('checkFilterLandgings' in window && typeof checkFilterLandgings == 'function') {
+						checkFilterLandgings()
 					}
 				}
 
@@ -502,6 +523,9 @@ if(!window.JCSmartFilterBinds){
 			{
 				modef_num.innerHTML = result.ELEMENT_COUNT;
 				modef_num_mobile.innerHTML = result.ELEMENT_COUNT;
+				if(typeof mobileFilterNum === 'function'){
+	                mobileFilterNum(result.ELEMENT_COUNT);
+	            }
 				hrefFILTER = BX.findChildren(modef, {tag: 'A'}, true);
 				hrefFILTER_mobile = BX.findChildren(modef_mobile, {tag: 'A'}, true);
 

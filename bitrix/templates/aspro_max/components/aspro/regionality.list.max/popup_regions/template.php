@@ -20,6 +20,7 @@ use \Bitrix\Main\Localization\Loc;?>
 			</div>
 			<?if($arResult['SHOW_REGION_CONFIRM']):?>
 				<div class="confirm_region">
+					<span class="close colored_theme_hover_text " data-id="<?=$arResult['CURRENT_REGION']['ID'];?>"><?=CMax::showIconSvg('', SITE_TEMPLATE_PATH.'/images/svg/Close.svg', '', 'light-ignore')?></span>
 					<?
 					$href = 'data-href="'.$arResult['REGIONS'][$arResult['REAL_REGION']['ID']]['URL'].'"';
 					if($arTheme['USE_REGIONALITY']['DEPENDENT_PARAMS']['REGIONALITY_TYPE']['VALUE'] == 'SUBDOMAIN' && ($arResult['HOST'].$_SERVER['HTTP_HOST'].$arResult['URI'] == $arResult['REGIONS'][$arResult['REAL_REGION']['ID']]['URL']))
@@ -34,7 +35,8 @@ use \Bitrix\Main\Localization\Loc;?>
 		</div>
 	<?endif;?>
 <?else:?>
-	<div class="popup_regions">
+	<?$onlySearchRow = \Bitrix\Main\Config\Option::get('aspro.max', 'REGIONALITY_SEARCH_ROW', 'N') == 'Y';?>
+	<div class="popup_regions <?=($onlySearchRow ? 'only_search' : '')?>">
 		<div class="h-search autocomplete-block" id="title-search-city">
 			<div class="wrapper">
 				<input id="search" class="autocomplete text" type="text" placeholder="<?=Loc::getMessage('CITY_PLACEHOLDER');?>">

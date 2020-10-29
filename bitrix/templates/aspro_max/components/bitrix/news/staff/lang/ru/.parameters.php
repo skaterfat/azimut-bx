@@ -101,5 +101,5 @@ $MESS["CP_BC_TPL_CONTENT_BLOCK_LANDINGS"] = "Коллекции";
 $MESS["CP_BC_TPL_CONTENT_BLOCK_FORM_ORDER"] = "Заказать услугу"; 
 $MESS["CP_BC_TPL_CONTENT_BLOCK_PARTNERS"] = "Партнеры";
 $MESS["CP_BC_TPL_CONTENT_BLOCK_VIDEO"] = "Видео";
-
+$MESS["USE_SUBSCRIBE_IN_TOP"] = "Показывать подписку в верхней строке";
 ?>

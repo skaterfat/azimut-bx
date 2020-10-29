@@ -9,6 +9,7 @@ if(\Bitrix\Main\Loader::includeModule('catalog'))
 ?>
 
 <?
+$showFromIblock = false;
 $APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", "Y");
 $APPLICATION->SetPageProperty("TITLE_CLASS", " hidden ");
 ?>
@@ -32,6 +33,7 @@ $APPLICATION->SetPageProperty("TITLE_CLASS", " hidden ");
 	);?>
 </div>
 <?else:?>
+<?$showFromIblock = true;?>
 <div class="wrapper_inner_half row flexbox shop-detail1 clearfix">
 	
 	<?$APPLICATION->IncludeComponent(
@@ -110,7 +112,7 @@ $APPLICATION->SetPageProperty("TITLE_CLASS", " hidden ");
 </div>	
 <?endif;?>
 <?
-if ($arParams['SET_TITLE'] == 'Y') {
+if ($arParams['SET_TITLE'] == 'Y' && !$showFromIblock) {
 	$APPLICATION->SetTitle($_SESSION['SHOP_TITLE']);
 	$APPLICATION->SetPageProperty("title", $_SESSION['SHOP_TITLE']);
 }

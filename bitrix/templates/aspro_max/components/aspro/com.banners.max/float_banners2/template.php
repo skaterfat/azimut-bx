@@ -5,12 +5,13 @@
 	$col = (round(12/$arParams['SIZE_IN_ROW']));
 	$position = ($arParams['BG_POSITION'] ? ' set-position '.$arParams['BG_POSITION'] : '');
 	$bType2 = ($arParams['TYPE_BLOCK'] == 'type2');
+	$bOnlyOne = count($arResult['ITEMS']) == 1;
 	?>
 	<div class="content_wrapper_block <?=$templateName;?>">
 		<div class="maxwidth-theme">
-			<div class="item-views float_banners2 <?=($arResult['MIXED_BLOCKS'] ? ' sm-block' : '');?> <?=$arParams['BG_BLOCK_POSITION'];?>">
+			<div class="item-views float_banners2 swipeignore <?=($arResult['MIXED_BLOCKS'] ? ' sm-block' : '');?> <?=$arParams['BG_BLOCK_POSITION'];?> <?=$bOnlyOne ? 'one-item' : ''?>">
 				<div class="items">
-					<div class="row flexbox">
+					<div class="row flexbox mobile-overflow">
 						<?foreach($arResult['ITEMS'] as $arItem)
 						{
 							$this->AddEditAction($arItem['ID'], $arItem['EDIT_LINK'], CIBlock::GetArrayByID($arItem['IBLOCK_ID'], 'ELEMENT_EDIT'));

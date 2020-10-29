@@ -63,6 +63,10 @@ a.scroll-to-top.RECT_COLOR:hover {
 .basket_print i {
   background-color: #d02222;
 }
+.btn_basket_heading:hover .title,
+.basket-checkout-block-share:hover .title {
+  color: #dc2f2f;
+}
 .rss_feed_icon {
   background: #d9232f;
   color: #000;
@@ -773,6 +777,13 @@ h4:hover .opener_icon,
   color: #FFF;
   background: #dd2929;
 }
+.basket-share-detail__head .char_name .props_list .hint .icon:hover,
+.basket-share-detail__head .char_name .props_list .hint.active .icon,
+.basket-share-detail__head .char_name .props_list .hint.active .icon {
+  color: #FFF;
+  background: #dd2929;
+  border-color: #dd2929;
+}
 .bigs .flex-direction-nav li {
   color: #FFF;
   background: #dd2929;
@@ -1096,8 +1107,10 @@ body#main .colored_theme_hover_text:hover,
 .colored_theme_block_text:hover .colored_theme_el_text {
   color: #dc2f2f !important;
 }
-.dark-color:hover svg path,
-.dark-color:hover svg rect,
+.dark-color:hover svg:not(.not_fill) rect,
+.dark-color:hover svg:not(.not_fill) circle {
+  stroke: #dc2f2f;
+}
 body#main .colored_theme_text_with_hover:not(:hover) .svg svg path,
 body#main .colored_theme_hover_text:hover svg path,
 .fancybox-is-open svg:hover path {
@@ -1446,7 +1459,9 @@ header .menu_top_block.catalogfirst li.full>.dropdown>li:not(.current)>a {
 .bg_color_theme {
   background: #dc2f2f;
 }
-.text-color-theme {
+.text-color-theme,
+.item-views.news2 .compact .item-wrapper .item .inner-text .title a:hover,
+.bottom_nav.mobile_slider .btn.btn-transparent-border-color:hover {
   color: #dc2f2f;
 }
 .basket_normal .basket_wrapp .wraps_icon_block.basket .count span {
@@ -1669,4 +1684,14 @@ footer .info .subscribe_button .btn:hover {
 .catalog-delivery .bx-sls .quick-location-tag:hover {
   background-color: #e14944;
   border-color: #e14944;
+}
+.bottom-icons-panel__content-link--active {
+  color: #dc2f2f !important;
+}
+.bottom-icons-panel__content-link--active svg path {
+  fill: #dc2f2f !important;
+}
+.bottom-icons-panel__content-link--active svg rect,
+.bottom-icons-panel__content-link--active svg circle {
+  stroke: #dc2f2f !important;
 }

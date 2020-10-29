@@ -8,11 +8,11 @@
 				<div class="col-md-<?=($iSmallBannersCount <= 2 ? "9" : "6 col-m-push-25");?> slide">
 					<?include_once($_SERVER['DOCUMENT_ROOT'].'/bitrix/components/aspro/com.banners.max/common_files/slider.php');?>
 				</div>
-				<div class="col-md-3 child <?=($iSmallBannersCount > 2 ? "col-m-pull-50" : "");?>"><div class="row">
+				<div class="col-md-3 child hidden_side_mobile <?=($iSmallBannersCount > 2 ? "col-m-pull-50" : "");?>"><div class="row">
 					<?foreach($arResult['ITEMS'][$arParams['BANNER_TYPE_THEME_CHILD']]['ITEMS'] as $key => $arItem):?>
 						<?if($key > 4) continue;?>
 						<?if($key == 2):?>
-							</div></div><div class="col-md-3 child"><div class="row">
+							</div></div><div class="col-md-3 child hidden_side_mobile"><div class="row">
 						<?elseif($key == 4):?>
 							</div></div><div class="col-md-12 items clearfix"><div class="row">
 						<?endif;?>
@@ -24,19 +24,25 @@
 					</div>
 				<?endif;?>
 				</div>
+				<div class="col-md-12 items visible_side_mobile clearfix side-childs <?=$arParams['SIDE_SLIDER_VIEW_MOBILE']?><?=($arParams['SIDE_SLIDER_VIEW_MOBILE'] === 'slider' ? ' swipeignore mobile-overflow' : '')?> c_<?=count($arResult['ITEMS'][$arParams['BANNER_TYPE_THEME_CHILD']]['ITEMS']);?>">
+					<?foreach($arResult['ITEMS'][$arParams['BANNER_TYPE_THEME_CHILD']]['ITEMS'] as $key => $arItem):?>
+						<?if($key > 4) continue;?>					
+						<?include('float.php');?>						
+					<?endforeach;?>
+				</div>
 			<?elseif($arResult['HAS_SLIDE_BANNERS']):?>
 				<div class="col-md-12">
 					<?include_once($_SERVER['DOCUMENT_ROOT'].'/bitrix/components/aspro/com.banners.max/common_files/slider.php');?>
 				</div>
 			<?elseif($arResult['HAS_CHILD_BANNERS']):?>
-				<?foreach($arResult['ITEMS'][$arParams['BANNER_TYPE_THEME_CHILD']]['ITEMS'] as $key => $arItem):?>
-					<div class="col-md-12 items clearfix">
-						<?include('float.php');?>
-					</div>
-				<?endforeach;?>
+				<div class="col-md-12 items clearfix side-childs <?=$arParams['SIDE_SLIDER_VIEW_MOBILE']?><?=($arParams['SIDE_SLIDER_VIEW_MOBILE'] === 'slider' ? ' swipeignore mobile-overflow' : '')?> c_<?=count($arResult['ITEMS'][$arParams['BANNER_TYPE_THEME_CHILD']]['ITEMS']);?>">
+					<?foreach($arResult['ITEMS'][$arParams['BANNER_TYPE_THEME_CHILD']]['ITEMS'] as $key => $arItem):?>
+						<?include('float.php');?>					
+					<?endforeach;?>
+				</div>
 			<?endif;?>
 			<?if($arResult['HAS_CHILD_BANNERS2']):?>
-				<div class="col-md-12 items">
+				<div class="col-md-12 items <?=$arParams['SLIDER_VIEW_MOBILE']?><?=($arParams['SLIDER_VIEW_MOBILE'] === 'slider' ? ' swipeignore mobile-overflow' : '')?> c_<?=count($arResult['ITEMS'][$arParams['BANNER_TYPE_THEME_CHILD2']]['ITEMS']);?>">
 					<?foreach($arResult['ITEMS'][$arParams['BANNER_TYPE_THEME_CHILD2']]['ITEMS'] as $key => $arItem):?>
 						<?include('float.php');?>
 					<?endforeach;?>

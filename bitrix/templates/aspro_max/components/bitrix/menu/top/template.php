@@ -66,7 +66,7 @@ $bManyItemsMenu = ($MENU_TYPE == '4');
 			<?endif;?>
 		<?}?>
 	<?}?>
-	<div class="table-menu <?=$bRightSide ? 'with_right' : ''?> ">
+	<div class="table-menu">
 		<table>
 			<tr>
 				<?foreach($arResult as $arItem):?>

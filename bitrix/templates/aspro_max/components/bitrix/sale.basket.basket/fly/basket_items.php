@@ -152,7 +152,31 @@ if ($normalCount > 0):
 													$tmp_ratio+=$ratio;
 													$float_ratio=is_double($tmp_ratio);
 
-													$max = isset($arItem["AVAILABLE_QUANTITY"]) ? "max=\"".$arItem["AVAILABLE_QUANTITY"]."\"" : "";
+													if ($arItem['CHECK_MAX_QUANTITY'] == 'Y') {
+														$max = isset($arItem["AVAILABLE_QUANTITY"]) ? "max=\"".$arItem["AVAILABLE_QUANTITY"]."\"" : "";
+
+														global $arRegion;
+														if ($arRegion) {
+															$arStores = [];
+															if ($arRegion['LIST_STORES']) {
+																if(reset($arRegion['LIST_STORES']) != 'component')
+																	$arStores = $arRegion['LIST_STORES'];
+															}
+															if ($arStores) {
+																
+																$arSelect = array('ID', 'PRODUCT_AMOUNT');
+																$arFilter = array('ID' => $arStores);
+
+																$rsStore = CCatalogStore::GetList(array(), array_merge($arFilter, array('PRODUCT_ID' => $arItem['PRODUCT_ID'])), false, false, $arSelect);
+																while($arStore = $rsStore->Fetch()){
+																	$quantity += $arStore['PRODUCT_AMOUNT'];
+																}
+
+																$max = "max=\"".$quantity."\"";
+															}
+														}
+													}
+
 													if (!isset($arItem["MEASURE_RATIO"])){
 														$arItem["MEASURE_RATIO"] = 1;
 													}

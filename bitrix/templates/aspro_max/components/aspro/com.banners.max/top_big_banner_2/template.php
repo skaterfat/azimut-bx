@@ -11,7 +11,7 @@
 			</div>
 		<?endif;?>
 		<?if($arResult['HAS_CHILD_BANNERS2']):?>
-			<div class="items">
+			<div class="items <?=$arParams['SLIDER_VIEW_MOBILE']?><?=($arParams['SLIDER_VIEW_MOBILE'] === 'slider' ? ' swipeignore mobile-overflow' : '')?> c_<?=count($arResult['ITEMS'][$arParams['BANNER_TYPE_THEME_CHILD2']]['ITEMS']);?>">
 				<?foreach($arResult['ITEMS'][$arParams['BANNER_TYPE_THEME_CHILD2']]['ITEMS'] as $key => $arItem):?>
 					<?include('float.php');?>
 				<?endforeach;?>

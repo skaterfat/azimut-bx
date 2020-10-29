@@ -2,6 +2,11 @@
 <?$this->setFrameMode(true);?>
 <?use \Bitrix\Main\Localization\Loc;?>
 <?if($arResult['ITEMS']):?>
+
+	<?$sTemplateMobile = (isset($arParams['MOBILE_TEMPLATE']) ? $arParams['MOBILE_TEMPLATE'] : '')?>
+	<?$bSlider = ($sTemplateMobile === 'normal')?>
+	<?$bHasBottomPager = $arParams["DISPLAY_BOTTOM_PAGER"] == "Y" && $arResult["NAV_STRING"];?>
+
 	<?if(!$arParams['IS_AJAX']):?>
 		<div class="content_wrapper_block <?=$templateName;?> <?=$arResult['NAV_STRING'] ? '' : 'without-border'?>">
 			<div class="maxwidth-theme only-on-front">
@@ -11,9 +16,9 @@
 					<a href="<?=SITE_DIR.$arParams['ALL_URL'];?>" class="pull-right font_upper muted"><?=$arParams['TITLE_BLOCK_ALL'] ;?></a>
 				</div>
 			<?endif;?>
-			<div class="item-views sales">
+			<div class="item-views sales <?=$sTemplateMobile;?>">
 				<div class="items">
-					<div class="row flexbox<?=($arParams['NO_MARGIN'] == 'Y' ? ' margin0' : '');?>">
+					<div class="row flexbox<?=($arParams['NO_MARGIN'] == 'Y' ? ' margin0' : '');?> <?=$sTemplateMobile;?><?=($bSlider ? ' swipeignore mobile-overflow mobile-margin-16 mobile-compact' : '');?><?=$bHasBottomPager ? ' has-bottom-nav' : ''?>">
 	<?endif;?>
 		<?$position = ($arParams['BG_POSITION'] ? ' set-position '.$arParams['BG_POSITION'] : '');?>
 			<?foreach($arResult['ITEMS'] as $i => $arItem):?>
@@ -32,7 +37,7 @@
 				$bDiscountCounter = ($arItem['ACTIVE_TO'] && in_array('ACTIVE_TO', $arParams['FIELD_CODE']));
 				$bShowDopBlock = ($arItem['DISPLAY_PROPERTIES']['SALE_NUMBER']['VALUE'] || $bDiscountCounter);
 				?>
-				<div class="item-wrapper col-md-6 col-sm-6 col-xs-6 col-xxs-12">
+				<div class="item-wrapper col-md-6 col-sm-6 col-xs-6 col-xxs-12 <?=($bSlider ? ' item-width-261' : '');?>">
 					<div class="item<?=($arParams['FILLED'] == 'Y' ? ' bg-fill-grey' : ' bg-fill-white');?> bordered box-shadow rounded3 clearfix <?=($bShowDopBlock && $arParams['IMG_POSITION'] != 'left' ? 'wdate' : '');?>" id="<?=$this->GetEditAreaId($arItem['ID']);?>">
 						<?if($imageSrc):?>
 							<div class="image pull-<?=($arParams['IMG_POSITION'] ? $arParams['IMG_POSITION'] : 'right');?> shine">
@@ -89,6 +94,23 @@
 				</div>
 			<?endforeach;?>
 
+			<?if ($bSlider && $bHasBottomPager):?>
+				<?if($arParams['IS_AJAX']):?>
+					<div class="wrap_nav bottom_nav_wrapper">
+				<?endif;?>
+					<?$bHasNav = (strpos($arResult["NAV_STRING"], 'more_text_ajax') !== false);?>
+						<div class="bottom_nav mobile_slider animate-load-state block-type<?=($bHasNav ? '' : ' hidden-nav');?> round-ignore" data-parent=".item-views"  data-append=".items > .row" <?=($arParams["IS_AJAX"] ? "style='display: none; '" : "");?>>
+						<?if ($bHasNav):?>
+							<?=CMax::showIconSvg('bottom_nav-icon colored_theme_svg', SITE_TEMPLATE_PATH.'/images/svg/mobileBottomNavLoader.svg');?>
+							<?=$arResult["NAV_STRING"]?>
+						<?endif;?>
+						</div>
+
+				<?if($arParams['IS_AJAX']):?>
+					</div>
+				<?endif;?>
+			<?endif;?>
+
 
 	<?if(!$arParams['IS_AJAX']):?>
 			</div>
@@ -96,7 +118,7 @@
 	<?endif;?>
 		
 		<?// bottom pagination?>
-		<div class="bottom_nav_wrapper">
+		<div class="bottom_nav_wrapper <?=($bSlider ? ' hidden-slider-nav' : '');?>">
 			<div class="bottom_nav animate-load-state" <?=($arParams['IS_AJAX'] ? "style='display: none; '" : "");?> data-parent=".item-views" data-append=".items > .row">
 				<?if($arParams['DISPLAY_BOTTOM_PAGER']):?>
 					<?=$arResult['NAV_STRING']?>

@@ -7,13 +7,13 @@ $APPLICATION->SetTitle("Заполнение формы");
 section.page-top {display:none;}
 .form.inline{margin-top:14px;}
 .form .form-header{border-top: 1px solid #f5f5f5 !important;padding: 15px 0px 9px 0px;}
-.catalog-delivery{margin-top:30px;}
+.catalog-delivery,.basket-share{margin-top:30px;}
 body .popup-intro .pop-up-title{padding-top:34px;padding-bottom:26px;font-size:1.333em;line-height:1.126em;color:#333;font-weight:normal;}
 .popup-intro{padding-right:49px;padding-left:16px;}
 .form-wr{padding-left:16px;padding-right:16px;}
 .TABLES_SIZE_frame{padding-left:16px;padding-right:16px;padding-top:35px;}
 .inline.close ~ div .form_head{padding-right:29px;}
-.inline.close ~ div .catalog-delivery-title{padding-right:48px;}
+.inline.close ~ div .catalog-delivery-title,.inline.close ~ div .basket-share-title{padding-right:48px;}
 </style>
 <?
 CMax::GetFrontParametrValue('', SITE_ID);
@@ -68,6 +68,8 @@ $GLOBALS['backUrl'] = $backUrl;
 	</div>
 <?elseif($form_id == 'delivery'):?>
 	<?include('../ajax/delivery.php');?>
+<?elseif($form_id == 'share_basket'):?>
+	<?include('../ajax/share_basket.php');?>
 <?elseif(isset($_REQUEST['type']) && $_REQUEST['type'] == 'marketing'):?>
 	<?include('marketing.php');?>
 <?elseif($form_id == 'city_chooser'):?>

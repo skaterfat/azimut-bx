@@ -106,19 +106,27 @@
 
 		var o = e.data('jqm'),
 			t = t || window.event,
-			z = (parseInt(e.css('z-index'))),
-			z = (z > 0) ? z : 3000;
+			z = (parseInt(e.css('z-index')));
 
-		if(o.noOverlay === undefined || (o.noOverlay !== undefined && !o.noOverlay) ) {
-			var	v = $('<div></div>').addClass(o.overlayClass).css({height:'100%',width:'100%',position:'fixed',left:0,top:0,'z-index':z-1,opacity:o.overlay/100});
-		} else {
-			var	v = $('');
-		}
+			if(o.noOverlay === undefined || (o.noOverlay !== undefined && !o.noOverlay) ) {
+				if( isNaN(z) ) {
+					if( window['lastJqmZindex'] ) {
+						window['lastJqmZindex'] = z = window['lastJqmZindex'] + 2;
+					} else {
+						z = 3000;
+					}
+				}
+				window['lastJqmZindex'] = z;
+				var	v = $('<div></div>').addClass(o.overlayClass).css({height:'100%',width:'100%',position:'fixed',left:0,top:0,'z-index':z-1,opacity:o.overlay/100});
+				e.css('z-index',z);
+			} else {
+				var	v = $('');
+				e.css('z-index',2999);
+			}
 		
 			// maintain legacy "hash" construct
 			h = {w: e, c: o, o: v, t: t};
 
-		e.css('z-index',z);
 
 		if(o.ajax){
 			var target = o.target || e,

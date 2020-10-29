@@ -41,7 +41,7 @@ $(document).ready(function(){
 			}
 			
 			config.start = function(slider){
-				// checkNavColor(slider);
+				// checkNavColor(slider);				
 				var activeVideo = slider.find('.box.wvideo.flex-active-slide');
 				if(activeVideo.length) {
 					if(activeVideo.data('video_autoplay') == '1') {
@@ -60,6 +60,7 @@ $(document).ready(function(){
 			config.before = function(slider){
 				setTimeout(function(){
 					// checkNavColor(slider);
+					BX.onCustomEvent('onSlide', [{slider: slider}] );
 					InitLazyLoad();
 				}, 100);
 			}

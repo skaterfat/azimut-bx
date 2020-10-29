@@ -26,5 +26,10 @@ $arTemplateParameters = array(
 		"DEFAULT" => "top",
 		"HIDDEN" => ($arCurrentValues["CENTERED"] != "Y" ? "N" : "Y"),
 	),
+	"MOBILE_TEMPLATE" => Array(
+		"NAME" => GetMessage("T_MOBILE_TEMPLATE"),
+		"TYPE" => "STRING",
+		"DEFAULT" => "",
+	)
 );
 ?>

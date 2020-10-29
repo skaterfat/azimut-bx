@@ -172,6 +172,8 @@ if(CMax::GetFrontParametrValue('CATALOG_COMPARE') == 'N')
 	$arParams["USE_COMPARE"] = 'N';
 /**/
 
+$arParams['DISPLAY_WISH_BUTTONS'] = CMax::GetFrontParametrValue('CATALOG_DELAY');
+
 $_SESSION['BLOG_MAX_IMAGE_SIZE'] = ($arParams['MAX_IMAGE_SIZE'] ? $arParams['MAX_IMAGE_SIZE'] : '0.5');
 
 if($bFastViewMode)

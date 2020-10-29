@@ -76,6 +76,7 @@
 		"ALL_URL" => "lookbooks/",
 		"PAGER_BASE_LINK_ENABLE" => "N",
 		"SHOW_404" => "N",
+		"MOBILE_TEMPLATE" => "Y",
 		"IS_AJAX" => CMax::checkAjaxRequest(),
 		"MESSAGE_404" => "",
 		"COMPOSITE_FRAME_MODE" => "A",
