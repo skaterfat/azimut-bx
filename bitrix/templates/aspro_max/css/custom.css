@@ -1,0 +1,72 @@
+/*NOTE: This file is intended for programmers. Aspro technical support is not advised to work with him.*/
+
+/* Examples (uncomment to use):*/
+
+/* Expand site width */
+/* body .wrapper { max-width: 1400px !important;  } */
+
+/* Set site background image */
+/* body {  background: url(image_source) top no-repeat; }
+
+/* Hide compare button */
+/* a.compare_item { display: none !important;  }*/
+
+.section-tags {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: start;
+    justify-content: between;
+    flex-wrap: wrap;
+    height: 40px;
+    overflow: hidden;
+    -webkit-transition: all .25s ease;
+       -moz-transition: all .25s ease;
+        -ms-transition: all .25s ease;
+         -o-transition: all .25s ease;
+            transition: all .25s ease;
+}
+
+.section-tags a {
+    display: inline-block;
+    /*margin: 0 10px 10px 0;*/
+    margin-bottom: 5px;
+}
+
+.section-tags-more {
+    display: flex;
+    justify-content: end;
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.section-tags-more a {
+    display: inline-block;
+    border-bottom: #e95b48 dotted 1px;
+}
+
+.section-tags-more a:hover {
+    border-bottom: none;
+    border-bottom: transparent dotted 1px;
+}
+
+@media(max-width: 600px) {
+
+    .assembly-table__section .flexbox--row {
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-flex-wrap: wrap !important;
+        -ms-flex-wrap: wrap !important;
+        flex-wrap: wrap !important;
+        align-items: center;
+    }
+
+    body .assembly-table__section .table-view .table-view__item {
+        flex: 0 0 100% !important;
+        height: auto;
+    }
+
+}
+
+.element-count-wrapper {
+    display: none !important;
+}
