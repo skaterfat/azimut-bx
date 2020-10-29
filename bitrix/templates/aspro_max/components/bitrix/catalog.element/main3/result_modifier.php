@@ -1449,4 +1449,9 @@ if(!empty($arResult['DISPLAY_PROPERTIES']))
 	}
 	$arResult["GROUPS_PROPS"] = $arGroupsProp;
 }
+
+if($arResult['PROPERTIES']['KONSTRUKTOR_KOLODCEV']['VALUE']) {
+	$this->__component->arResult["PROPERTY_KONSTRUKTOR_KOLODCEV"] = $arResult['PROPERTIES']['KONSTRUKTOR_KOLODCEV'];
+	$this->__component->SetResultCacheKeys(array("PROPERTY_KONSTRUKTOR_KOLODCEV"));
+}
 ?>
